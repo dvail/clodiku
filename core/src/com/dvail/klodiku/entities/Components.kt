@@ -3,7 +3,7 @@ package com.dvail.klodiku.entities
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.maps.tiled.TmxMapLoader
+import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.Circle
 import com.badlogic.gdx.math.Vector2
 import com.dvail.klodiku.pathfinding.AStar
@@ -16,7 +16,7 @@ enum class Stat { HP, MP, STR, DEX, VIT, PSY, HR, DR, MS, ED, PD, SAVES }
 
 data class Player(var name: String) : Component
 
-data class WorldMap(var map: TmxMapLoader, var grid: Array<Array<Int>>) : Component
+data class WorldMap(var tileMap: TiledMap, var grid: Array<Array<Int>>) : Component
 
 data class Spatial(var pos: Vector2, var size: Int) : Component
 
