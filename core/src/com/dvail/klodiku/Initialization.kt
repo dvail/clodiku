@@ -5,8 +5,6 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.Circle
 import com.badlogic.gdx.math.Vector2
 import com.dvail.klodiku.entities.*
-import com.dvail.klodiku.util.compData
-import com.dvail.klodiku.util.firstEntityWithComp
 import com.dvail.klodiku.util.loadMap
 import com.dvail.klodiku.util.loadMapGrid
 import java.util.*
@@ -15,17 +13,9 @@ private fun initMap(world: Engine, mapName: String) {
     val map = loadMap(mapName)
     val grid = loadMapGrid(map)
 
-    var mapEntity = firstEntityWithComp(world, Comps.WorldMap)
-
-    if (mapEntity != null) {
-        var worldMap = compData(mapEntity, CompMapper.WorldMap) as WorldMap
-        worldMap.tileMap = map
-        worldMap.grid = grid
-    } else {
-        mapEntity = Entity()
-        mapEntity.add(WorldMap(map, grid))
-        world.addEntity(mapEntity)
-    }
+    val mapEntity = Entity()
+    mapEntity.add(WorldMap(map, grid))
+    world.addEntity(mapEntity)
 
     initArea(world, mapName)
 }
