@@ -16,14 +16,14 @@ class MainScreen : Screen {
     internal lateinit var img: Texture
 
     init {
-        world.addSystem(Events())
-        world.addSystem(Input())
-        world.addSystem(MobAI())
-        world.addSystem(Combat())
-        world.addSystem(Rendering())
+        world.addSystem(EventSystem())
+        world.addSystem(InputSystem())
+        world.addSystem(MobAISystem())
+        world.addSystem(CombatSystem())
+        world.addSystem(RenderingSystem())
 
         batch = SpriteBatch()
-        img = Texture("badlogic.jpg")
+        img = Texture("player-melee.png")
 
         initMain(world)
     }

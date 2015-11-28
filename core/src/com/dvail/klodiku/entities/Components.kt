@@ -1,6 +1,7 @@
 package com.dvail.klodiku.entities
 
 import com.badlogic.ashley.core.Component
+import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.maps.tiled.TiledMap
@@ -13,10 +14,48 @@ enum class EqSlot { Held, Head, Body, Arms, Legs, Feet, Hands }
 enum class PlayerState { Idle, Walking, Melee }
 enum class MobState { Wander, Aggro }
 enum class Stat { HP, MP, STR, DEX, VIT, PSY, HR, DR, MS, ED, PD, SAVES }
+enum class ComponentType {
+    Player, WorldMap, Spatial, Renderable, AnimatedRenderable, State, Attribute, Equipment,
+    Inventory, Item, EqItem, EqWeapon, EqArmor, MobAI
+}
+
+object Comps {
+    val Player = Player::class.java
+    val WorldMap = WorldMap::class.java
+    val Spatial = Spatial::class.java
+    val Renderable = Renderable::class.java
+    val AnimatedRenderable = AnimatedRenderable::class.java
+    val State = State::class.java
+    val Attribute = Attribute::class.java
+    val Equipment = Equipment::class.java
+    val Inventory = Inventory::class.java
+    val Item = Item::class.java
+    val EqItem = EqItem::class.java
+    val EqWeapon = EqWeapon::class.java
+    val EqArmor = EqArmor::class.java
+    val MobAI = MobAI::class.java
+}
+
+object CompMapper {
+    val Player = ComponentMapper.getFor(Comps.Player)
+    val WorldMap = ComponentMapper.getFor(Comps.WorldMap)
+    val Spatial = ComponentMapper.getFor(Comps.Spatial)
+    val Renderable = ComponentMapper.getFor(Comps.Renderable)
+    val AnimatedRenderable = ComponentMapper.getFor(Comps.AnimatedRenderable)
+    val State = ComponentMapper.getFor(Comps.State)
+    val Attribute = ComponentMapper.getFor(Comps.Attribute)
+    val Equipment = ComponentMapper.getFor(Comps.Equipment)
+    val Inventory = ComponentMapper.getFor(Comps.Inventory)
+    val Item = ComponentMapper.getFor(Comps.Item)
+    val EqItem = ComponentMapper.getFor(Comps.EqItem)
+    val EqWeapon = ComponentMapper.getFor(Comps.EqWeapon)
+    val EqArmor = ComponentMapper.getFor(Comps.EqArmor)
+    val MobAI = ComponentMapper.getFor(Comps.MobAI)
+}
 
 data class Player(var name: String) : Component
 
-data class WorldMap(var tileMap: TiledMap, var grid: Array<Array<Int>>) : Component
+data class WorldMap(var tileMap: TiledMap, var grid: Array<IntArray>) : Component
 
 data class Spatial(var pos: Vector2, var size: Int) : Component
 
