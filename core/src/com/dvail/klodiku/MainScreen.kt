@@ -12,28 +12,17 @@ class MainScreen : Screen {
 
     val world = Engine()
 
-    internal lateinit var batch: SpriteBatch
-    internal lateinit var img: Texture
-
     init {
+        initMain(world)
+
         world.addSystem(EventSystem())
         world.addSystem(InputSystem())
         world.addSystem(MobAISystem())
         world.addSystem(CombatSystem())
         world.addSystem(RenderingSystem())
-
-        batch = SpriteBatch()
-        img = Texture("player-melee.png")
-
-        initMain(world)
     }
 
     override fun render(delta: Float) {
-        Gdx.gl.glClearColor(0.1f, 0f, 0.1f, 1f)
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-        batch.begin()
-        batch.draw(img, 0f, 0f)
-        batch.end()
         world.update(delta)
     }
 
