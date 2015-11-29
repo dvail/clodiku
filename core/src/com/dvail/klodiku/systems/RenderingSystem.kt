@@ -119,7 +119,6 @@ class RenderingSystem : EntitySystem() {
     }
 
     private fun renderCombatVerbs() {
-
     }
 
     private fun renderEntityShapes() {

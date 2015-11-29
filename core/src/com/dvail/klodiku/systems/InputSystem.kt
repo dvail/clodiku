@@ -3,6 +3,8 @@ package com.dvail.klodiku.systems
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
+import com.dvail.klodiku.combat.advanceAttackState
+import com.dvail.klodiku.combat.initAttack
 import com.dvail.klodiku.entities.*
 import com.dvail.klodiku.util.*
 
@@ -23,20 +25,24 @@ class InputSystem : EntitySystem() {
         when (playerState.current) {
             BaseState.Walking -> doFreeInput(delta)
             BaseState.Standing -> doFreeInput(delta)
-            BaseState.Melee_Pierce -> advanceAttackState()
-            BaseState.Melee_Slash -> advanceAttackState()
+            BaseState.Melee_Pierce -> doCombatInput(delta)
+            BaseState.Melee_Slash -> doCombatInput(delta)
         }
     }
 
-    fun doFreeInput(delta: Float) {
-        movePlayer(delta)
+    private fun doFreeInput(delta: Float) {
+        if (keyJustPressed(BoundKeys.MeleeAttack)) {
+            initAttack(world, delta, player)
+        } else {
+            movePlayer(delta)
+        }
     }
 
-    fun advanceAttackState() {
-
+    private fun doCombatInput(delta: Float) {
+        advanceAttackState(world, delta, player)
     }
 
-    fun movePlayer(delta: Float) {
+    private fun movePlayer(delta: Float) {
         val moveX = if (keyPressed(BoundKeys.MoveEast)) 2f else if (keyPressed(BoundKeys.MoveWest)) -2f else 0f
         val moveY = if (keyPressed(BoundKeys.MoveNorth)) 2f else if (keyPressed(BoundKeys.MoveSouth)) -2f else 0f
 
