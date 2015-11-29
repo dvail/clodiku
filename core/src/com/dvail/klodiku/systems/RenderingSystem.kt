@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.utils.ImmutableArray
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
@@ -12,7 +13,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
-import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.math.Circle
 import com.dvail.klodiku.entities.*
 import com.dvail.klodiku.util.compData
 import com.dvail.klodiku.util.currentMap
@@ -29,6 +30,7 @@ class RenderingSystem : EntitySystem() {
     val combatFont = BitmapFont()
 
     var renderableEntities = ImmutableArray<Entity>(com.badlogic.gdx.utils.Array(0))
+    var spatialEntities = ImmutableArray<Entity>(com.badlogic.gdx.utils.Array(0))
 
     lateinit var world: Engine
     lateinit var mapRenderer: OrthogonalTiledMapRenderer
@@ -36,7 +38,8 @@ class RenderingSystem : EntitySystem() {
     override fun addedToEngine(engine: Engine) {
         world = engine;
         mapRenderer = OrthogonalTiledMapRenderer(currentMap(world), batch)
-        updateEntityList()
+        updateRenderableEntityList()
+        updateSpatialEntityList()
     }
 
     override fun update(delta: Float) {
@@ -55,16 +58,30 @@ class RenderingSystem : EntitySystem() {
         renderCombatVerbs()
         batch.end()
 
+        shapeRenderer.setAutoShapeType(true)
+        shapeRenderer.projectionMatrix = camera.combined
+        shapeRenderer.begin()
+        shapeRenderer.color = Color(0.5f, 1f, 0.5f, 1f)
+        renderEntityShapes()
+        shapeRenderer.color = Color(1f, 0.5f, 0.5f, 1f)
+        renderCombatShapes()
+        shapeRenderer.end()
+
         mapRenderer.setView(camera)
         mapRenderer.render(mapForegroundLayers)
     }
 
-    fun updateEntityList() {
+    private fun updateRenderableEntityList() {
         renderableEntities = entitiesWithComps(world, Comps.Renderable, Comps.Spatial)
     }
 
-    fun renderEntities() {
-        var currPos: Vector2
+    private fun updateSpatialEntityList() {
+        spatialEntities = entitiesWithComps(world, Comps.Spatial)
+    }
+
+    // TODO Need to compute an offset for animated characters - that is why things are misaligned
+    private fun renderEntities() {
+        var currPos: Circle
         var currTexture: Texture
 
         for (ent in renderableEntities) {
@@ -77,7 +94,21 @@ class RenderingSystem : EntitySystem() {
         }
     }
 
-    fun renderCombatVerbs() {
+    private fun renderCombatVerbs() {
+
+    }
+
+    private fun renderEntityShapes() {
+        var currCircle: Circle
+
+        for (ent in spatialEntities) {
+            currCircle = (compData(ent, CompMapper.Spatial) as Spatial).pos
+            if (currCircle == Carried) continue
+            shapeRenderer.circle(currCircle.x, currCircle.y, currCircle.radius)
+        }
+    }
+
+    private fun renderCombatShapes() {
 
     }
 }

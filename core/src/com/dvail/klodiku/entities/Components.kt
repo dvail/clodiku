@@ -6,14 +6,13 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.Circle
-import com.badlogic.gdx.math.Vector2
 import com.dvail.klodiku.pathfinding.AStar
 import com.dvail.klodiku.util.makeTexture
 import java.util.*
 
 enum class Direction { North, West, South, East, None }
 enum class EqSlot { Held, Head, Body, Arms, Legs, Feet, Hands }
-enum class PlayerState { Idle, Walking, Melee }
+enum class BaseState { Idle, Walking, Melee }
 enum class MobState { Wander, Aggro }
 enum class Stat { HP, MP, STR, DEX, VIT, PSY, HR, DR, MS, ED, PD, SAVES }
 enum class ComponentType {
@@ -21,7 +20,7 @@ enum class ComponentType {
     Inventory, Item, EqItem, EqWeapon, EqArmor, MobAI
 }
 
-val Carried = Vector2(-99f, -99f)
+val Carried = Circle(-99f, -99f, 16f)
 
 object Comps {
     val Player = Player::class.java
@@ -61,7 +60,7 @@ data class Player(var name: String) : Component
 
 data class WorldMap(var tileMap: TiledMap, var grid: Array<IntArray>) : Component
 
-data class Spatial(var pos: Vector2, var size: Int, var direction: Direction) : Component
+data class Spatial(var pos: Circle, var direction: Direction) : Component
 
 data class Renderable(var textureSource: String) : Component {
     var texture = makeTexture(textureSource)
@@ -69,7 +68,7 @@ data class Renderable(var textureSource: String) : Component {
 
 data class AnimatedRenderable(var regions: Array<TextureRegion>) : Component
 
-data class State(var current: PlayerState, var time: Float) : Component
+data class State(var current: BaseState, var time: Float) : Component
 
 data class Attribute(var hp: Int, var mp: Int, var mv: Int, var str: Int,
                      var dex: Int, var vit: Int, var psy: Int) : Component

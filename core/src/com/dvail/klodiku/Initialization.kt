@@ -26,13 +26,13 @@ private fun initPlayer(world: Engine) {
     val armor = Entity()
 
     weapon.add(Item("An emerald spear", "This spear doesn't look very sharp"))
-    weapon.add(Spatial(Carried, 16, Direction.None))
+    weapon.add(Spatial(Carried, Direction.None))
     weapon.add(Renderable("./items/emerald-spear.png"))
     weapon.add(EqItem(hr = 1, slot = EqSlot.Held))
     weapon.add(EqWeapon(5, Circle(0f, 0f, 4f), ArrayList<Entity>(0)))
 
     armor.add(Item("silver armor", "This armor is made of silver"))
-    armor.add(Spatial(Carried, 16, Direction.None))
+    armor.add(Spatial(Carried, Direction.None))
     armor.add(Renderable("./items/silver-scale-mail.png"))
     armor.add(EqItem(ed = 3, slot = EqSlot.Body))
     armor.add(EqArmor(bulk = 2))
@@ -42,9 +42,9 @@ private fun initPlayer(world: Engine) {
     val playerInventory = ArrayList<Entity>()
 
     player.add(Player("Inefray"))
-    player.add(Spatial(Vector2(200f, 150f), 14, Direction.East))
+    player.add(Spatial(Circle(180f, 140f, 14f), Direction.East))
     player.add(Attribute(50, 20, 50, 10, 10, 10, 10))
-    player.add(State(PlayerState.Walking, 0f))
+    player.add(State(BaseState.Walking, 0f))
     player.add(Equipment(playerEq, playerEqStats))
     player.add(Inventory(playerInventory))
 

@@ -10,6 +10,12 @@ fun entitiesWithComps(world: Engine, vararg compTypes: Class<out Component>): Im
     return world.getEntitiesFor(worldFamily)
 }
 
+fun entitiesWithCompsExcluding(world: Engine, compsAll: Array<Class<out Component>>,
+                     compsNot: Array<Class<out Component>>) : ImmutableArray<Entity> {
+    val family = Family.all(*compsAll).exclude(*compsNot).get()
+    return world.getEntitiesFor(family)
+}
+
 fun firstEntityWithComp(world: Engine, compType: Class<out Component>): Entity {
     val entities = entitiesWithComps(world, compType)
 
