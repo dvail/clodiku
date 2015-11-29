@@ -8,17 +8,14 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.utils.Array as GdxArray
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.math.Circle
 import com.dvail.klodiku.entities.*
-import com.dvail.klodiku.util.compData
-import com.dvail.klodiku.util.currentMap
-import com.dvail.klodiku.util.entitiesWithComps
-import com.dvail.klodiku.util.getMapBounds
+import com.dvail.klodiku.util.*
 
 class RenderingSystem : EntitySystem() {
     val mapBackgroundLayers = intArrayOf(0, 1)
@@ -29,8 +26,9 @@ class RenderingSystem : EntitySystem() {
     val shapeRenderer = ShapeRenderer()
     val combatFont = BitmapFont()
 
-    var renderableEntities = ImmutableArray<Entity>(com.badlogic.gdx.utils.Array(0))
-    var spatialEntities = ImmutableArray<Entity>(com.badlogic.gdx.utils.Array(0))
+    var renderableEntities = ImmutableArray<Entity>(GdxArray(0))
+    var animatedEntities = ImmutableArray<Entity>(GdxArray(0))
+    var spatialEntities = ImmutableArray<Entity>(GdxArray(0))
 
     lateinit var world: Engine
     lateinit var mapRenderer: OrthogonalTiledMapRenderer
@@ -39,6 +37,7 @@ class RenderingSystem : EntitySystem() {
         world = engine;
         mapRenderer = OrthogonalTiledMapRenderer(currentMap(world), batch)
         updateRenderableEntityList()
+        updateAnimatedEntityList()
         updateSpatialEntityList()
     }
 
@@ -55,6 +54,7 @@ class RenderingSystem : EntitySystem() {
         batch.begin()
         batch.projectionMatrix = camera.combined
         renderEntities()
+        renderAnimations()
         renderCombatVerbs()
         batch.end()
 
@@ -75,22 +75,46 @@ class RenderingSystem : EntitySystem() {
         renderableEntities = entitiesWithComps(world, Comps.Renderable, Comps.Spatial)
     }
 
+    private fun updateAnimatedEntityList() {
+        animatedEntities = entitiesWithComps(world, Comps.AnimatedRenderable, Comps.Spatial)
+    }
+
     private fun updateSpatialEntityList() {
         spatialEntities = entitiesWithComps(world, Comps.Spatial)
     }
 
-    // TODO Need to compute an offset for animated characters - that is why things are misaligned
     private fun renderEntities() {
-        var currPos: Circle
-        var currTexture: Texture
-
         for (ent in renderableEntities) {
-            currPos = (compData(ent, CompMapper.Spatial) as Spatial).pos
+            var currPos = (compData(ent, CompMapper.Spatial) as Spatial).pos
 
             if (currPos == Carried) continue
 
-            currTexture = (compData(ent, CompMapper.Renderable) as Renderable).texture
+            var currTexture = (compData(ent, CompMapper.Renderable) as Renderable).texture
             batch.draw(currTexture, currPos.x - (currTexture.width / 2), currPos.y - (currTexture.height / 2))
+        }
+    }
+
+    private fun renderAnimations() {
+
+        for (ent in animatedEntities) {
+            var spatial = (compData(ent, CompMapper.Spatial) as Spatial)
+            var state = (compData(ent, CompMapper.State) as State)
+            var regions = (compData(ent, CompMapper.AnimatedRenderable) as AnimatedRenderable).regions
+            var facing = facingFromDirection(spatial.direction)
+            var animState = animFromState(state.current)
+
+            var currTexture = regions[animState]?.get(facing)?.getKeyFrame(state.time)
+
+            if (currTexture !== null) {
+                var width = currTexture.regionWidth.toFloat()
+                var height = currTexture.regionHeight.toFloat()
+                var posX = spatial.pos.x - (width / 2)
+                var posY = spatial.pos.y - (height / 2) + spatial.pos.radius + 3
+
+                val flip = spatial.direction == Direction.West
+
+                batch.draw(currTexture, if (flip) posX + width else posX, posY, if (flip) -width else width, height)
+            }
         }
     }
 

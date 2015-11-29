@@ -49,7 +49,7 @@ private fun initPlayer(world: Engine) {
     player.add(Inventory(playerInventory))
 
     // TODO Need to replace this with actual animation system
-    player.add(Renderable("./player/melee-north-0.png"))
+    player.add(AnimatedRenderable("./player/"))
 
     world.addEntity(player)
     world.addEntity(weapon)

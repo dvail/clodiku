@@ -8,8 +8,8 @@ import com.badlogic.gdx.math.Circle
 import com.badlogic.gdx.math.Intersector
 import com.dvail.klodiku.entities.*
 
-fun moveEntity(world: Engine, entity: Entity, movX: Float, movY: Float) {
-    updateState(entity, movX, movY)
+fun moveEntity(world: Engine, delta: Float, entity: Entity, movX: Float, movY: Float) {
+    updateState(delta, entity, movX, movY)
     updateSpatial(world, entity, movX, movY)
 }
 
@@ -22,13 +22,12 @@ fun entityDirection(x: Float, y: Float): Direction {
     }
 }
 
-private fun updateState(entity: Entity, movX: Float, movY: Float) {
+private fun updateState(delta: Float, entity: Entity, movX: Float, movY: Float) {
     val state = compData(entity, CompMapper.State) as State
+    val oldState = state.current.name
 
-    if (movX != 0f || movY != 0f) {
-        state.current = BaseState.Walking
-        state.time = 0f
-    }
+    state.current = if (movX != 0f || movY != 0f) BaseState.Walking else BaseState.Standing
+    state.time = if (oldState == state.current.name) state.time + delta else 0f
 }
 
 private fun updateSpatial(world: Engine, entity: Entity, movX: Float, movY: Float) {

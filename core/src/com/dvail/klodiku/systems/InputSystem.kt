@@ -22,23 +22,24 @@ class InputSystem : EntitySystem() {
     override fun update(delta: Float) {
         when (playerState.current) {
             BaseState.Walking -> doFreeInput(delta)
-            BaseState.Idle -> doFreeInput(delta)
-            BaseState.Melee -> advanceAttackState()
+            BaseState.Standing -> doFreeInput(delta)
+            BaseState.Melee_Pierce -> advanceAttackState()
+            BaseState.Melee_Slash -> advanceAttackState()
         }
     }
 
     fun doFreeInput(delta: Float) {
-        movePlayer()
+        movePlayer(delta)
     }
 
     fun advanceAttackState() {
 
     }
 
-    fun movePlayer() {
+    fun movePlayer(delta: Float) {
         val moveX = if (keyPressed(BoundKeys.MoveEast)) 2f else if (keyPressed(BoundKeys.MoveWest)) -2f else 0f
         val moveY = if (keyPressed(BoundKeys.MoveNorth)) 2f else if (keyPressed(BoundKeys.MoveSouth)) -2f else 0f
 
-        moveEntity(world, player, moveX, moveY)
+        moveEntity(world, delta, player, moveX, moveY)
     }
 }

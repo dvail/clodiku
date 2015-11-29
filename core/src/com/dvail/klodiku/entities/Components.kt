@@ -3,22 +3,18 @@ package com.dvail.klodiku.entities
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.Circle
 import com.dvail.klodiku.pathfinding.AStar
+import com.dvail.klodiku.util.makeRegions
 import com.dvail.klodiku.util.makeTexture
 import java.util.*
 
 enum class Direction { North, West, South, East, None }
 enum class EqSlot { Held, Head, Body, Arms, Legs, Feet, Hands }
-enum class BaseState { Idle, Walking, Melee }
+enum class BaseState { Standing, Walking, Melee_Pierce, Melee_Slash }
 enum class MobState { Wander, Aggro }
 enum class Stat { HP, MP, STR, DEX, VIT, PSY, HR, DR, MS, ED, PD, SAVES }
-enum class ComponentType {
-    Player, WorldMap, Spatial, Renderable, AnimatedRenderable, State, Attribute, Equipment,
-    Inventory, Item, EqItem, EqWeapon, EqArmor, MobAI
-}
 
 val Carried = Circle(-99f, -99f, 16f)
 
@@ -66,7 +62,9 @@ data class Renderable(var textureSource: String) : Component {
     var texture = makeTexture(textureSource)
 }
 
-data class AnimatedRenderable(var regions: Array<TextureRegion>) : Component
+data class AnimatedRenderable(var animDir: String) : Component {
+    var regions = makeRegions(animDir)
+}
 
 data class State(var current: BaseState, var time: Float) : Component
 
