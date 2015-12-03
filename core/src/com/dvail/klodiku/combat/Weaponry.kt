@@ -2,10 +2,9 @@ package com.dvail.klodiku.combat
 
 import com.badlogic.ashley.core.Entity
 import com.dvail.klodiku.entities.*
-import com.dvail.klodiku.util.compData
 
 fun setAttackStartPos(attackingEntity: Entity, compEqWeapon: EqWeapon) {
-    val attackerSpatial = (compData(attackingEntity, CompMapper.Spatial) as Spatial)
+    val attackerSpatial = CompMapper.Spatial.get(attackingEntity)
 
     when (compEqWeapon.damType) {
         DamageType.Pierce -> {

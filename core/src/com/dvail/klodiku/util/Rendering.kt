@@ -53,9 +53,9 @@ fun facingFromDirection(dir: Direction): String {
 fun animFromState(state: BaseState): String = state.name.toLowerCase()
 
 fun currentAnimation(entity: Entity): Animation? {
-    var spatial = (compData(entity, CompMapper.Spatial) as Spatial)
-    var state = (compData(entity, CompMapper.State) as State)
-    var animations = (compData(entity, CompMapper.AnimatedRenderable) as AnimatedRenderable).animations
+    var spatial = CompMapper.Spatial.get(entity)
+    var state = CompMapper.State.get(entity)
+    var animations = CompMapper.AnimatedRenderable.get(entity).animations
     var facing = facingFromDirection(spatial.direction)
     var animState = animFromState(state.current)
 

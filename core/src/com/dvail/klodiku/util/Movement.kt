@@ -23,7 +23,7 @@ fun entityDirection(x: Float, y: Float): Direction {
 }
 
 private fun updateState(delta: Float, entity: Entity, movX: Float, movY: Float) {
-    val state = compData(entity, CompMapper.State) as State
+    val state = CompMapper.State.get(entity)
     val oldState = state.current.name
 
     state.current = if (movX != 0f || movY != 0f) BaseState.Walking else BaseState.Standing
@@ -31,7 +31,7 @@ private fun updateState(delta: Float, entity: Entity, movX: Float, movY: Float) 
 }
 
 private fun updateSpatial(world: Engine, entity: Entity, movX: Float, movY: Float) {
-    val entitySpatial = compData(entity, CompMapper.Spatial) as Spatial
+    val entitySpatial = CompMapper.Spatial.get(entity)
     val mapObstacles = mapObstacles(world)
     val collisionEntities = entitiesWithCompsExcluding(world, Array(1, {Comps.Spatial}), Array(1, {Comps.Item}))
     val otherEntities = collisionEntities.filter { it -> it != entity }
@@ -54,7 +54,7 @@ private fun collision(spatial: Spatial, mapObjects: MapObjects,
     val newPosition = Circle(spatial.pos.x + movX, spatial.pos.y + movY, spatial.pos.radius)
 
     val collidesWithEntity = collisionEntities.any { it ->
-        currSpatial = compData(it, CompMapper.Spatial) as Spatial
+        currSpatial = CompMapper.Spatial.get(it)
         return Intersector.overlaps(newPosition, currSpatial.pos)
     }
 

@@ -23,5 +23,3 @@ fun firstEntityWithComp(world: Engine, compType: Class<out Component>): Entity {
 
     return entities.first()
 }
-
-fun compData(entity: Entity, compMapper: ComponentMapper<out Component>) = compMapper.get(entity)
