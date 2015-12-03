@@ -10,24 +10,16 @@ fun setAttackStartPos(attackingEntity: Entity, compEqWeapon: EqWeapon) {
     when (compEqWeapon.damType) {
         DamageType.Pierce -> {
             val startRange = attackerSpatial.pos.radius / 2
+            val offset = (startRange + compEqWeapon.hitBox.radius)
+
+            compEqWeapon.hitBox.x = attackerSpatial.pos.x
+            compEqWeapon.hitBox.y = attackerSpatial.pos.y
 
             when (attackerSpatial.direction) {
-                Direction.West -> {
-                    compEqWeapon.hitBox.x = attackerSpatial.pos.x - startRange - compEqWeapon.hitBox.radius
-                    compEqWeapon.hitBox.y = attackerSpatial.pos.y
-                }
-                Direction.East -> {
-                    compEqWeapon.hitBox.x = attackerSpatial.pos.x + startRange + compEqWeapon.hitBox.radius
-                    compEqWeapon.hitBox.y = attackerSpatial.pos.y
-                }
-                Direction.North -> {
-                    compEqWeapon.hitBox.x = attackerSpatial.pos.x
-                    compEqWeapon.hitBox.y = attackerSpatial.pos.y + startRange + compEqWeapon.hitBox.radius
-                }
-                Direction.South -> {
-                    compEqWeapon.hitBox.x = attackerSpatial.pos.x
-                    compEqWeapon.hitBox.y = attackerSpatial.pos.y - startRange - compEqWeapon.hitBox.radius
-                }
+                Direction.West -> { compEqWeapon.hitBox.x -= offset }
+                Direction.East -> { compEqWeapon.hitBox.x += offset }
+                Direction.North -> { compEqWeapon.hitBox.y += offset }
+                Direction.South -> { compEqWeapon.hitBox.y -= offset }
                 else -> {}
             }
         }

@@ -99,11 +99,9 @@ class RenderingSystem : EntitySystem() {
         for (ent in animatedEntities) {
             var spatial = (compData(ent, CompMapper.Spatial) as Spatial)
             var state = (compData(ent, CompMapper.State) as State)
-            var regions = (compData(ent, CompMapper.AnimatedRenderable) as AnimatedRenderable).regions
-            var facing = facingFromDirection(spatial.direction)
-            var animState = animFromState(state.current)
+            var animation = currentAnimation(ent)
 
-            var currTexture = regions[animState]?.get(facing)?.getKeyFrame(state.time)
+            var currTexture = animation?.getKeyFrame(state.time)
 
             if (currTexture !== null) {
                 var width = currTexture.regionWidth.toFloat()

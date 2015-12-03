@@ -65,7 +65,7 @@ data class Renderable(var textureSource: String) : Component {
 }
 
 data class AnimatedRenderable(var animDir: String) : Component {
-    var regions = makeRegions(animDir)
+    var animations = makeRegions(animDir)
 }
 
 data class State(var current: BaseState, var time: Float) : Component

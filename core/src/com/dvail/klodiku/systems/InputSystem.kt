@@ -12,6 +12,7 @@ class InputSystem : EntitySystem() {
 
     lateinit var world: Engine
     lateinit var player: Entity
+    var delta = 0f
 
     lateinit var playerState: State
 
@@ -21,28 +22,30 @@ class InputSystem : EntitySystem() {
         playerState = compData(player, CompMapper.State) as State
     }
 
-    override fun update(delta: Float) {
+    override fun update(sysDelta: Float) {
+        delta = sysDelta
         when (playerState.current) {
-            BaseState.Walking -> doFreeInput(delta)
-            BaseState.Standing -> doFreeInput(delta)
-            BaseState.Melee_Pierce -> doCombatInput(delta)
-            BaseState.Melee_Slash -> doCombatInput(delta)
+            BaseState.Walking -> doFreeInput()
+            BaseState.Standing -> doFreeInput()
+            BaseState.Melee_Pierce -> doCombatInput()
+            BaseState.Melee_Slash -> doCombatInput()
+            else -> {}
         }
     }
 
-    private fun doFreeInput(delta: Float) {
+    private fun doFreeInput() {
         if (keyJustPressed(BoundKeys.MeleeAttack)) {
-            initAttack(world, delta, player)
+            initAttack(player)
         } else {
-            movePlayer(delta)
+            movePlayer()
         }
     }
 
-    private fun doCombatInput(delta: Float) {
-        advanceAttackState(world, delta, player)
+    private fun doCombatInput() {
+        advanceAttackState(delta, player)
     }
 
-    private fun movePlayer(delta: Float) {
+    private fun movePlayer() {
         val moveX = if (keyPressed(BoundKeys.MoveEast)) 2f else if (keyPressed(BoundKeys.MoveWest)) -2f else 0f
         val moveY = if (keyPressed(BoundKeys.MoveNorth)) 2f else if (keyPressed(BoundKeys.MoveSouth)) -2f else 0f
 

@@ -1,12 +1,12 @@
 package com.dvail.klodiku.util
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.dvail.klodiku.entities.BaseState
-import com.dvail.klodiku.entities.Direction
+import com.dvail.klodiku.entities.*
 import com.badlogic.gdx.utils.Array as GdxArray
 import com.eclipsesource.json.Json
 import java.util.*
@@ -40,15 +40,6 @@ fun makeRegions(srcDir: String): HashMap<String, HashMap<String, Animation>> {
     return animations
 }
 
-fun getRegions(atlas: TextureAtlas, animName: String, direction: String, frameCount: Int): GdxArray<TextureRegion> {
-    val regions = GdxArray<TextureRegion>(frameCount)
-
-    for (i in 0..(frameCount - 1)) regions.add(atlas.findRegion("${animName}_$direction", i))
-
-    return regions
-}
-
-
 fun facingFromDirection(dir: Direction): String {
     return when (dir) {
         Direction.East -> "side"
@@ -60,3 +51,21 @@ fun facingFromDirection(dir: Direction): String {
 }
 
 fun animFromState(state: BaseState): String = state.name.toLowerCase()
+
+fun currentAnimation(entity: Entity): Animation? {
+    var spatial = (compData(entity, CompMapper.Spatial) as Spatial)
+    var state = (compData(entity, CompMapper.State) as State)
+    var animations = (compData(entity, CompMapper.AnimatedRenderable) as AnimatedRenderable).animations
+    var facing = facingFromDirection(spatial.direction)
+    var animState = animFromState(state.current)
+
+    return animations[animState]?.get(facing)
+}
+
+private fun getRegions(atlas: TextureAtlas, animName: String, direction: String, frameCount: Int): GdxArray<TextureRegion> {
+    val regions = GdxArray<TextureRegion>(frameCount)
+
+    for (i in 0..(frameCount - 1)) regions.add(atlas.findRegion("${animName}_$direction", i))
+
+    return regions
+}
