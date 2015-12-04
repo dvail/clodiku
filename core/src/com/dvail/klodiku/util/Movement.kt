@@ -2,11 +2,13 @@ package com.dvail.klodiku.util
 
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
+import com.badlogic.ashley.utils.ImmutableArray
 import com.badlogic.gdx.maps.MapObjects
 import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.math.Circle
 import com.badlogic.gdx.math.Intersector
 import com.dvail.klodiku.entities.*
+import java.util.*
 
 fun moveEntity(world: Engine, delta: Float, entity: Entity, movX: Float, movY: Float) {
     updateState(delta, entity, movX, movY)
@@ -22,6 +24,10 @@ fun entityDirection(x: Float, y: Float): Direction {
     }
 }
 
+fun getEntityCollisions(hitBox: Circle, defenders: ImmutableArray<Entity>): Set<Entity> {
+    return defenders.filter { Intersector.overlaps(hitBox, CompMapper.Spatial.get(it).pos) }.toHashSet()
+}
+
 private fun updateState(delta: Float, entity: Entity, movX: Float, movY: Float) {
     val state = CompMapper.State.get(entity)
     val oldState = state.current.name
@@ -33,7 +39,7 @@ private fun updateState(delta: Float, entity: Entity, movX: Float, movY: Float) 
 private fun updateSpatial(world: Engine, entity: Entity, movX: Float, movY: Float) {
     val entitySpatial = CompMapper.Spatial.get(entity)
     val mapObstacles = mapObstacles(world)
-    val collisionEntities = entitiesWithCompsExcluding(world, Array(1, {Comps.Spatial}), Array(1, {Comps.Item}))
+    val collisionEntities = entitiesWithCompsExcluding(world, Array(1, { Comps.Spatial }), Array(1, { Comps.Item }))
     val otherEntities = collisionEntities.filter { it -> it != entity }
 
     if (!collision(entitySpatial, mapObstacles, otherEntities, movX, 0f)) {

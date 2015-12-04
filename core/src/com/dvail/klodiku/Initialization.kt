@@ -29,7 +29,7 @@ private fun initPlayer(world: Engine) {
     weapon.add(Spatial(Carried, Direction.None))
     weapon.add(Renderable("./items/emerald-spear.png"))
     weapon.add(EqItem(hr = 1, slot = EqSlot.Held))
-    weapon.add(EqWeapon(5, DamageType.Pierce, Circle(0f, 0f, 4f), ArrayList<Entity>(0)))
+    weapon.add(EqWeapon(5, DamageType.Pierce, Circle(0f, 0f, 4f), HashSet<Entity>()))
 
     armor.add(Item("silver armor", "This armor is made of silver"))
     armor.add(Spatial(Carried, Direction.None))

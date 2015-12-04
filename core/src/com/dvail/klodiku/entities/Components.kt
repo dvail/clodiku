@@ -11,7 +11,7 @@ import com.dvail.klodiku.util.makeTexture
 import java.util.*
 
 enum class Direction { North, West, South, East, None }
-enum class BaseState { Standing, Walking, Melee_Pierce, Melee_Slash, Melee_Bash }
+enum class BaseState { Standing, Walking, Melee_Pierce, Melee_Slash, Melee_Bash, Dead }
 enum class MobState { Wander, Aggro }
 enum class Stat { HP, MP, STR, DEX, VIT, PSY, HR, DR, MS, ED, PD, SAVES }
 
@@ -87,7 +87,7 @@ data class EqItem(var slot: EqSlot, var hr: Int = 0, var dr: Int = 0, var ed: In
 
 // A weapon component has a hit box that checks for collisions, as well as a function that describes the motion of
 // an attack
-data class EqWeapon(var baseDamage: Int, var damType: DamageType, var hitBox: Circle, var hitList: ArrayList<Entity>) : Component
+data class EqWeapon(var baseDamage: Int, var damType: DamageType, var hitBox: Circle, var hitSet: HashSet<Entity>) : Component
 
 // TODO Need to better define properties of armor, and all eq for that matter
 data class EqArmor(var bulk: Int) : Component

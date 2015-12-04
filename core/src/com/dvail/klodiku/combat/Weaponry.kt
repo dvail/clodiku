@@ -30,3 +30,28 @@ fun setAttackStartPos(attackingEntity: Entity, compEqWeapon: EqWeapon) {
         }
     }
 }
+
+fun updateHitBox(attacker: Entity, weaponComponent: EqWeapon) {
+    val weaponType = weaponComponent.damType
+    val direction = CompMapper.Spatial.get(attacker).direction
+
+    when (weaponType) {
+        DamageType.Pierce -> {
+            val moveRate = 2
+
+            when (direction) {
+                Direction.West -> { weaponComponent.hitBox.x -= moveRate }
+                Direction.East -> { weaponComponent.hitBox.x += moveRate }
+                Direction.North -> { weaponComponent.hitBox.y += moveRate }
+                Direction.South -> { weaponComponent.hitBox.y -= moveRate }
+                else -> {}
+            }
+        }
+        DamageType.Slash -> {
+
+        }
+        DamageType.Bash -> {
+
+        }
+    }
+}

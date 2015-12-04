@@ -23,3 +23,8 @@ fun firstEntityWithComp(world: Engine, compType: Class<out Component>): Entity {
 
     return entities.first()
 }
+
+@Suppress("SENSELESS_COMPARISON")
+fun hasComp(entity: Entity, compType: Class<out Component>): Boolean {
+    return entity.getComponent(compType) != null
+}
