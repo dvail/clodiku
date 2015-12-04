@@ -19,7 +19,7 @@ class InputSystem : EntitySystem() {
     override fun addedToEngine(engine: Engine) {
         world = engine;
         player = firstEntityWithComp(world, Comps.Player)
-        playerState = compData(player, CompMapper.State) as State
+        playerState = CompMapper.State.get(player)
     }
 
     override fun update(sysDelta: Float) {

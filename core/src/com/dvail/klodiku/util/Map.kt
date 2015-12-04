@@ -35,14 +35,14 @@ fun loadMapGrid(map: TiledMap): Array<IntArray> {
 
 fun currentMap(world: Engine): TiledMap {
     val entity = firstEntityWithComp(world, Comps.WorldMap)
-    val worldMap = compData(entity, CompMapper.WorldMap) as WorldMap
+    val worldMap = CompMapper.WorldMap.get(entity)
 
     return worldMap.tileMap
 }
 
 fun getMapBounds(world: Engine, camera: OrthographicCamera): Vector3 {
     val player = firstEntityWithComp(world, Comps.Player)
-    val playerSpatial = compData(player, CompMapper.Spatial) as Spatial
+    val playerSpatial = CompMapper.Spatial.get(player)
     val playerPos = playerSpatial.pos
     val camWidth = camera.viewportWidth / 2
     val camHeight = camera.viewportHeight / 2

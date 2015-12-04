@@ -85,11 +85,11 @@ class RenderingSystem : EntitySystem() {
 
     private fun renderEntities() {
         for (ent in renderableEntities) {
-            var currPos = (compData(ent, CompMapper.Spatial) as Spatial).pos
+            var currPos = CompMapper.Spatial.get(ent).pos
 
             if (currPos == Carried) continue
 
-            var currTexture = (compData(ent, CompMapper.Renderable) as Renderable).texture
+            var currTexture = CompMapper.Renderable.get(ent).texture
             batch.draw(currTexture, currPos.x - (currTexture.width / 2), currPos.y - (currTexture.height / 2))
         }
     }
@@ -97,8 +97,8 @@ class RenderingSystem : EntitySystem() {
     private fun renderAnimations() {
 
         for (ent in animatedEntities) {
-            var spatial = (compData(ent, CompMapper.Spatial) as Spatial)
-            var state = (compData(ent, CompMapper.State) as State)
+            var spatial = CompMapper.Spatial.get(ent)
+            var state = CompMapper.State.get(ent)
             var animation = currentAnimation(ent)
 
             var currTexture = animation?.getKeyFrame(state.time)
@@ -123,7 +123,7 @@ class RenderingSystem : EntitySystem() {
         var currCircle: Circle
 
         for (ent in spatialEntities) {
-            currCircle = (compData(ent, CompMapper.Spatial) as Spatial).pos
+            currCircle = CompMapper.Spatial.get(ent).pos
             if (currCircle == Carried) continue
             shapeRenderer.circle(currCircle.x, currCircle.y, currCircle.radius)
         }
