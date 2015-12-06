@@ -30,11 +30,11 @@ fun makeRegions(srcDir: String): HashMap<String, HashMap<String, Animation>> {
         for (view in animationViews) {
             val direction = view.first.asString()
             val frameCount = view.second.asInt()
-            val animation = Animation(1/12f, getRegions(atlas, name, direction, frameCount), Animation.PlayMode.LOOP)
+            var speed = if (name.contains("melee", true)) 1/24f else 1/12f
+            val animation = Animation(speed, getRegions(atlas, name, direction, frameCount), Animation.PlayMode.LOOP)
 
             animations[name]?.put(direction, animation)
         }
-
     }
 
     return animations

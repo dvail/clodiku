@@ -2,13 +2,13 @@ package com.dvail.klodiku.systems
 
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.EntitySystem
 import com.dvail.klodiku.combat.advanceAttackState
 import com.dvail.klodiku.combat.initAttack
 import com.dvail.klodiku.entities.*
+import com.dvail.klodiku.events.EventQueue
 import com.dvail.klodiku.util.*
 
-class InputSystem : EntitySystem() {
+class InputSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
 
     lateinit var world: Engine
     lateinit var player: Entity

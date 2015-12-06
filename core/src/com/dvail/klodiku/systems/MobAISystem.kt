@@ -1,9 +1,18 @@
 package com.dvail.klodiku.systems
 
-import com.badlogic.ashley.core.EntitySystem
+import com.badlogic.ashley.core.Engine
+import com.dvail.klodiku.events.EventQueue
 
-/**
- * Created by dave on 11/27/15.
- */
+class MobAISystem(eventQ: EventQueue) : CoreSystem(eventQ) {
 
-class MobAISystem : EntitySystem()
+    lateinit var world: Engine
+    var delta = 0f
+
+    override fun addedToEngine(engine: Engine) {
+        world = engine
+    }
+
+    override fun update(sysDelta: Float) {
+        delta = sysDelta
+    }
+}

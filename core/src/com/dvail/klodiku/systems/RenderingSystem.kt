@@ -2,7 +2,6 @@ package com.dvail.klodiku.systems
 
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.utils.ImmutableArray
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
@@ -14,10 +13,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.math.Circle
+import com.dvail.klodiku.combat.getAttackers
 import com.dvail.klodiku.entities.*
+import com.dvail.klodiku.events.EventQueue
 import com.dvail.klodiku.util.*
 
-class RenderingSystem : EntitySystem() {
+class RenderingSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
     val mapBackgroundLayers = intArrayOf(0, 1)
     val mapForegroundLayers = intArrayOf(2)
 
@@ -32,6 +33,7 @@ class RenderingSystem : EntitySystem() {
 
     lateinit var world: Engine
     lateinit var mapRenderer: OrthogonalTiledMapRenderer
+    var delta = 0f
 
     override fun addedToEngine(engine: Engine) {
         world = engine;
@@ -41,7 +43,8 @@ class RenderingSystem : EntitySystem() {
         updateSpatialEntityList()
     }
 
-    override fun update(delta: Float) {
+    override fun update(sysDelta: Float) {
+        delta = sysDelta
         Gdx.gl.glClearColor(0f, 0f, 0.2f, 0.3f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
@@ -130,6 +133,14 @@ class RenderingSystem : EntitySystem() {
     }
 
     private fun renderCombatShapes() {
+        var currCircle: Circle
+        var currWeapon: Entity?
+        val attackers = getAttackers(world)
 
+        attackers.forEach { it ->
+            currWeapon = CompMapper.Equipment.get(it).items[EqSlot.Held]
+            currCircle = CompMapper.EqWeapon.get(currWeapon).hitBox
+            shapeRenderer.circle(currCircle.x, currCircle.y, currCircle.radius)
+        }
     }
 }
