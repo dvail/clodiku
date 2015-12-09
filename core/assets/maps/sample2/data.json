@@ -1,0 +1,18 @@
+{
+  "mobs": [
+    {
+      "template": "orc",
+      "components": {
+        "spatial": {
+          "pos": {"x": 700, "y": 200}, "size": 14, "direction": "west"
+        }
+      },
+      "inventory": [],
+      "equipment": {}
+    }
+  ],
+  "free-items": [],
+  "containers": [],
+  "triggers": [],
+  "npcs": []
+}

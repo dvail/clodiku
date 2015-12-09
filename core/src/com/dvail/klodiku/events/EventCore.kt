@@ -8,7 +8,8 @@ enum class EventType {
 }
 
 interface Event {
-    fun processEvent(world: Engine)
+    // Updates the event state. Returns true if the event has expired and should be removed.
+    fun processEvent(world: Engine, delta: Float): Boolean
 }
 
 class EventQueue {

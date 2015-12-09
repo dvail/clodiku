@@ -7,8 +7,7 @@ import com.badlogic.gdx.math.Circle
 data class EventMeleeHit(val attacker: Entity, val defender: Entity, val location: Circle, val damage: Int): Event {
     var time: Float = 0f
 
-    override fun processEvent(world: Engine) {
-
+    override fun processEvent(world: Engine, delta: Float): Boolean {
+        return false
     }
-
 }

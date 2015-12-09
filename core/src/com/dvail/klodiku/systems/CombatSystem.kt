@@ -67,7 +67,6 @@ class CombatSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
 
             eventQ.addEvent(EventType.Combat, event)
         }
-
         weaponComp.hitSet.addAll(hitSet)
     }
 }
