@@ -1,0 +1,44 @@
+[[mob]]
+template = "orc"
+inventory = []
+equipment = {}
+  [[mob.components]]
+  spatial = {x = 300, y = 100, radius = 14, direction = "west"}
+
+[[mob]]
+template = "orc"
+inventory = []
+equipment = {}
+  [[mob.components]]
+  spatial = {x = 920, y = 100, radius = 14, direction = "west"}
+
+[[mob]]
+template = "orc"
+inventory = []
+equipment = {}
+  [[mob.components]]
+  spatial = {x = 100, y = 200, radius = 14, direction = "west"}
+
+[[mob]]
+template = "orc"
+inventory = []
+equipment = {}
+  [[mob.components]]
+  spatial = {x = 100, y = 500, radius = 14, direction = "west"}
+
+[[mob]]
+template = "orc"
+inventory = []
+equipment = {}
+  [[mob.components]]
+  spatial = {x = 700, y = 20, radius = 14, direction = "west"}
+
+[[free-item]]
+template = "sword"
+  [[free-item.components]]
+  spatial = { x = 780, y = 680, radius = 10,  direction = "none"}
+  eqweapon = { type = "sword", base-damage = 25, size = "sword"}
+
+[[container]]
+[[trigger]]
+[[npc]]

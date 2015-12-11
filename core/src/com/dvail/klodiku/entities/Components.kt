@@ -58,7 +58,10 @@ data class Player(var name: String) : Component
 
 data class WorldMap(var tileMap: TiledMap, var grid: Array<IntArray>) : Component
 
-data class Spatial(var pos: Circle, var direction: Direction) : Component
+data class Spatial(var pos: Circle, var direction: Direction) : Component {
+    constructor(pos: Circle) : this(pos, Direction.None) {}
+    constructor(x: Float, y: Float, radius: Float, direction: Direction) : this(Circle(x, y, radius), direction) {}
+}
 
 data class Renderable(var textureSource: String) : Component {
     var texture = makeTexture(textureSource)
@@ -87,7 +90,10 @@ data class EqItem(var slot: EqSlot, var hr: Int = 0, var dr: Int = 0, var ed: In
 
 // A weapon component has a hit box that checks for collisions, as well as a function that describes the motion of
 // an attack
-data class EqWeapon(var baseDamage: Int, var damType: DamageType, var hitBox: Circle, var hitSet: HashSet<Entity>) : Component
+data class EqWeapon(var damType: DamageType, var baseDamage: Int, var size: Float) : Component {
+    var hitBox = Circle(0f, 0f, size)
+    var hitSet = HashSet<Entity>()
+}
 
 // TODO Need to better define properties of armor, and all eq for that matter
 data class EqArmor(var bulk: Int) : Component

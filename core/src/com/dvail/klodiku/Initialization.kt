@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Vector2
 import com.dvail.klodiku.entities.*
 import com.dvail.klodiku.util.loadMap
 import com.dvail.klodiku.util.loadMapGrid
+import com.moandjiezana.toml.Toml
+import java.io.File
 import java.util.*
 
 private fun initMap(world: Engine, mapName: String) {
@@ -26,13 +28,13 @@ private fun initPlayer(world: Engine) {
     val armor = Entity()
 
     weapon.add(Item("An emerald spear", "This spear doesn't look very sharp"))
-    weapon.add(Spatial(Carried, Direction.None))
+    weapon.add(Spatial(Carried))
     weapon.add(Renderable("./items/emerald-spear.png"))
     weapon.add(EqItem(hr = 1, slot = EqSlot.Held))
-    weapon.add(EqWeapon(5, DamageType.Pierce, Circle(0f, 0f, 4f), HashSet<Entity>()))
+    weapon.add(EqWeapon(DamageType.Pierce, 5, 4f))
 
     armor.add(Item("silver armor", "This armor is made of silver"))
-    armor.add(Spatial(Carried, Direction.None))
+    armor.add(Spatial(Carried))
     armor.add(Renderable("./items/silver-scale-mail.png"))
     armor.add(EqItem(ed = 3, slot = EqSlot.Body))
     armor.add(EqArmor(bulk = 2))
@@ -42,13 +44,12 @@ private fun initPlayer(world: Engine) {
     val playerInventory = ArrayList<Entity>()
 
     player.add(Player("Inefray"))
-    player.add(Spatial(Circle(180f, 140f, 14f), Direction.East))
+    player.add(Spatial(180f, 140f, 14f, Direction.East))
     player.add(Attribute(50, 20, 50, 10, 10, 10, 10))
     player.add(State(BaseState.Walking, 0f))
     player.add(Equipment(playerEq, playerEqStats))
     player.add(Inventory(playerInventory))
 
-    // TODO Need to replace this with actual animation system
     player.add(AnimatedRenderable("./player/"))
 
     world.addEntity(player)

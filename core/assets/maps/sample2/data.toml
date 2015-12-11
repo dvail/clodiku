@@ -1,0 +1,6 @@
+[[mob]]
+template = "orc"
+inventory = []
+equipment = {}
+  [[mob.components]]
+  spatial = {x = 100, y = 500, radius = 14, direction = "west"}
