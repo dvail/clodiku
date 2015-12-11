@@ -18,7 +18,7 @@ enum class Stat { HP, MP, STR, DEX, VIT, PSY, HR, DR, MS, ED, PD, SAVES }
 enum class EqSlot { Held, Head, Body, Arms, Legs, Feet, Hands }
 enum class DamageType { Slash, Pierce, Bash }
 
-val Carried = Circle(-99f, -99f, 16f)
+val Carried = Circle(-999f, -999f, 16f)
 
 object Comps {
     val Player = Player::class.java
@@ -60,6 +60,7 @@ data class WorldMap(var tileMap: TiledMap, var grid: Array<IntArray>) : Componen
 
 data class Spatial(var pos: Circle, var direction: Direction) : Component {
     constructor(pos: Circle) : this(pos, Direction.None) {}
+    constructor(x: Float, y: Float, radius: Float) : this(Circle(x, y, radius), Direction.None) {}
     constructor(x: Float, y: Float, radius: Float, direction: Direction) : this(Circle(x, y, radius), direction) {}
 }
 
@@ -71,16 +72,23 @@ data class AnimatedRenderable(var animDir: String) : Component {
     var animations = makeRegions(animDir)
 }
 
-data class State(var current: BaseState, var time: Float) : Component
+data class State(var current: BaseState) : Component {
+    var time = 0f
+}
 
 data class Attribute(var hp: Int, var mp: Int, var mv: Int, var str: Int,
                      var dex: Int, var vit: Int, var psy: Int) : Component
 
 // this component holds the total of all eq item stats for quick calculations
-data class Equipment(var items: HashMap<EqSlot, Entity>, var statTotal: HashMap<Stat, Int>) : Component
+class Equipment() : Component {
+    var items = HashMap<EqSlot, Entity>()
+    var statTotal = HashMap<Stat, Int>()
+}
 
 // A component for entities that can have stuff!
-data class Inventory(var items: ArrayList<Entity>) : Component
+class Inventory() : Component {
+    var items = ArrayList<Entity>()
+}
 
 // A component for all basic item types
 data class Item(var name: String, var description: String) : Component
@@ -95,7 +103,8 @@ data class EqWeapon(var damType: DamageType, var baseDamage: Int, var size: Floa
     var hitSet = HashSet<Entity>()
 }
 
-// TODO Need to better define properties of armor, and all eq for that matter
 data class EqArmor(var bulk: Int) : Component
 
-data class MobAI(var state: MobState, var lastUpdate: Float, var path: Array<AStar.Node>) : Component
+data class MobAI(var state: MobState, var lastUpdate: Float) : Component {
+    var path = ArrayList<AStar.Node>()
+}

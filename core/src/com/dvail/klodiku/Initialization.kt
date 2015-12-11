@@ -27,6 +27,14 @@ private fun initPlayer(world: Engine) {
     val weapon = Entity()
     val armor = Entity()
 
+    player.add(Player("Inefray"))
+    player.add(Spatial(180f, 140f, 14f, Direction.East))
+    player.add(Attribute(50, 20, 50, 10, 10, 10, 10))
+    player.add(State(BaseState.Walking))
+    player.add(Equipment())
+    player.add(Inventory())
+    player.add(AnimatedRenderable("./player/"))
+
     weapon.add(Item("An emerald spear", "This spear doesn't look very sharp"))
     weapon.add(Spatial(Carried))
     weapon.add(Renderable("./items/emerald-spear.png"))
@@ -39,25 +47,12 @@ private fun initPlayer(world: Engine) {
     armor.add(EqItem(ed = 3, slot = EqSlot.Body))
     armor.add(EqArmor(bulk = 2))
 
-    val playerEq = HashMap<EqSlot, Entity>()
-    val playerEqStats = HashMap<Stat, Int>()
-    val playerInventory = ArrayList<Entity>()
-
-    player.add(Player("Inefray"))
-    player.add(Spatial(180f, 140f, 14f, Direction.East))
-    player.add(Attribute(50, 20, 50, 10, 10, 10, 10))
-    player.add(State(BaseState.Walking, 0f))
-    player.add(Equipment(playerEq, playerEqStats))
-    player.add(Inventory(playerInventory))
-
-    player.add(AnimatedRenderable("./player/"))
-
     world.addEntity(player)
     world.addEntity(weapon)
     world.addEntity(armor)
 
-    playerEq.put(EqSlot.Held, weapon)
-    playerInventory.add(armor)
+    CompMapper.Equipment.get(player).items.put(EqSlot.Held, weapon)
+    CompMapper.Inventory.get(player).items.add(armor)
 }
 
 private fun initArea(world: Engine, mapName: String) {
