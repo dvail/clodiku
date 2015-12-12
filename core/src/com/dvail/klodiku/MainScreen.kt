@@ -2,6 +2,7 @@ package com.dvail.klodiku
 
 import com.badlogic.ashley.core.Engine
 import com.badlogic.gdx.Screen
+import com.dvail.klodiku.entities.DataLoader
 import com.dvail.klodiku.events.EventQueue
 import com.dvail.klodiku.systems.*
 
@@ -11,7 +12,8 @@ class MainScreen : Screen {
     val eventQ = EventQueue()
 
     init {
-        initMain(world)
+        val dataLoader = DataLoader()
+        initMain(world, dataLoader)
 
         world.addSystem(EventSystem(eventQ))
         world.addSystem(InputSystem(eventQ))

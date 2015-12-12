@@ -11,7 +11,11 @@ import com.moandjiezana.toml.Toml
 import java.io.File
 import java.util.*
 
-private fun initMap(world: Engine, mapName: String) {
+private fun initArea(world: Engine, loader: DataLoader, mapName: String) {
+    loader.loadArea(world, mapName)
+}
+
+private fun initMap(world: Engine, loader: DataLoader, mapName: String) {
     val map = loadMap(mapName)
     val grid = loadMapGrid(map)
 
@@ -19,7 +23,7 @@ private fun initMap(world: Engine, mapName: String) {
     mapEntity.add(WorldMap(map, grid))
     world.addEntity(mapEntity)
 
-    initArea(world, mapName)
+    initArea(world, loader, mapName)
 }
 
 private fun initPlayer(world: Engine) {
@@ -55,10 +59,7 @@ private fun initPlayer(world: Engine) {
     CompMapper.Inventory.get(player).items.add(armor)
 }
 
-private fun initArea(world: Engine, mapName: String) {
-}
-
-fun initMain(world: Engine){
+fun initMain(world: Engine, loader: DataLoader){
     initPlayer(world)
-    initMap(world, "sample")
+    initMap(world, loader, "sample")
 }
