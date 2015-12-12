@@ -3,6 +3,7 @@ package com.dvail.klodiku.entities
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
+import com.dvail.klodiku.combat.getDefaultWeaponDamType
 import com.moandjiezana.toml.Toml
 import java.io.File
 import java.util.*
@@ -12,45 +13,54 @@ class DataLoader() {
     val compStringMap = HashMap<String, Class<out Component>>()
 
     init {
-        compStringMap.put("spatial", Comps.Spatial)
-        compStringMap.put("eqweapon", Comps.EqWeapon)
+        compStringMap.put("Spatial", Comps.Spatial)
+        compStringMap.put("EqWeapon", Comps.EqWeapon)
+        compStringMap.put("Renderable", Comps.Renderable)
     }
 
     fun loadArea(world: Engine, areaName: String) {
         val areaData = File("./maps/$areaName/data.toml")
-        val areaToml = Toml().parse(areaData)
+        val areaToml = Toml().read(areaData)
 
-        loadMobs(world, areaToml.getTables("mob"))
+      //  loadMobs(world, areaToml.getTables("mob"))
         loadFreeItems(world, areaToml.getTables("free-item"))
     }
 
     private fun loadMobs(world: Engine, mobs: List<Toml>) {
-
     }
 
     private fun loadFreeItems(world: Engine, items: List<Toml>) {
-        val itemComponentMaps = items.map { loadItem(world, it) }
+        val itemComponentLists = items.map { loadComponents(it) }
 
-        itemComponentMaps.forEach { it ->
+        itemComponentLists.forEach { it ->
             val item = Entity()
-            it.values.forEach { comp -> item.add(comp) }
+            it.forEach { comp -> item.add(comp) }
             world.addEntity(item)
         }
     }
 
-    private fun loadItem(world: Engine, item: Toml) : HashMap<Class<out Component>, Component> {
-        val templateName = item.getString("template")
-        val components = loadTemplateComponents(TemplateType.Item, templateName)
-        val tomlOverrides = item.getList<String>("comp_overrides")
-        val tomlComps = item.getTable("components")
+    private fun loadComponents(item: Toml) : List<Component> {
+        val compTable = item.getTable("components")
+        val components = ArrayList<Component>()
 
-        tomlOverrides.forEach { it ->
-            val clazz = compStringMap[it]
-            val comp =  createComponent(clazz, tomlComps.getTable(it))
-            if (clazz != null && comp != null) components.put(clazz, comp)
+        compStringMap.keys.forEach { key ->
+            if (compTable.containsTable(key)) {
+                val comp = createComponent(compStringMap[key], compTable.getTable(key))
+                if (comp != null) components.add(comp)
+            }
         }
 
         return components
+    }
+
+    private fun loadMobEq(toml: Toml) : HashMap<EqSlot, List<Component>> {
+        val mobEq = HashMap<EqSlot, List<Component>>()
+
+        EqSlot.values().forEach { slot ->
+            val comp = toml.getTable(slot.toString().toLowerCase())
+        }
+
+        return mobEq
     }
 
     /*
@@ -58,10 +68,23 @@ class DataLoader() {
     */
     private fun createComponent(clazz: Class<out Component>?, toml: Toml) : Component? {
         when (clazz) {
-            Comps.Spatial -> return Spatial(toml.getDouble("x").toFloat(), toml.getDouble("y").toFloat(), toml.getDouble("radius").toFloat())
+            Comps.Spatial -> {
+                if (toml.containsPrimitive("pos") && toml.getString("pos").equals("Carried")) {
+                    return Spatial(Carried)
+                } else {
+                    return Spatial(toml.getDouble("x").toFloat(), toml.getDouble("y").toFloat(), toml.getDouble("radius").toFloat())
+                }
+            }
+            Comps.EqWeapon -> {
+                val weaponType = toml.getString("type")
+                val damType = getDefaultWeaponDamType(weaponType)
+                return EqWeapon(damType = damType, baseDamage = toml.getLong("baseDamage").toInt(), size = toml.getDouble("size").toFloat())
+            }
+            Comps.Renderable -> {
+                return Renderable(toml.getString("textureSource"))
+            }
             else -> { return null }
         }
     }
-
 }
 

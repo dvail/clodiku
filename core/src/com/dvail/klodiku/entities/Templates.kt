@@ -33,5 +33,15 @@ private fun loadItemTemplate(name: String): HashMap<Class<out Component>, Compon
 private fun loadMobTemplate(name: String): HashMap<Class<out Component>, Component> {
     var comps = HashMap<Class<out Component>, Component>()
 
+    when (name) {
+        "orc" -> {
+            comps.put(Comps.State, State(BaseState.Standing))
+            comps.put(Comps.AnimatedRenderable, AnimatedRenderable("./mob/orc/"))
+            comps.put(Comps.Spatial, Spatial(0f, 0f, 14f, Direction.West))
+            comps.put(Comps.Equipment, Equipment())
+            comps.put(Comps.MobAI, MobAI(MobState.Wander))
+        }
+    }
+
     return comps
 }

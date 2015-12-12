@@ -3,6 +3,15 @@ package com.dvail.klodiku.combat
 import com.badlogic.ashley.core.Entity
 import com.dvail.klodiku.entities.*
 
+fun getDefaultWeaponDamType(weaponType: String) : DamageType {
+    return when (weaponType) {
+        "sword" -> DamageType.Slash
+        "spear" -> DamageType.Pierce
+        "mace" -> DamageType.Bash
+        else -> DamageType.Null
+    }
+}
+
 fun setAttackStartPos(attackingEntity: Entity, compEqWeapon: EqWeapon) {
     val attackerSpatial = CompMapper.Spatial.get(attackingEntity)
 
@@ -28,6 +37,7 @@ fun setAttackStartPos(attackingEntity: Entity, compEqWeapon: EqWeapon) {
         DamageType.Bash -> {
 
         }
+        DamageType.Null -> {}
     }
 }
 

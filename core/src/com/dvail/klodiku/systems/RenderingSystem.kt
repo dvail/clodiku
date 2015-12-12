@@ -98,7 +98,6 @@ class RenderingSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
     }
 
     private fun renderAnimations() {
-
         for (ent in animatedEntities) {
             var spatial = CompMapper.Spatial.get(ent)
             var state = CompMapper.State.get(ent)

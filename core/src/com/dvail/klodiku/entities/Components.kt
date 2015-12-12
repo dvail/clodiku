@@ -16,7 +16,7 @@ enum class MobState { Wander, Aggro }
 enum class Stat { HP, MP, STR, DEX, VIT, PSY, HR, DR, MS, ED, PD, SAVES }
 
 enum class EqSlot { Held, Head, Body, Arms, Legs, Feet, Hands }
-enum class DamageType { Slash, Pierce, Bash }
+enum class DamageType { Slash, Pierce, Bash, Null }
 
 val Carried = Circle(-999f, -999f, 16f)
 
@@ -105,6 +105,7 @@ data class EqWeapon(var damType: DamageType, var baseDamage: Int, var size: Floa
 
 data class EqArmor(var bulk: Int) : Component
 
-data class MobAI(var state: MobState, var lastUpdate: Float) : Component {
+data class MobAI(var state: MobState) : Component {
+    var lastUpdate = 0f
     var path = ArrayList<AStar.Node>()
 }
