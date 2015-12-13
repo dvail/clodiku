@@ -3,6 +3,7 @@ package com.dvail.klodiku.systems
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.utils.ImmutableArray
+import com.badlogic.gdx.math.Circle
 import com.dvail.klodiku.combat.aggravate
 import com.dvail.klodiku.combat.calcAttackDamage
 import com.dvail.klodiku.combat.getAttackers
@@ -55,15 +56,16 @@ class CombatSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
         }
     }
 
-    private fun getDefenders(attacker: Entity): ImmutableArray<Entity> {
+    private fun getDefenders(attacker: Entity): List<Entity> {
         val defenderType = if (hasComp(attacker, Comps.MobAI)) Comps.Player else Comps.MobAI
-        return entitiesWithComps(engine, defenderType)
+        return entitiesWithComps(engine, defenderType).filter { CompMapper.State.get(it).current != BaseState.Dead }
     }
 
     private fun processAttack(attacker: Entity, weaponComp: EqWeapon, hitSet: Set<Entity>) {
         hitSet.forEach { it ->
             val damage = calcAttackDamage(world, attacker, it)
-            val event = EventMeleeHit(attacker, it, CompMapper.Spatial.get(it).pos, damage)
+            val location = CompMapper.Spatial.get(it).pos
+            val event = EventMeleeHit(attacker, it, Circle(location.x, location.y, location.radius), damage)
 
             damageEntity(it, damage)
             eventQ.addEvent(EventType.Combat, event)
@@ -75,10 +77,7 @@ class CombatSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
         val attributes = CompMapper.Attribute.get(entity)
         attributes.hp -= damage
 
-        println("Need to clear out weapon hit list")
         println("Need to implement other weapon type functions")
-        println("Need to implement event queue")
-
         if (attributes.hp <= 0) {
             CompMapper.State.get(entity).current = BaseState.Dead
         }

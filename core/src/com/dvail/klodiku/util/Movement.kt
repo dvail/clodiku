@@ -40,7 +40,7 @@ fun entityDirection(x: Float, y: Float): Direction {
     }
 }
 
-fun getEntityCollisions(hitBox: Circle, defenders: ImmutableArray<Entity>): Set<Entity> {
+fun getEntityCollisions(hitBox: Circle, defenders: List<Entity>): Set<Entity> {
     return defenders.filter { Intersector.overlaps(hitBox, CompMapper.Spatial.get(it).pos) }.toHashSet()
 }
 

@@ -15,7 +15,9 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.math.Circle
 import com.dvail.klodiku.combat.getAttackers
 import com.dvail.klodiku.entities.*
+import com.dvail.klodiku.events.EventMeleeHit
 import com.dvail.klodiku.events.EventQueue
+import com.dvail.klodiku.events.EventType
 import com.dvail.klodiku.util.*
 
 class RenderingSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
@@ -119,6 +121,20 @@ class RenderingSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
     }
 
     private fun renderCombatVerbs() {
+        val combatEvents = eventQ.events[EventType.Combat];
+
+        combatEvents?.forEach { event ->
+            when (event) {
+                is EventMeleeHit -> {
+                    val time = event.time
+                    val drawX = event.location.x
+                    val drawY = event.location.y
+
+                    combatFont.setColor(0.2f, 0.2f, 1f, (1 - (time / 2)))
+                    combatFont.draw(batch, "poke", drawX, (25 + drawY + (100 * time)))
+                }
+            }
+        }
     }
 
     private fun renderEntityShapes() {

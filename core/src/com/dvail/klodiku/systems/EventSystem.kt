@@ -14,5 +14,6 @@ class EventSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
 
     override fun update(sysDelta: Float) {
         delta = sysDelta
+        eventQ.update(world, delta)
     }
 }

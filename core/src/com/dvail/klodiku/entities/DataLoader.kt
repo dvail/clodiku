@@ -78,7 +78,7 @@ class DataLoader() {
     }
 
     private fun buildComponentList(table: Toml) : List<Component> {
-        return table.entrySet().map { createComponent(compStringMap[it.key], it.value as Toml) }
+        return table.entrySet().map { ComponentFactory.createComponent(compStringMap[it.key], it.value as Toml) }
     }
 
     private fun buildMobEq(toml: Toml) : HashMap<EqSlot, Entity> {

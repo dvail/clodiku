@@ -15,11 +15,11 @@ import com.dvail.klodiku.pathfinding.AStar
 import com.dvail.klodiku.util.*
 import java.util.*
 
-private const val SIGHT_DISTANCE = 300f
-private const val ATTACK_RANGE = 50f
-private const val WANDER_DISTANCE = 800
 
 class MobAISystem(eventQ: EventQueue) : CoreSystem(eventQ) {
+    private val SIGHT_DISTANCE = 300f
+    private val ATTACK_RANGE = 50f
+    private val WANDER_DISTANCE = 800
 
     lateinit var world: Engine
     lateinit var player: Entity

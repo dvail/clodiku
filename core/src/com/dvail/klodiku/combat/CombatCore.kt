@@ -21,6 +21,7 @@ fun initAttack(entity: Entity) {
         val compEqWeapon = CompMapper.EqWeapon.get(weaponEntity)
         setEntityAttackState(entity, compEqWeapon)
         setAttackStartPos(entity, compEqWeapon)
+        compEqWeapon.hitSet.clear()
     } else {
         println("Implement h2h combat")
     }

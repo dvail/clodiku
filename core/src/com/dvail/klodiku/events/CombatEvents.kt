@@ -8,6 +8,7 @@ data class EventMeleeHit(val attacker: Entity, val defender: Entity, val locatio
     var time: Float = 0f
 
     override fun processEvent(world: Engine, delta: Float): Boolean {
-        return false
+        time += delta
+        return time > 4/12f
     }
 }
