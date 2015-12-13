@@ -45,6 +45,9 @@ fun createComponent(clazz: Class<out Component>?, toml: Toml): Component {
         Comps.EqArmor -> {
             return EqArmor(toml.getLong("bulk").toInt())
         }
+        Comps.Attribute -> {
+            return Attribute()
+        }
         else -> {
             throw Exception("Invalid component type read from TOML file.")
         }

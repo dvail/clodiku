@@ -65,8 +65,22 @@ class CombatSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
             val damage = calcAttackDamage(world, attacker, it)
             val event = EventMeleeHit(attacker, it, CompMapper.Spatial.get(it).pos, damage)
 
+            damageEntity(it, damage)
             eventQ.addEvent(EventType.Combat, event)
         }
         weaponComp.hitSet.addAll(hitSet)
+    }
+
+    private fun damageEntity(entity: Entity, damage: Int) {
+        val attributes = CompMapper.Attribute.get(entity)
+        attributes.hp -= damage
+
+        println("Need to clear out weapon hit list")
+        println("Need to implement other weapon type functions")
+        println("Need to implement event queue")
+
+        if (attributes.hp <= 0) {
+            CompMapper.State.get(entity).current = BaseState.Dead
+        }
     }
 }

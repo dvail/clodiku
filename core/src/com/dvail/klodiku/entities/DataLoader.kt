@@ -18,6 +18,7 @@ class DataLoader() {
         compStringMap.put("Spatial", Comps.Spatial)
         compStringMap.put("Renderable", Comps.Renderable)
         compStringMap.put("AnimatedRenderable", Comps.AnimatedRenderable)
+        compStringMap.put("Attribute", Comps.Attribute)
         compStringMap.put("Item", Comps.Item)
         compStringMap.put("EqItem", Comps.EqItem)
         compStringMap.put("EqWeapon", Comps.EqWeapon)

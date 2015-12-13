@@ -76,8 +76,8 @@ data class State(var current: BaseState) : Component {
     var time = 0f
 }
 
-data class Attribute(var hp: Int, var mp: Int, var mv: Int, var str: Int,
-                     var dex: Int, var vit: Int, var psy: Int) : Component
+data class Attribute(var hp: Int = 20, var mp: Int = 20, var mv: Int = 50, var str: Int = 10,
+                     var dex: Int = 10, var vit: Int = 10, var psy: Int = 10) : Component
 
 // this component holds the total of all eq item stats for quick calculations
 class Equipment() : Component {
