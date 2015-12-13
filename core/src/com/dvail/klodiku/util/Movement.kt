@@ -16,18 +16,17 @@ fun moveEntity(world: Engine, delta: Float, entity: Entity, movX: Float, movY: F
     updateSpatial(world, entity, movX, movY)
 }
 
-fun moveMob(world: Engine, delta: Float,entity: Entity, target: AStar.Node) {
+fun moveMob(world: Engine, delta: Float,entity: Entity, targetX: Float, targetY: Float) {
     val currPos = CompMapper.Spatial.get(entity).pos
-    val pixelX = (target.x * MAP_TILE_SIZE) + HALF_TILE_SIZE
-    val pixelY = (target.y * MAP_TILE_SIZE) + HALF_TILE_SIZE
-    val dX = Math.abs(pixelX - currPos.x)
-    val dY = Math.abs(pixelY - currPos.y)
+    val dX = Math.abs(targetX - currPos.x)
+    val dY = Math.abs(targetY - currPos.y)
 
+    //TODO Replace 2f with actual entity movement speed
     var movX = Math.min(dX, 2f)
     var movY = Math.min(dY, 2f)
 
-    if (pixelX > currPos.x) movX *= -1
-    if (pixelY > currPos.y) movY *= -1
+    if (targetX < currPos.x) movX *= -1
+    if (targetY < currPos.y) movY *= -1
 
     moveEntity(world, delta, entity, movX, movY)
 }
@@ -48,13 +47,17 @@ fun getEntityCollisions(hitBox: Circle, defenders: ImmutableArray<Entity>): Set<
 fun navigatePath(world: Engine, delta: Float, entity: Entity) {
     val path = CompMapper.MobAI.get(entity).path
     val currPos = CompMapper.Spatial.get(entity).pos
-    val targetPos = path.last()
+    val (targetPosX, targetPosY) = nodeToPixel(path.last())
 
-    if (currPos.x - targetPos.x < 2 && currPos.y - targetPos.y < 2) {
-        path.dropLast(1)
+    if (Math.abs(currPos.x - targetPosX) < 2 && Math.abs(currPos.y - targetPosY) < 2) {
+        path.removeLast()
     } else {
-        moveMob(world, delta, entity, targetPos)
+        moveMob(world, delta, entity, targetPosX, targetPosY)
     }
+}
+
+fun nodeToPixel(node: AStar.Node) : Pair<Float, Float> {
+    return Pair((node.x * MAP_TILE_SIZE) + HALF_TILE_SIZE, (node.y * MAP_TILE_SIZE) + HALF_TILE_SIZE)
 }
 
 fun distanceBetween(entityA: Entity, entityB: Entity) : Float {

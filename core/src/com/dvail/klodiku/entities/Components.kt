@@ -107,6 +107,6 @@ data class EqArmor(var bulk: Int) : Component
 
 data class MobAI(var state: MobState, var thinkSpeed: Float) : Component {
     var lastUpdate = 0f
-    var path = listOf<AStar.Node>()
-    constructor(state: MobState) : this(state, 4f) {}
+    var path = linkedListOf<AStar.Node>()
+    constructor(state: MobState) : this(state, 3f) {}
 }

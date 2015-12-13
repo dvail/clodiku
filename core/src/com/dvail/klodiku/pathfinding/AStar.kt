@@ -41,7 +41,7 @@ object AStar {
         return neighbors
     }
 
-    fun findPath(grid: Array<IntArray>, start: Node, goal: Node): List<Node> {
+    fun findPath(grid: Array<IntArray>, start: Node, goal: Node): LinkedList<Node> {
 
         val comparator = object : Comparator<Node> {
 
@@ -94,7 +94,7 @@ object AStar {
 
             if (currentNode == goal) {
 
-                val path = ArrayList<Node>()
+                val path = linkedListOf<Node>()
 
                 while (currentNode.parent != null) {
                     path.add(currentNode)
@@ -106,7 +106,7 @@ object AStar {
 
         }
 
-        return arrayListOf(start) // No path, return the starting node
+        return linkedListOf(start) // No path, return the starting node
     }
 
     class Node(var x: Int, var y: Int) {
