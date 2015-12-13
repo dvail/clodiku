@@ -157,9 +157,6 @@ class GameUI(world: Engine, eventQ: EventQueue) {
                     })
 
                 }
-
-
-
             }
         }
     }

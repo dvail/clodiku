@@ -2,6 +2,7 @@ package com.dvail.klodiku.events
 
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.math.Circle
 import com.dvail.klodiku.entities.CompMapper
 
 data class UnequipItemEvent(val entity: Entity, val itemEntity: Entity): Event {
@@ -34,6 +35,12 @@ data class EquipItemEvent(val entity: Entity, val itemEntity: Entity): Event {
 
 data class DropItemEvent(val entity: Entity, val itemEntity: Entity): Event {
     override fun processEvent(world: Engine, delta: Float): Boolean {
+        val entityPos = CompMapper.Spatial.get(entity).pos
+        val itemSpatial = CompMapper.Spatial.get(itemEntity)
+
+        CompMapper.Inventory.get(entity).items.remove(itemEntity)
+        itemSpatial.pos = Circle(entityPos.x, entityPos.y, itemSpatial.pos.radius)
+
         return true
     }
 }
