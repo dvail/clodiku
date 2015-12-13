@@ -5,15 +5,19 @@ import com.badlogic.gdx.Screen
 import com.dvail.klodiku.entities.DataLoader
 import com.dvail.klodiku.events.EventQueue
 import com.dvail.klodiku.systems.*
+import com.dvail.klodiku.ui.GameUI
 
 class MainScreen : Screen {
 
     val world = Engine()
     val eventQ = EventQueue()
+    lateinit var gameUI: GameUI
 
     init {
         val dataLoader = DataLoader()
         initMain(world, dataLoader)
+
+        gameUI = GameUI(world, eventQ)
 
         world.addSystem(EventSystem(eventQ))
         world.addSystem(InputSystem(eventQ))
@@ -24,6 +28,7 @@ class MainScreen : Screen {
 
     override fun render(delta: Float) {
         world.update(delta)
+        gameUI.update(delta)
     }
 
     override fun pause() {

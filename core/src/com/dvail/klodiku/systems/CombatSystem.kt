@@ -9,7 +9,7 @@ import com.dvail.klodiku.combat.calcAttackDamage
 import com.dvail.klodiku.combat.getAttackers
 import com.dvail.klodiku.combat.updateHitBox
 import com.dvail.klodiku.entities.*
-import com.dvail.klodiku.events.EventMeleeHit
+import com.dvail.klodiku.events.MeleeHitEvent
 import com.dvail.klodiku.events.EventQueue
 import com.dvail.klodiku.events.EventType
 import com.dvail.klodiku.util.entitiesWithComps
@@ -65,7 +65,7 @@ class CombatSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
         hitSet.forEach { it ->
             val damage = calcAttackDamage(world, attacker, it)
             val location = CompMapper.Spatial.get(it).pos
-            val event = EventMeleeHit(attacker, it, Circle(location.x, location.y, location.radius), damage)
+            val event = MeleeHitEvent(attacker, it, Circle(location.x, location.y, location.radius), damage)
 
             damageEntity(it, damage)
             eventQ.addEvent(EventType.Combat, event)

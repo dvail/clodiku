@@ -15,7 +15,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.math.Circle
 import com.dvail.klodiku.combat.getAttackers
 import com.dvail.klodiku.entities.*
-import com.dvail.klodiku.events.EventMeleeHit
+import com.dvail.klodiku.events.MeleeHitEvent
 import com.dvail.klodiku.events.EventQueue
 import com.dvail.klodiku.events.EventType
 import com.dvail.klodiku.util.*
@@ -125,7 +125,7 @@ class RenderingSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
 
         combatEvents?.forEach { event ->
             when (event) {
-                is EventMeleeHit -> {
+                is MeleeHitEvent -> {
                     val time = event.time
                     val drawX = event.location.x
                     val drawY = event.location.y
