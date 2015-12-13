@@ -3,6 +3,10 @@ package com.dvail.klodiku.combat
 import com.badlogic.ashley.core.Entity
 import com.dvail.klodiku.entities.*
 
+object WeaponRange {
+    val Sword = 28
+}
+
 fun getDefaultWeaponDamType(weaponType: String) : DamageType {
     return when (weaponType) {
         "sword" -> DamageType.Slash
@@ -32,7 +36,19 @@ fun setAttackStartPos(attackingEntity: Entity, compEqWeapon: EqWeapon) {
             }
         }
         DamageType.Slash -> {
+            val startRange = (attackerSpatial.pos.radius / 2) + WeaponRange.Sword
+            val offset = (startRange + compEqWeapon.hitBox.radius)
 
+            compEqWeapon.hitBox.x = attackerSpatial.pos.x
+            compEqWeapon.hitBox.y = attackerSpatial.pos.y
+
+            when (attackerSpatial.direction) {
+                Direction.West -> { compEqWeapon.hitBox.y += offset }
+                Direction.East -> { compEqWeapon.hitBox.y -= offset }
+                Direction.North -> { compEqWeapon.hitBox.x += offset }
+                Direction.South -> { compEqWeapon.hitBox.x -= offset }
+                else -> {}
+            }
         }
         DamageType.Bash -> {
 
@@ -43,7 +59,8 @@ fun setAttackStartPos(attackingEntity: Entity, compEqWeapon: EqWeapon) {
 
 fun updateHitBox(attacker: Entity, weaponComponent: EqWeapon) {
     val weaponType = weaponComponent.damType
-    val direction = CompMapper.Spatial.get(attacker).direction
+    val spatial = CompMapper.Spatial.get(attacker)
+    val direction = spatial.direction
 
     when (weaponType) {
         DamageType.Pierce -> {
@@ -58,7 +75,12 @@ fun updateHitBox(attacker: Entity, weaponComponent: EqWeapon) {
             }
         }
         DamageType.Slash -> {
+            val moveRate = 8f
+            val angle = Math.atan2((spatial.pos.x - weaponComponent.hitBox.x).toDouble(),
+                    (spatial.pos.y - weaponComponent.hitBox.y).toDouble())
 
+            weaponComponent.hitBox.x += (moveRate * Math.cos(angle).toFloat())
+            weaponComponent.hitBox.y -= (moveRate * Math.sin(angle).toFloat())
         }
         DamageType.Bash -> {
 

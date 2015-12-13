@@ -77,7 +77,6 @@ class CombatSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
         val attributes = CompMapper.Attribute.get(entity)
         attributes.hp -= damage
 
-        println("Need to implement other weapon type functions")
         if (attributes.hp <= 0) {
             CompMapper.State.get(entity).current = BaseState.Dead
         }
