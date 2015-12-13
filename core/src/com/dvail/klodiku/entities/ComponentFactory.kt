@@ -20,7 +20,7 @@ fun createComponent(clazz: Class<out Component>?, toml: Toml): Component {
             }
         }
         Comps.State -> {
-        return State(BaseState.valueOf(toml.getString("baseState")))
+            return State(BaseState.valueOf(toml.getString("baseState")))
         }
         Comps.MobAI -> {
             return MobAI(MobState.valueOf(toml.getString("mobState")))

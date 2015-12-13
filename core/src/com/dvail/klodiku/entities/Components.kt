@@ -105,7 +105,8 @@ data class EqWeapon(var damType: DamageType, var baseDamage: Int, var size: Floa
 
 data class EqArmor(var bulk: Int) : Component
 
-data class MobAI(var state: MobState) : Component {
+data class MobAI(var state: MobState, var thinkSpeed: Float) : Component {
     var lastUpdate = 0f
-    var path = ArrayList<AStar.Node>()
+    var path = listOf<AStar.Node>()
+    constructor(state: MobState) : this(state, 4f) {}
 }

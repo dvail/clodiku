@@ -7,6 +7,7 @@ import com.moandjiezana.toml.Toml
 import java.io.File
 import java.util.*
 
+//TODO Define a "conventions" file for how TOML data files should look
 class DataLoader() {
 
     val compStringMap = HashMap<String, Class<out Component>>()

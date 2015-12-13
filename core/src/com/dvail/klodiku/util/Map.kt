@@ -14,6 +14,9 @@ import com.dvail.klodiku.entities.WorldMap
 
 private val mapLoader = TmxMapLoader()
 
+const val MAP_TILE_SIZE = 32f
+const val HALF_TILE_SIZE = MAP_TILE_SIZE / 2
+
 fun loadMap(mapName: String): TiledMap = mapLoader.load("./maps/$mapName/map.tmx")
 
 fun loadMapGrid(map: TiledMap): Array<IntArray> {

@@ -63,5 +63,6 @@ fun updateHitBox(attacker: Entity, weaponComponent: EqWeapon) {
         DamageType.Bash -> {
 
         }
+        DamageType.Null -> {}
     }
 }

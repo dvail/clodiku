@@ -16,10 +16,14 @@ fun getAttackers(world: Engine): Iterable<Entity> {
 
 fun initAttack(entity: Entity) {
     val weaponEntity = CompMapper.Equipment.get(entity).items[EqSlot.Held]
-    val compEqWeapon = CompMapper.EqWeapon.get(weaponEntity)
 
-    setEntityAttackState(entity, compEqWeapon)
-    setAttackStartPos(entity, compEqWeapon)
+    if (weaponEntity != null) {
+        val compEqWeapon = CompMapper.EqWeapon.get(weaponEntity)
+        setEntityAttackState(entity, compEqWeapon)
+        setAttackStartPos(entity, compEqWeapon)
+    } else {
+        println("Implement h2h combat")
+    }
 }
 
 fun advanceAttackState(delta: Float, entity: Entity) {
