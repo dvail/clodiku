@@ -36,6 +36,8 @@ class InputSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
     private fun doFreeInput() {
         if (keyJustPressed(BoundKeys.MeleeAttack)) {
             initAttack(player)
+        } else if (keyJustPressed(BoundKeys.GetItem)) {
+            grabItem(world, player)
         } else {
             movePlayer()
         }

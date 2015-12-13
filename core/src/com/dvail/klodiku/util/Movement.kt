@@ -66,6 +66,17 @@ fun distanceBetween(entityA: Entity, entityB: Entity) : Float {
     return Math.abs(posA.x - posB.x) + Math.abs(posA.y - posB.y)
 }
 
+fun grabItem(world: Engine, entity: Entity) {
+    val targetItem = entitiesWithComps(world, Comps.Spatial, Comps.Item).filter {
+        !CompMapper.Spatial.get(it).pos.equals(Carried)
+    }.first()
+
+    if (targetItem != null) {
+        CompMapper.Inventory.get(entity).items.add(targetItem)
+        CompMapper.Spatial.get(targetItem).pos = Carried
+    }
+}
+
 private fun updateState(delta: Float, entity: Entity, movX: Float, movY: Float) {
     val state = CompMapper.State.get(entity)
     val oldState = state.current.name
@@ -78,7 +89,8 @@ private fun updateSpatial(world: Engine, entity: Entity, movX: Float, movY: Floa
     val entitySpatial = CompMapper.Spatial.get(entity)
     val mapObstacles = mapObstacles(world)
     val collisionEntities = entitiesWithCompsExcluding(world, Array(1, { Comps.Spatial }), Array(1, { Comps.Item }))
-    val otherEntities = collisionEntities.filter { it -> it != entity }
+    val livingEntities = collisionEntities.filter { CompMapper.State.get(it)?.current != BaseState.Dead }
+    val otherEntities = livingEntities.filter { it -> it != entity }
 
     if (!collision(entitySpatial, mapObstacles, otherEntities, movX, 0f)) {
         entitySpatial.pos.x += movX

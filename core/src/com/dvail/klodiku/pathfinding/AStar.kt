@@ -8,9 +8,7 @@ import java.util.*
 object AStar {
 
     fun manhattanDistance(a: Node, b: Node): Int {
-
         return Math.abs(a.x - b.x) + Math.abs(a.y - b.y)
-
     }
 
     fun getNeighbors(grid: Array<IntArray>, parent: Node, goal: Node): List<Node> {
@@ -60,7 +58,6 @@ object AStar {
             }
 
             override fun equals(o: Any?): Boolean {
-
                 return false
             }
         }
@@ -73,27 +70,20 @@ object AStar {
         openNodes.add(start)
 
         while (!openNodes.isEmpty()) {
-
             currentNode = openNodes.poll()
             closedNodes.add(currentNode)
 
             neighbors = getNeighbors(grid, currentNode, goal)
 
             for (node in neighbors) {
-
                 if (openNodes.contains(node)) {
-
                     // TODO Update cost value here for more efficient routes
-
                 } else if (!closedNodes.contains(node)) {
-
                     openNodes.add(node)
                 }
-
             }
 
             if (currentNode == goal) {
-
                 val path = linkedListOf<Node>()
 
                 while (currentNode.parent != null) {
@@ -103,7 +93,6 @@ object AStar {
 
                 return path
             }
-
         }
 
         return linkedListOf(start) // No path, return the starting node
@@ -124,14 +113,12 @@ object AStar {
         }
 
         override fun equals(o: Any?): Boolean {
-
             if (this === o) return true
             if (o == null || javaClass != o.javaClass) return false
 
             val node = o as Node?
 
             return x == node?.x && y == node?.y
-
         }
 
         override fun hashCode(): Int {
