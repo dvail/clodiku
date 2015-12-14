@@ -18,7 +18,9 @@ import com.dvail.klodiku.entities.*
 import com.dvail.klodiku.events.MeleeHitEvent
 import com.dvail.klodiku.events.EventQueue
 import com.dvail.klodiku.events.EventType
+import com.dvail.klodiku.events.SwapAreaEvent
 import com.dvail.klodiku.util.*
+import com.dvail.klodiku.world.Maps
 
 class RenderingSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
     val mapBackgroundLayers = intArrayOf(0, 1)
@@ -39,7 +41,7 @@ class RenderingSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
 
     override fun addedToEngine(engine: Engine) {
         world = engine;
-        mapRenderer = OrthogonalTiledMapRenderer(currentMap(world), batch)
+        mapRenderer = OrthogonalTiledMapRenderer(Maps.currentMap(world), batch)
         updateRenderableEntityList()
         updateAnimatedEntityList()
         updateSpatialEntityList()
@@ -51,7 +53,14 @@ class RenderingSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
         camera.update()
-        camera.position.set(getMapBounds(world, camera))
+        camera.position.set(Maps.getMapBounds(world, camera))
+
+        eventQ.events[EventType.World]?.forEach {  event ->
+            if (event is SwapAreaEvent && event.worldUpdated) {
+                event.rendererUpdated = true
+                updateMap()
+            }
+        }
 
         mapRenderer.setView(camera)
         mapRenderer.render(mapBackgroundLayers)
@@ -74,6 +83,10 @@ class RenderingSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
 
         mapRenderer.setView(camera)
         mapRenderer.render(mapForegroundLayers)
+    }
+
+    fun updateMap() {
+        mapRenderer.map = Maps.currentMap(world)
     }
 
     private fun updateRenderableEntityList() {

@@ -5,7 +5,8 @@ components = {
     AnimatedRenderable = { animDir = "./mob/orc/" },
     Equipment = {},
     Inventory = {},
-    MobAI = { mobState = "Wander" }
+    MobAI = { mobState = "Wander" },
+    Attribute = {}
 }
 inventory = []
 equipment = {}

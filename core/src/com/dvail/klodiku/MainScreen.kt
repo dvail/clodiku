@@ -14,8 +14,7 @@ class MainScreen : Screen {
     lateinit var gameUI: GameUI
 
     init {
-        val dataLoader = DataLoader()
-        initMain(world, dataLoader)
+        initMain(world)
 
         gameUI = GameUI(world, eventQ)
 

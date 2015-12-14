@@ -2,7 +2,6 @@ package com.dvail.klodiku.systems
 
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.utils.ImmutableArray
 import com.badlogic.gdx.math.Circle
 import com.dvail.klodiku.combat.aggravate
 import com.dvail.klodiku.combat.calcAttackDamage
@@ -12,10 +11,7 @@ import com.dvail.klodiku.entities.*
 import com.dvail.klodiku.events.MeleeHitEvent
 import com.dvail.klodiku.events.EventQueue
 import com.dvail.klodiku.events.EventType
-import com.dvail.klodiku.util.entitiesWithComps
-import com.dvail.klodiku.util.firstEntityWithComp
-import com.dvail.klodiku.util.getEntityCollisions
-import com.dvail.klodiku.util.hasComp
+import com.dvail.klodiku.util.*
 
 class CombatSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
 
@@ -44,7 +40,7 @@ class CombatSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
 
     private fun checkAttackCollisions(attacker: Entity, weaponComp: EqWeapon) {
         val defenders = getDefenders(attacker)
-        val hitEntities = getEntityCollisions(weaponComp.hitBox, defenders)
+        val hitEntities = Movement.getEntityCollisions(weaponComp.hitBox, defenders)
         val newHit = hitEntities.minus(weaponComp.hitSet)
 
         weaponComp.hitSet.addAll(newHit)

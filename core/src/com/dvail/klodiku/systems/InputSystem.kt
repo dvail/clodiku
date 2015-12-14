@@ -37,7 +37,7 @@ class InputSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
         if (keyJustPressed(BoundKeys.MeleeAttack)) {
             initAttack(player)
         } else if (keyJustPressed(BoundKeys.GetItem)) {
-            grabItem(world, player)
+            Movement.grabItem(world, player)
         } else {
             movePlayer()
         }
@@ -51,6 +51,7 @@ class InputSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
         val moveX = if (keyPressed(BoundKeys.MoveEast)) 2f else if (keyPressed(BoundKeys.MoveWest)) -2f else 0f
         val moveY = if (keyPressed(BoundKeys.MoveNorth)) 2f else if (keyPressed(BoundKeys.MoveSouth)) -2f else 0f
 
-        moveEntity(world, delta, player, moveX, moveY)
+        Movement.moveEntity(world, delta, player, moveX, moveY)
+        Movement.attemptAreaTransport(world, eventQ, player, moveX, moveY)
     }
 }

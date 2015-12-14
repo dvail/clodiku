@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.Engine
 import java.util.*
 
 enum class EventType {
-    Combat, UI
+    Combat, UI, World
 }
 
 interface Event {

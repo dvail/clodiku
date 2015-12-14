@@ -35,9 +35,11 @@ class DataLoader() {
         loadMobs(world, areaToml.getTables("mob"))
     }
 
-    private fun loadFreeItems(world: Engine, items: List<Toml>) {
-        val freeItemEntities = buildEntities(items)
-        freeItemEntities.forEach { world.addEntity(it) }
+    private fun loadFreeItems(world: Engine, items: List<Toml>?) {
+        if (items != null) {
+            val freeItemEntities = buildEntities(items)
+            freeItemEntities.forEach { world.addEntity(it) }
+        }
     }
 
     private fun loadMobs(world: Engine, mobs: List<Toml>) {
