@@ -13,7 +13,7 @@ import java.util.*
 
 fun makeTexture(src: String) : Texture = Texture(Gdx.files.internal(src))
 
-fun makeRegions(srcDir: String): HashMap<String, HashMap<String, Animation>> {
+fun makeRegions(srcDir: String): Pair<HashMap<String, HashMap<String, Animation>>, TextureAtlas> {
     var animations = HashMap<String, HashMap<String, Animation>>()
     var config = Gdx.files.internal("${srcDir}anim.json").readString()
     var json = Json.parse(config).asObject()
@@ -37,7 +37,7 @@ fun makeRegions(srcDir: String): HashMap<String, HashMap<String, Animation>> {
         }
     }
 
-    return animations
+    return Pair(animations, atlas)
 }
 
 fun facingFromDirection(dir: Direction): String {

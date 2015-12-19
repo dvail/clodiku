@@ -54,6 +54,14 @@ object CompMapper {
     val MobAI = ComponentMapper.getFor(Comps.MobAI)
 }
 
+interface NestedComponent {
+    fun getNestedEntities(): Collection<Entity>;
+}
+
+interface DisposableComponent {
+    fun dispose();
+}
+
 data class Player(var name: String) : Component
 
 data class WorldMap(var tileMap: TiledMap, var grid: Array<IntArray>) : Component
@@ -64,12 +72,18 @@ data class Spatial(var pos: Circle, var direction: Direction) : Component {
     constructor(x: Float, y: Float, radius: Float, direction: Direction) : this(Circle(x, y, radius), direction) {}
 }
 
-data class Renderable(var textureSource: String) : Component {
+data class Renderable(var textureSource: String) : Component, DisposableComponent {
+    override fun dispose() = texture.dispose()
+
     var texture = makeTexture(textureSource)
 }
 
-data class AnimatedRenderable(var animDir: String) : Component {
-    var animations = makeRegions(animDir)
+data class AnimatedRenderable(var animDir: String) : Component, DisposableComponent {
+    override fun dispose() = atlas.dispose()
+
+    var res = makeRegions(animDir)
+    var animations = res.component1()
+    var atlas = res.component2()
 }
 
 data class State(var current: BaseState) : Component {
@@ -80,14 +94,18 @@ data class Attribute(var hp: Int = 20, var mp: Int = 20, var mv: Int = 50, var s
                      var dex: Int = 10, var vit: Int = 10, var psy: Int = 10) : Component
 
 // this component holds the total of all eq item stats for quick calculations
-class Equipment() : Component {
+class Equipment() : Component, NestedComponent {
     var items = HashMap<EqSlot, Entity>()
     var statTotal = HashMap<Stat, Int>()
+
+    override fun getNestedEntities(): Collection<Entity> = items.values
 }
 
 // A component for entities that can have stuff!
-class Inventory() : Component {
+class Inventory() : Component, NestedComponent {
     var items = ArrayList<Entity>()
+
+    override fun getNestedEntities(): Collection<Entity> = items
 }
 
 // A component for all basic item types

@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.*
 import com.badlogic.ashley.utils.ImmutableArray
 import com.dvail.clodiku.entities.CompMapper
 import com.dvail.clodiku.entities.Comps
+import com.dvail.clodiku.entities.DisposableComponent
 import java.util.*
 
 class NoValidEntityException : Exception()
@@ -14,7 +15,7 @@ fun entitiesWithComps(world: Engine, vararg compTypes: Class<out Component>): Im
 }
 
 fun entitiesWithCompsExcluding(world: Engine, compsAll: Array<Class<out Component>>,
-                     compsNot: Array<Class<out Component>>) : ImmutableArray<Entity> {
+                               compsNot: Array<Class<out Component>>) : ImmutableArray<Entity> {
     val family = Family.all(*compsAll).exclude(*compsNot).get()
     return world.getEntitiesFor(family)
 }
@@ -40,12 +41,18 @@ fun destroyNonPlayerEntities(world: Engine) {
     safeEntities.addAll(CompMapper.Inventory.get(player).items)
     safeEntities.addAll(CompMapper.Equipment.get(player).items.values)
 
-    val iterator = world.entities.iterator()
+    world.entities.forEach {
+        if (!safeEntities.contains(it)) {
+            disposeComponents(it.components)
+            world.removeEntity(it)
+        }
+    }
+}
 
-    while (iterator.hasNext()) {
-        val curr = iterator.next()
-        if (!safeEntities.contains(curr)) {
-            world.removeEntity(curr)
+private fun disposeComponents(comps: ImmutableArray<Component>) {
+    comps.forEach {
+        if (it is DisposableComponent) {
+            it.dispose()
         }
     }
 }
