@@ -32,6 +32,12 @@ class GameUICore(world: GameEngine, eventQ: EventQueue) {
     val subMenuActions = Table()
     val hpValue = Label("0", skin, "default-font", Color(0f, 1f, 0f, 1f))
     val mpValue = Label("0", skin, "default-font", Color(0f, 0f, 1f, 1f))
+
+    val pauseScreen = Table()
+    val continueButton = Label("Continue", skin, "default-font", Color(1f, 1f, 1f, 1f))
+    val saveButton = Label("Save", skin, "default-font", Color(1f, 1f, 1f, 1f))
+    val saveQuitButton = Label("Save & Quit", skin, "default-font", Color(1f, 1f, 1f, 1f))
+
     val stage = Stage()
 
     init {
@@ -39,11 +45,13 @@ class GameUICore(world: GameEngine, eventQ: EventQueue) {
 
         initHud()
         initMenus()
+        initPauseScreen()
     }
 
     fun update(delta: Float) {
         updateHud()
         updateMenus()
+        updatePauseScreen()
 
         if (keyJustPressed(BoundKeys.ToggleMenus)) toggleMenus()
 
@@ -81,6 +89,31 @@ class GameUICore(world: GameEngine, eventQ: EventQueue) {
         stage.addActor(menus)
     }
 
+    private fun initPauseScreen() {
+        pauseScreen.debug = true
+        pauseScreen.isVisible = false
+        pauseScreen.setFillParent(true)
+
+        val items = Table()
+        items.debug = true
+
+        items.add(continueButton).row()
+        items.add(saveButton).row()
+        items.add(saveQuitButton).row()
+        items.center().pack()
+        pauseScreen.add(items)
+        pauseScreen.center().pack()
+
+        onClick(continueButton, {
+            pauseScreen.isVisible = false
+            world.paused = false
+        })
+        onClick(saveButton, { println("Save") })
+        onClick(saveQuitButton, { println("Save & Quit") })
+
+        stage.addActor(pauseScreen)
+    }
+
     private fun updateHud() {
         val attributes = CompMapper.Attribute.get(player)
         hpValue.setText(attributes.hp.toString())
@@ -91,18 +124,27 @@ class GameUICore(world: GameEngine, eventQ: EventQueue) {
 
     }
 
+    private fun updatePauseScreen() {
+        pauseScreen.isVisible = world.paused
+    }
+
+    private fun onClick(actor: Actor, handler: () -> Unit): Actor {
+        actor.addListener(object : ClickListener() {
+            override fun clicked(e: InputEvent?, x: Float, y: Float) { handler() }
+        })
+        return actor
+    }
+
     private fun populateMenu() {
         subMenus.forEach { mainMenu.addActor(makeMenuButton(it)) }
     }
 
     private fun makeMenuButton(menuName: String): Label {
         val label = Label(menuName, skin)
+
         label.touchable = Touchable.enabled
-        label.addListener(object : ClickListener() {
-            override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                openSubMenu(menuName)
-            }
-        })
+        onClick(label, { openSubMenu(menuName) })
+
         return label
     }
 
@@ -115,7 +157,6 @@ class GameUICore(world: GameEngine, eventQ: EventQueue) {
 
     private fun openSubMenu(menuName: String) {
         subMenuContainer.clear()
-        // TODO subMenuContainer.setActor() ???
         populateSubMenu(menuName)
     }
 
@@ -133,11 +174,9 @@ class GameUICore(world: GameEngine, eventQ: EventQueue) {
                     subTable.add(Label(key.toString(), skin))
                     subTable.add(itemText).pad(5f)
                     subTable.add(Image(CompMapper.Renderable.get(eq[key]).texture))
-                    itemText.addListener(object : ClickListener() {
-                        override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                            val ent = eq[key]
-                            if (ent != null) populateActionMenu(menuName, ent)
-                        }
+                    onClick(itemText, {
+                        val ent = eq[key]
+                        if (ent != null) populateActionMenu(menuName, ent)
                     })
                 }
             }
@@ -150,12 +189,7 @@ class GameUICore(world: GameEngine, eventQ: EventQueue) {
                     subTable.row()
                     subTable.add(itemText)
                     subTable.add(itemImg)
-                    itemText.addListener(object : ClickListener() {
-                        override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                            populateActionMenu(menuName, item)
-                        }
-                    })
-
+                    onClick(itemText, { populateActionMenu(menuName, item) })
                 }
             }
         }
@@ -169,12 +203,10 @@ class GameUICore(world: GameEngine, eventQ: EventQueue) {
                 subMenuActions.add(eqText)
                 subMenuActions.row().pad(0f, 10f, 0f, 10f)
                 eqText.touchable = Touchable.enabled
-                eqText.addListener(object : ClickListener() {
-                    override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                        subMenuActions.clear()
-                        subMenuContainer.clear()
-                        eventQ.addEvent(EventType.UI, UnequipItemEvent(player, itemEntity))
-                    }
+                onClick(eqText, {
+                    subMenuActions.clear()
+                    subMenuContainer.clear()
+                    eventQ.addEvent(EventType.UI, UnequipItemEvent(player, itemEntity))
                 })
             }
             "Inventory" -> {
@@ -189,22 +221,17 @@ class GameUICore(world: GameEngine, eventQ: EventQueue) {
                 equipText.touchable = Touchable.enabled
                 dropText.touchable = Touchable.enabled
 
-                equipText.addListener(object : ClickListener() {
-                    override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                        subMenuActions.clear()
-                        subMenuContainer.clear()
-                        eventQ.addEvent(EventType.UI, EquipItemEvent(player, itemEntity))
-                    }
+                onClick(equipText, {
+                    subMenuActions.clear()
+                    subMenuContainer.clear()
+                    eventQ.addEvent(EventType.UI, EquipItemEvent(player, itemEntity))
                 })
 
-                dropText.addListener(object : ClickListener() {
-                    override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                        subMenuActions.clear()
-                        subMenuContainer.clear()
-                        eventQ.addEvent(EventType.UI, DropItemEvent(player, itemEntity))
-                    }
+                onClick(dropText, {
+                    subMenuActions.clear()
+                    subMenuContainer.clear()
+                    eventQ.addEvent(EventType.UI, DropItemEvent(player, itemEntity))
                 })
-
             }
         }
     }

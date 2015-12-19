@@ -3,19 +3,19 @@ package com.dvail.clodiku
 import com.badlogic.gdx.Screen
 import com.dvail.clodiku.events.EventQueue
 import com.dvail.clodiku.systems.*
-import com.dvail.clodiku.ui.GameUI
+import com.dvail.clodiku.ui.GameUICore
 import com.dvail.clodiku.world.GameEngine
 
 class MainScreen : Screen {
 
     val world = GameEngine()
     val eventQ = EventQueue()
-    lateinit var gameUI: GameUI
+    lateinit var gameUI: GameUICore
 
     init {
         initMain(world)
 
-        gameUI = GameUI(world, eventQ)
+        gameUI = GameUICore(world, eventQ)
 
         world.addSystem(EventSystem(eventQ))
         world.addSystem(InputSystem(eventQ))
