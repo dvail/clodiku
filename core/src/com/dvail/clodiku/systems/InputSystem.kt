@@ -4,26 +4,34 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.dvail.clodiku.combat.advanceAttackState
 import com.dvail.clodiku.combat.initAttack
-import com.dvail.clodiku.entities.*
+import com.dvail.clodiku.entities.BaseState
+import com.dvail.clodiku.entities.CompMapper
+import com.dvail.clodiku.entities.Comps
+import com.dvail.clodiku.entities.State
 import com.dvail.clodiku.events.EventQueue
 import com.dvail.clodiku.util.*
+import com.dvail.clodiku.world.GameEngine
 
 class InputSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
 
-    lateinit var world: Engine
+    lateinit var world: GameEngine
     lateinit var player: Entity
     var delta = 0f
 
     lateinit var playerState: State
 
     override fun addedToEngine(engine: Engine) {
-        world = engine;
+        world = engine as GameEngine
         player = firstEntityWithComp(world, Comps.Player)
         playerState = CompMapper.State.get(player)
     }
 
     override fun update(sysDelta: Float) {
+        if (keyJustPressed(BoundKeys.Pause)) world.paused = !world.paused
+        if (world.paused) return
+
         delta = sysDelta
+
         when (playerState.current) {
             BaseState.Walking -> doFreeInput()
             BaseState.Standing -> doFreeInput()

@@ -12,7 +12,10 @@ import com.dvail.clodiku.entities.Comps
 import com.dvail.clodiku.entities.MobState
 import com.dvail.clodiku.events.EventQueue
 import com.dvail.clodiku.pathfinding.AStar
-import com.dvail.clodiku.util.*
+import com.dvail.clodiku.util.Movement
+import com.dvail.clodiku.util.entitiesWithComps
+import com.dvail.clodiku.util.firstEntityWithComp
+import com.dvail.clodiku.world.GameEngine
 import com.dvail.clodiku.world.Maps
 import java.util.*
 
@@ -22,17 +25,19 @@ class MobAISystem(eventQ: EventQueue) : CoreSystem(eventQ) {
     private val ATTACK_RANGE = 50f
     private val WANDER_DISTANCE = 800
 
-    lateinit var world: Engine
+    lateinit var world: GameEngine
     lateinit var player: Entity
     var delta = 0f
     val random = Random()
 
     override fun addedToEngine(engine: Engine) {
-        world = engine
+        world = engine as GameEngine
         player = firstEntityWithComp(world, Comps.Player)
     }
 
     override fun update(sysDelta: Float) {
+        if (world.paused) return
+
         delta = sysDelta
 
         val mobs = entitiesWithComps(world, Comps.MobAI)

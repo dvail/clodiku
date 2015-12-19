@@ -11,6 +11,7 @@ object BoundKeys {
     val MeleeAttack = Input.Keys.P
     val ToggleMenus = Input.Keys.TAB
     val GetItem = Input.Keys.L
+    val Pause = Input.Keys.ESCAPE
 }
 
 fun keyPressed(key: Int) = Gdx.input.isKeyPressed(key)

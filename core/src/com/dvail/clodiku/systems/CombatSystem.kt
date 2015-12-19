@@ -8,23 +8,29 @@ import com.dvail.clodiku.combat.calcAttackDamage
 import com.dvail.clodiku.combat.getAttackers
 import com.dvail.clodiku.combat.updateHitBox
 import com.dvail.clodiku.entities.*
-import com.dvail.clodiku.events.MeleeHitEvent
 import com.dvail.clodiku.events.EventQueue
 import com.dvail.clodiku.events.EventType
-import com.dvail.clodiku.util.*
+import com.dvail.clodiku.events.MeleeHitEvent
+import com.dvail.clodiku.util.Movement
+import com.dvail.clodiku.util.entitiesWithComps
+import com.dvail.clodiku.util.firstEntityWithComp
+import com.dvail.clodiku.util.hasComp
+import com.dvail.clodiku.world.GameEngine
 
 class CombatSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
 
-    lateinit var world: Engine
+    lateinit var world: GameEngine
     lateinit var player: Entity
     var delta = 0f
 
     override fun addedToEngine(engine: Engine) {
-        world = engine;
+        world = engine as GameEngine
         player = firstEntityWithComp(world, Comps.Player)
     }
 
     override fun update(sysDelta: Float) {
+        if (world.paused) return
+
         delta = sysDelta
 
         val attackers = getAttackers(world)
