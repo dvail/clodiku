@@ -11,7 +11,7 @@ import com.dvail.clodiku.events.EventQueue
 import com.dvail.clodiku.events.EventType
 import com.dvail.clodiku.events.SwapAreaEvent
 import com.dvail.clodiku.pathfinding.AStar
-import com.dvail.clodiku.world.*
+import com.dvail.clodiku.world.Maps
 
 object Movement {
 
@@ -71,9 +71,13 @@ object Movement {
     }
 
     fun grabItem(world: Engine, entity: Entity) {
+        val entityPos = CompMapper.Spatial.get(entity).pos
+
         val targetItem = entitiesWithComps(world, Comps.Spatial, Comps.Item).filter {
             !CompMapper.Spatial.get(it).pos.equals(Carried)
-        }.first()
+        }.filter {
+            Intersector.overlaps(CompMapper.Spatial.get(it).pos, entityPos)
+        }.firstOrNull()
 
         if (targetItem != null) {
             CompMapper.Inventory.get(entity).items.add(targetItem)
