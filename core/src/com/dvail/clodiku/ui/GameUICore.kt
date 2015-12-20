@@ -1,6 +1,7 @@
 package com.dvail.clodiku.ui
 
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Actor
@@ -9,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.dvail.clodiku.StartScreen
 import com.dvail.clodiku.entities.CompMapper
 import com.dvail.clodiku.entities.Comps
 import com.dvail.clodiku.events.*
@@ -17,7 +19,17 @@ import com.dvail.clodiku.util.firstEntityWithComp
 import com.dvail.clodiku.util.keyJustPressed
 import com.dvail.clodiku.world.GameEngine
 
-class GameUICore(world: GameEngine, eventQ: EventQueue) {
+object UI {
+    fun onClick(actor: Actor, handler: () -> Unit): Actor {
+        actor.addListener(object : ClickListener() {
+            override fun clicked(e: InputEvent?, x: Float, y: Float) { handler() }
+        })
+        return actor
+    }
+}
+
+class GameUICore(mainGame: Game, world: GameEngine, eventQ: EventQueue) {
+    val game = mainGame
     val world = world
     val eventQ = eventQ
     val player = firstEntityWithComp(world, Comps.Player)
@@ -104,12 +116,23 @@ class GameUICore(world: GameEngine, eventQ: EventQueue) {
         pauseScreen.add(items)
         pauseScreen.center().pack()
 
-        onClick(continueButton, {
+        UI.onClick(continueButton, {
             pauseScreen.isVisible = false
             world.paused = false
         })
-        onClick(saveButton, { println("Save") })
-        onClick(saveQuitButton, { println("Save & Quit") })
+
+        UI.onClick(saveButton, {
+            println("Implement saving")
+        })
+
+        UI.onClick(saveQuitButton, {
+            println("Implement saving")
+            println("Clean up all game resources")
+            println("This just leaked a bunch of memory")
+            game.screen.dispose()
+            stage.dispose()
+            game.screen = StartScreen(game)
+        })
 
         stage.addActor(pauseScreen)
     }
@@ -128,13 +151,6 @@ class GameUICore(world: GameEngine, eventQ: EventQueue) {
         pauseScreen.isVisible = world.paused
     }
 
-    private fun onClick(actor: Actor, handler: () -> Unit): Actor {
-        actor.addListener(object : ClickListener() {
-            override fun clicked(e: InputEvent?, x: Float, y: Float) { handler() }
-        })
-        return actor
-    }
-
     private fun populateMenu() {
         subMenus.forEach { mainMenu.addActor(makeMenuButton(it)) }
     }
@@ -143,7 +159,7 @@ class GameUICore(world: GameEngine, eventQ: EventQueue) {
         val label = Label(menuName, skin)
 
         label.touchable = Touchable.enabled
-        onClick(label, { openSubMenu(menuName) })
+        UI.onClick(label, { openSubMenu(menuName) })
 
         return label
     }
@@ -174,7 +190,7 @@ class GameUICore(world: GameEngine, eventQ: EventQueue) {
                     subTable.add(Label(key.toString(), skin))
                     subTable.add(itemText).pad(5f)
                     subTable.add(Image(CompMapper.Renderable.get(eq[key]).texture))
-                    onClick(itemText, {
+                    UI.onClick(itemText, {
                         val ent = eq[key]
                         if (ent != null) populateActionMenu(menuName, ent)
                     })
@@ -189,7 +205,7 @@ class GameUICore(world: GameEngine, eventQ: EventQueue) {
                     subTable.row()
                     subTable.add(itemText)
                     subTable.add(itemImg)
-                    onClick(itemText, { populateActionMenu(menuName, item) })
+                    UI.onClick(itemText, { populateActionMenu(menuName, item) })
                 }
             }
         }
@@ -203,7 +219,7 @@ class GameUICore(world: GameEngine, eventQ: EventQueue) {
                 subMenuActions.add(eqText)
                 subMenuActions.row().pad(0f, 10f, 0f, 10f)
                 eqText.touchable = Touchable.enabled
-                onClick(eqText, {
+                UI.onClick(eqText, {
                     subMenuActions.clear()
                     subMenuContainer.clear()
                     eventQ.addEvent(EventType.UI, UnequipItemEvent(player, itemEntity))
@@ -221,13 +237,13 @@ class GameUICore(world: GameEngine, eventQ: EventQueue) {
                 equipText.touchable = Touchable.enabled
                 dropText.touchable = Touchable.enabled
 
-                onClick(equipText, {
+                UI.onClick(equipText, {
                     subMenuActions.clear()
                     subMenuContainer.clear()
                     eventQ.addEvent(EventType.UI, EquipItemEvent(player, itemEntity))
                 })
 
-                onClick(dropText, {
+                UI.onClick(dropText, {
                     subMenuActions.clear()
                     subMenuContainer.clear()
                     eventQ.addEvent(EventType.UI, DropItemEvent(player, itemEntity))

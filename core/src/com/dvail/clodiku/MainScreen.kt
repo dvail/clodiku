@@ -1,13 +1,15 @@
 package com.dvail.clodiku
 
+import com.badlogic.gdx.Game
 import com.badlogic.gdx.Screen
 import com.dvail.clodiku.events.EventQueue
 import com.dvail.clodiku.systems.*
 import com.dvail.clodiku.ui.GameUICore
 import com.dvail.clodiku.world.GameEngine
 
-class MainScreen : Screen {
+class MainScreen(mainGame: Game) : Screen {
 
+    val game = mainGame
     val world = GameEngine()
     val eventQ = EventQueue()
     lateinit var gameUI: GameUICore
@@ -15,7 +17,7 @@ class MainScreen : Screen {
     init {
         initMain(world)
 
-        gameUI = GameUICore(world, eventQ)
+        gameUI = GameUICore(game, world, eventQ)
 
         world.addSystem(EventSystem(eventQ))
         world.addSystem(InputSystem(eventQ))
@@ -38,6 +40,7 @@ class MainScreen : Screen {
     override fun resume() {
     }
     override fun dispose() {
+        println("Clean up all game resources here!")
     }
     override fun show() {
     }
