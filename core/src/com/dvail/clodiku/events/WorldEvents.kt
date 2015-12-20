@@ -6,6 +6,7 @@ import com.dvail.clodiku.entities.CompMapper
 import com.dvail.clodiku.entities.Comps
 import com.dvail.clodiku.initArea
 import com.dvail.clodiku.initMap
+import com.dvail.clodiku.saveArea
 import com.dvail.clodiku.util.destroyNonPlayerEntities
 import com.dvail.clodiku.util.firstEntityWithComp
 import com.dvail.clodiku.world.Maps
@@ -27,6 +28,7 @@ data class SwapAreaEvent(val transportZone: MapObject): Event {
             playerPos.x = newVector.x
             playerPos.y = newVector.y
 
+            saveArea(world)
             destroyNonPlayerEntities(world)
             initMap(world, newArea)
             initArea(world, newArea)

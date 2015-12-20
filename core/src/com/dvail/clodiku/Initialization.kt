@@ -2,10 +2,20 @@ package com.dvail.clodiku
 
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
+import com.dvail.clodiku.data.DataLoader
+import com.dvail.clodiku.data.DataSaver
 import com.dvail.clodiku.entities.*
+import com.dvail.clodiku.world.GameEngine
 import com.dvail.clodiku.world.Maps
 
+// TODO Refactor this entire file out to a more appropriate place
 val dataLoader = DataLoader()
+val dataSaver = DataSaver()
+
+fun saveArea(world: Engine) {
+    val saveLocation = (world as GameEngine).saveLocation
+
+}
 
 fun initArea(world: Engine, mapName: String) {
     dataLoader.loadArea(world, mapName)
@@ -16,7 +26,7 @@ fun initMap(world: Engine, mapName: String) {
     val grid = Maps.loadMapGrid(map)
 
     val mapEntity = Entity()
-    mapEntity.add(WorldMap(map, grid))
+    mapEntity.add(WorldMap(mapName, map, grid))
     world.addEntity(mapEntity)
 }
 

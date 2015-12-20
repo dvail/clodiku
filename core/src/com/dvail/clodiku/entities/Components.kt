@@ -64,7 +64,7 @@ interface DisposableComponent {
 
 data class Player(var name: String) : Component
 
-data class WorldMap(var tileMap: TiledMap, var grid: Array<IntArray>) : Component
+data class WorldMap(var mapName: String, var tileMap: TiledMap, var grid: Array<IntArray>) : Component
 
 data class Spatial(var pos: Circle, var direction: Direction) : Component {
     constructor(pos: Circle) : this(pos, Direction.None) {}
