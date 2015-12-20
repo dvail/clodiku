@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.dvail.clodiku.StartScreen
+import com.dvail.clodiku.dataSaver
 import com.dvail.clodiku.entities.CompMapper
 import com.dvail.clodiku.entities.Comps
 import com.dvail.clodiku.events.*
@@ -123,6 +124,8 @@ class GameUICore(mainGame: Game, world: GameEngine, eventQ: EventQueue) {
 
         UI.onClick(saveButton, {
             println("Implement saving")
+            // TODO make dataSaver not global
+            dataSaver.saveGame(world, world.saveLocation)
         })
 
         UI.onClick(saveQuitButton, {

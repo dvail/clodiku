@@ -56,5 +56,43 @@ object ComponentFactory {
         }
     }
 
+    fun createToml(component: Component) : String {
+        return when (component) {
+            is Renderable -> {
+                "Renderable = {textureSource = \"${component.textureSource}\"}\n"
+            }
+            is AnimatedRenderable -> {
+                "AnimatedRenderable = {animDir = \"${component.animDir}\"}\n"
+            }
+            is Spatial -> {
+                // Check Carried
+                "Spatial = {x = ${component.pos.x}, y = ${component.pos.y}, " +
+                        "radius = ${component.pos.radius}, direction =\"${component.direction.name}\"}\n"
+            }
+            /*
+            is State -> {
+            }
+            is MobAI -> {
+            }
+            is Inventory -> {
+            }
+            is Item -> {
+            }
+            is Equipment -> {
+            }
+            is EqItem -> {
+            }
+            is EqWeapon -> {
+            }
+            is EqArmor -> {
+            }
+            is Attribute -> {
+            }
+            */
+            else -> ""
+        }
+
+    }
+
 }
 

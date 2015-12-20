@@ -2,23 +2,24 @@ package com.dvail.clodiku
 
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.Screen
-import com.dvail.clodiku.data.DataSaver
 import com.dvail.clodiku.events.EventQueue
+import com.dvail.clodiku.file.FileUtils
 import com.dvail.clodiku.systems.*
 import com.dvail.clodiku.ui.GameUICore
 import com.dvail.clodiku.world.GameEngine
 
-class MainScreen(mainGame: Game, saveLocation: String? = null) : Screen {
+class MainScreen(mainGame: Game, savedGame: String? = null) : Screen {
 
     val game = mainGame
-    val world = GameEngine()
     val eventQ = EventQueue()
     lateinit var gameUI: GameUICore
+    lateinit var world: GameEngine
 
     init {
-        initMain(world)
+        val saveLocation = savedGame ?: FileUtils.newSaveDirectory()
+        world = GameEngine(saveLocation)
 
-        world.saveLocation = saveLocation ?: DataSaver.newSaveDirectory()
+        initMain(world)
 
         gameUI = GameUICore(game, world, eventQ)
 

@@ -9,11 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.dvail.clodiku.data.DataSaver
+import com.dvail.clodiku.file.FileUtils
 import com.dvail.clodiku.ui.UI
 
 class StartScreen(mainGame: Game) : Screen {
-
     val game = mainGame
     val skin = Skin(Gdx.files.internal("./ui/uiskin.json"))
     val stage = Stage()
@@ -51,13 +50,13 @@ class StartScreen(mainGame: Game) : Screen {
     private fun showSavedGames() {
         options.remove()
 
-        DataSaver.getSavedGames().forEach { file ->
+        FileUtils.getSavedGames().forEach { file ->
             val gameName = file.name
             val gameLabel = Label(gameName, skin, "default-font", Color(1f, 1f, 1f, 1f))
 
             UI.onClick(gameLabel, {
                 this.dispose()
-                game.screen = MainScreen(game, gameName)
+                game.screen = MainScreen(game, file.absolutePath)
             })
 
             savedGames.add(gameLabel).row()

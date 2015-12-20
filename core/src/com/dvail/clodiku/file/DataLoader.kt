@@ -1,4 +1,4 @@
-package com.dvail.clodiku.data
+package com.dvail.clodiku.file
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Engine
@@ -11,7 +11,7 @@ import com.moandjiezana.toml.Toml
 import java.io.File
 import java.util.*
 
-//TODO Define a "conventions" file for how TOML data files should look
+//TODO Define a "conventions" file for how TOML file files should look
 class DataLoader() {
 
     val compStringMap = HashMap<String, Class<out Component>>()

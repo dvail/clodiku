@@ -2,9 +2,9 @@ package com.dvail.clodiku
 
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
-import com.dvail.clodiku.data.DataLoader
-import com.dvail.clodiku.data.DataSaver
 import com.dvail.clodiku.entities.*
+import com.dvail.clodiku.file.DataLoader
+import com.dvail.clodiku.file.DataSaver
 import com.dvail.clodiku.world.GameEngine
 import com.dvail.clodiku.world.Maps
 
@@ -15,6 +15,7 @@ val dataSaver = DataSaver()
 fun saveArea(world: Engine) {
     val saveLocation = (world as GameEngine).saveLocation
 
+    dataSaver.saveArea(world, saveLocation)
 }
 
 fun initArea(world: Engine, mapName: String) {
