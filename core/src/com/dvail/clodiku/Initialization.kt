@@ -2,6 +2,7 @@ package com.dvail.clodiku
 
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
+import com.dvail.clodiku.combat.WeaponClass
 import com.dvail.clodiku.entities.*
 import com.dvail.clodiku.file.DataLoader
 import com.dvail.clodiku.file.DataSaver
@@ -48,7 +49,7 @@ private fun initPlayer(world: Engine) {
     weapon.add(Spatial(Carried))
     weapon.add(Renderable("./items/emerald-spear.png"))
     weapon.add(EqItem(hr = 1, slot = EqSlot.Held))
-    weapon.add(EqWeapon(DamageType.Pierce, 5, 4f))
+    weapon.add(EqWeapon(WeaponClass.Spear, DamageType.Pierce, 5, 4f))
 
     armor.add(Item("silver armor", "This armor is made of silver"))
     armor.add(Spatial(Carried))

@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.Circle
+import com.dvail.clodiku.combat.WeaponClass
 import com.dvail.clodiku.pathfinding.AStar
 import com.dvail.clodiku.util.makeRegions
 import com.dvail.clodiku.util.makeTexture
@@ -116,7 +117,7 @@ data class EqItem(var slot: EqSlot, var hr: Int = 0, var dr: Int = 0, var ed: In
 
 // A weapon component has a hit box that checks for collisions, as well as a function that describes the motion of
 // an attack
-data class EqWeapon(var damType: DamageType, var baseDamage: Int, var size: Float) : Component {
+data class EqWeapon(var weaponClass: WeaponClass, var damType: DamageType, var baseDamage: Int, var size: Float) : Component {
     var hitBox = Circle(0f, 0f, size)
     var hitSet = HashSet<Entity>()
 }

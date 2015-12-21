@@ -1,32 +1,32 @@
 [[mob]]
 components = {
-    Spatial = {x = 300.0, y = 100.0, radius = 14.0, direction = "West"},
-    State = {baseState = "Standing"},
-    AnimatedRenderable = { animDir = "./mob/orc/" },
+    Spatial = {x = 300.0, y = 100.0, radius = 14.0, direction = 'West'},
+    State = {baseState = 'Standing'},
+    AnimatedRenderable = { animDir = './mob/orc/' },
     Equipment = {},
     Inventory = {},
-    MobAI = { mobState = "Wander" },
+    MobAI = { mobState = 'Wander' },
     Attribute = {}
 }
 inventory = []
 equipment = {
     Held = {
-        Spatial = {pos = "Carried"},
-        Renderable = {textureSource = "./items/steel-sword.png"},
-        Item = {name = "A short sword", description = "This short sword is dull"},
-        EqItem = {hr = 1, slot = "Held"},
-        EqWeapon = { type = "sword", baseDamage = 5, size = 4.0}
+        Spatial = {pos = 'Carried'},
+        Renderable = {textureSource = './items/steel-sword.png'},
+        Item = {name = 'A short sword', description = 'This short sword is dull'},
+        EqItem = {hr = 1, slot = 'Held'},
+        EqWeapon = { weaponClass = 'Sword', baseDamage = 5, size = 4.0}
     }
 }
 
 [[mob]]
 components = {
-    Spatial = {x = 920.0, y = 100.0, radius = 14.0, direction = "West"},
-    State = {baseState = "Standing"},
-    AnimatedRenderable = { animDir = "./mob/orc/" },
+    Spatial = {x = 920.0, y = 100.0, radius = 14.0, direction = 'West'},
+    State = {baseState = 'Standing'},
+    AnimatedRenderable = { animDir = './mob/orc/' },
     Equipment = {},
     Inventory = {},
-    MobAI = { mobState = "Wander" },
+    MobAI = { mobState = 'Wander' },
     Attribute = {}
 
 }
@@ -35,12 +35,12 @@ equipment = {}
 
 [[mob]]
 components = {
-    Spatial = {x = 100.0, y = 200.0, radius = 14.0, direction = "West"},
-    State = {baseState = "Standing"},
-    AnimatedRenderable = { animDir = "./mob/orc/" },
+    Spatial = {x = 100.0, y = 200.0, radius = 14.0, direction = 'West'},
+    State = {baseState = 'Standing'},
+    AnimatedRenderable = { animDir = './mob/orc/' },
     Equipment = {},
     Inventory = {},
-    MobAI = { mobState = "Wander" },
+    MobAI = { mobState = 'Wander' },
     Attribute = {}
 
 }
@@ -49,12 +49,12 @@ equipment = {}
 
 [[mob]]
 components = {
-    Spatial = {x = 100.0, y = 500.0, radius = 14.0, direction = "West"},
-    State = {baseState = "Standing"},
-    AnimatedRenderable = { animDir = "./mob/orc/" },
+    Spatial = {x = 100.0, y = 500.0, radius = 14.0, direction = 'West'},
+    State = {baseState = 'Standing'},
+    AnimatedRenderable = { animDir = './mob/orc/' },
     Equipment = {},
     Inventory = {},
-    MobAI = { mobState = "Wander" },
+    MobAI = { mobState = 'Wander' },
     Attribute = {}
 
 }
@@ -63,12 +63,12 @@ equipment = {}
 
 [[mob]]
 components = {
-    Spatial = {x = 700.0, y = 20.0, radius = 14.0, direction = "West"},
-    State = {baseState = "Standing"},
-    AnimatedRenderable = { animDir = "./mob/orc/" },
+    Spatial = {x = 700.0, y = 20.0, radius = 14.0, direction = 'West'},
+    State = {baseState = 'Standing'},
+    AnimatedRenderable = { animDir = './mob/orc/' },
     Equipment = {},
     Inventory = {},
-    MobAI = { mobState = "Wander" },
+    MobAI = { mobState = 'Wander' },
     Attribute = {}
 
 }
@@ -78,10 +78,10 @@ equipment = {}
 [[free-item]]
 components = {
     Spatial = {x = 180.0, y = 180.0, radius = 16.0},
-    Renderable = {textureSource = "./items/steel-sword.png"},
-    Item = {name = "A short sword", description = "This short sword is dull"},
-    EqItem = {hr = 1, slot = "Held"},
-    EqWeapon = { type = "sword", baseDamage = 5, size = 4.0}
+    Renderable = {textureSource = './items/steel-sword.png'},
+    Item = {name = 'A short sword', description = 'This short sword is dull'},
+    EqItem = {hr = 1, slot = 'Held'},
+    EqWeapon = { weaponClass = 'Sword', baseDamage = 5, size = 4.0}
 }
 
 [[container]]

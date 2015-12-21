@@ -1,17 +1,24 @@
 package com.dvail.clodiku.combat
 
 import com.badlogic.ashley.core.Entity
-import com.dvail.clodiku.entities.*
+import com.dvail.clodiku.entities.CompMapper
+import com.dvail.clodiku.entities.DamageType
+import com.dvail.clodiku.entities.Direction
+import com.dvail.clodiku.entities.EqWeapon
 
 object WeaponRange {
     val Sword = 28
 }
 
-fun getDefaultWeaponDamType(weaponType: String) : DamageType {
-    return when (weaponType) {
-        "sword" -> DamageType.Slash
-        "spear" -> DamageType.Pierce
-        "mace" -> DamageType.Bash
+enum class WeaponClass {
+    Sword, Spear, Mace
+}
+
+fun getDefaultWeaponDamType(weaponClass: WeaponClass) : DamageType {
+    return when (weaponClass) {
+        WeaponClass.Sword -> DamageType.Slash
+        WeaponClass.Spear -> DamageType.Pierce
+        WeaponClass.Mace -> DamageType.Bash
         else -> DamageType.Null
     }
 }

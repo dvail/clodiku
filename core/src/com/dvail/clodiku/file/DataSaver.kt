@@ -21,28 +21,24 @@ class DataSaver {
     private fun savePlayer(world: Engine, saveLocation: String) {
         val player = firstEntityWithComp(world, Comps.Player)
         val worldMap = firstEntityWithComp(world, Comps.WorldMap)
-
         val playerFileTmp = File(saveLocation + "/PLAYER.toml.tmp")
-
         val areaName = CompMapper.WorldMap.get(worldMap).mapName
 
-        val playerComp = CompMapper.Player.get(player)
-        val spatialComp = CompMapper.Spatial.get(player)
-
-        if (playerFileTmp.exists()) {
-            playerFileTmp.delete()
-        }
+        if (playerFileTmp.exists()) playerFileTmp.delete()
 
         playerFileTmp.createNewFile()
 
         // TODO There is probably a more efficient way of doing this
 
-        playerFileTmp.appendText("area = \"$areaName\"\n")
+        playerFileTmp.appendText("area = '$areaName' \n")
 
         playerFileTmp.appendText("components = {\n")
-        player.components.forEach { comp ->
-            playerFileTmp.appendText(ComponentFactory.createToml(comp))
-        }
+
+        val compText = player.components.map { comp ->
+            ComponentFactory.createToml(comp)
+        }.joinToString(", \n")
+
+        playerFileTmp.appendText(compText)
         playerFileTmp.appendText("}\n")
 
         playerFileTmp.appendText("inventory = [\n")
