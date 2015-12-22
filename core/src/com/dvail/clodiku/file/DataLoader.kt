@@ -3,10 +3,7 @@ package com.dvail.clodiku.file
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
-import com.dvail.clodiku.entities.CompMapper
-import com.dvail.clodiku.entities.ComponentFactory
-import com.dvail.clodiku.entities.Comps
-import com.dvail.clodiku.entities.EqSlot
+import com.dvail.clodiku.entities.*
 import com.moandjiezana.toml.Toml
 import java.io.File
 import java.util.*

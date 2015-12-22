@@ -1,11 +1,11 @@
 [[mob]]
 components = {
     Spatial = {x = 300.0, y = 100.0, radius = 14.0, direction = 'West'},
-    State = {baseState = 'Standing'},
+    State = {current = 'Standing'},
     AnimatedRenderable = { animDir = './mob/orc/' },
     Equipment = {},
     Inventory = {},
-    MobAI = { mobState = 'Wander' },
+    MobAI = { state = 'Wander' },
     Attribute = {}
 }
 inventory = []
@@ -22,11 +22,11 @@ equipment = {
 [[mob]]
 components = {
     Spatial = {x = 920.0, y = 100.0, radius = 14.0, direction = 'West'},
-    State = {baseState = 'Standing'},
+    State = {current = 'Standing'},
     AnimatedRenderable = { animDir = './mob/orc/' },
     Equipment = {},
     Inventory = {},
-    MobAI = { mobState = 'Wander' },
+    MobAI = { state = 'Wander' },
     Attribute = {}
 
 }
@@ -36,11 +36,11 @@ equipment = {}
 [[mob]]
 components = {
     Spatial = {x = 100.0, y = 200.0, radius = 14.0, direction = 'West'},
-    State = {baseState = 'Standing'},
+    State = {current = 'Standing'},
     AnimatedRenderable = { animDir = './mob/orc/' },
     Equipment = {},
     Inventory = {},
-    MobAI = { mobState = 'Wander' },
+    MobAI = { state = 'Wander' },
     Attribute = {}
 
 }
@@ -50,11 +50,11 @@ equipment = {}
 [[mob]]
 components = {
     Spatial = {x = 100.0, y = 500.0, radius = 14.0, direction = 'West'},
-    State = {baseState = 'Standing'},
+    State = {current = 'Standing'},
     AnimatedRenderable = { animDir = './mob/orc/' },
     Equipment = {},
     Inventory = {},
-    MobAI = { mobState = 'Wander' },
+    MobAI = { state = 'Wander' },
     Attribute = {}
 
 }
@@ -64,11 +64,11 @@ equipment = {}
 [[mob]]
 components = {
     Spatial = {x = 700.0, y = 20.0, radius = 14.0, direction = 'West'},
-    State = {baseState = 'Standing'},
+    State = {current = 'Standing'},
     AnimatedRenderable = { animDir = './mob/orc/' },
     Equipment = {},
     Inventory = {},
-    MobAI = { mobState = 'Wander' },
+    MobAI = { state = 'Wander' },
     Attribute = {}
 
 }

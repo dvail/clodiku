@@ -42,12 +42,33 @@ class DataSaver {
         playerFileTmp.appendText("}\n")
 
         playerFileTmp.appendText("inventory = [\n")
-        // write inventory
-        playerFileTmp.appendText("]\n")
+        val inventoryItems = CompMapper.Inventory.get(player).items
 
-        playerFileTmp.appendText("equipment = { ")
-        // write equipment
-        playerFileTmp.appendText("}\n")
+        val itemCompText = inventoryItems.map { item ->
+            item.components.map { comp ->
+                ComponentFactory.createToml(comp)
+            }.joinToString(", \n")
+        }
+
+        if (itemCompText.size > 0) {
+            playerFileTmp.appendText("{ \n")
+            playerFileTmp.appendText(itemCompText.joinToString("\n}, \n { \n"))
+            playerFileTmp.appendText(("}"))
+        }
+
+        playerFileTmp.appendText("]\n")
+        playerFileTmp.appendText("equipment = { \n")
+
+        val equipmentItems = CompMapper.Equipment.get(player).items
+
+        val eqCompText = equipmentItems.map { entry ->
+            entry.key.name + " = {\n" + entry.value.components.map { comp ->
+                ComponentFactory.createToml(comp)
+            }.joinToString(", \n") + " } \n"
+        }.joinToString(", \n")
+
+        playerFileTmp.appendText(eqCompText)
+        playerFileTmp.appendText("\n }\n")
 
         playerFileTmp.renameTo(File(saveLocation + "/PLAYER.toml"))
     }

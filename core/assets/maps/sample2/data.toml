@@ -1,11 +1,11 @@
 [[mob]]
 components = {
-    Spatial = {x = 300.0, y = 100.0, radius = 14.0, direction = "West"},
-    State = {baseState = "Standing"},
-    AnimatedRenderable = { animDir = "./mob/orc/" },
+    Spatial = {x = 300.0, y = 100.0, radius = 14.0, direction = 'West'},
+    State = {current = 'Standing'},
+    AnimatedRenderable = { animDir = './mob/orc/' },
     Equipment = {},
     Inventory = {},
-    MobAI = { mobState = "Wander" },
+    MobAI = { state = 'Wander' },
     Attribute = {}
 }
 inventory = []

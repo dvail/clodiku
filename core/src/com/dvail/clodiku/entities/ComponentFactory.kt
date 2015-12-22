@@ -8,53 +8,51 @@ import com.moandjiezana.toml.Toml
 object ComponentFactory {
 
     fun createComponent(clazz: Class<out Component>?, toml: Toml): Component {
-        when (clazz) {
+        return when (clazz) {
             Comps.Renderable -> {
-                return Renderable(toml.getString("textureSource"))
+                Renderable(toml.getString("textureSource"))
             }
             Comps.AnimatedRenderable -> {
-                return AnimatedRenderable(toml.getString("animDir"))
+                 AnimatedRenderable(toml.getString("animDir"))
             }
             Comps.Spatial -> {
                 if (toml.containsPrimitive("pos") && toml.getString("pos").equals("Carried")) {
-                    return Spatial(Carried)
+                     Spatial(Carried)
                 } else {
-                    return Spatial(toml.getDouble("x").toFloat(), toml.getDouble("y").toFloat(), toml.getDouble("radius").toFloat())
+                     Spatial(toml.getDouble("x").toFloat(), toml.getDouble("y").toFloat(), toml.getDouble("radius").toFloat())
                 }
             }
             Comps.State -> {
-                return State(BaseState.valueOf(toml.getString("baseState")))
+                 State(BaseState.valueOf(toml.getString("current")))
             }
             Comps.MobAI -> {
-                return MobAI(MobState.valueOf(toml.getString("mobState")))
+                 MobAI(MobState.valueOf(toml.getString("state")))
             }
             Comps.Inventory -> {
-                return Inventory()
+                 Inventory()
             }
             Comps.Item -> {
-                return Item(toml.getString("name"), toml.getString("description"))
+                 Item(toml.getString("name"), toml.getString("description"))
             }
             Comps.Equipment -> {
-                return Equipment()
+                 Equipment()
             }
             Comps.EqItem -> {
-                return EqItem(EqSlot.valueOf(toml.getString("slot")))
+                 EqItem(EqSlot.valueOf(toml.getString("slot")))
             }
             Comps.EqWeapon -> {
                 val weaponClass = WeaponClass.valueOf(toml.getString("weaponClass"))
                 val damType = getDefaultWeaponDamType(weaponClass)
-                return EqWeapon(weaponClass = weaponClass, damType = damType,
+                 EqWeapon(weaponClass = weaponClass, damType = damType,
                         baseDamage = toml.getLong("baseDamage").toInt(), size = toml.getDouble("size").toFloat())
             }
             Comps.EqArmor -> {
-                return EqArmor(toml.getLong("bulk").toInt())
+                 EqArmor(toml.getLong("bulk").toInt())
             }
             Comps.Attribute -> {
-                return Attribute()
+                 Attribute()
             }
-            else -> {
-                throw Exception("Invalid component type read from TOML file.")
-            }
+            else -> throw Exception("Invalid component type read from TOML file.")
         }
     }
 
@@ -78,10 +76,10 @@ object ComponentFactory {
                 }
             }
             is State -> {
-                "State = { baseState = '${component.current.name}' }"
+                "State = { current = '${component.current.name}' }"
             }
             is MobAI -> {
-                "MobAI = { mobState = '${component.state}', thinkSpeed = ${component.thinkSpeed} }"
+                "MobAI = { state = '${component.state}', thinkSpeed = ${component.thinkSpeed} }"
             }
             is Inventory -> {
                 "Inventory = {}"
