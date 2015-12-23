@@ -13,10 +13,10 @@ import com.dvail.clodiku.world.Maps
 val dataLoader = DataLoader()
 val dataSaver = DataSaver()
 
-fun saveArea(world: Engine) {
+fun saveGame(world: Engine) {
     val saveLocation = (world as GameEngine).saveLocation
 
-    dataSaver.saveArea(world, saveLocation)
+    dataSaver.saveGame(world, saveLocation)
 }
 
 fun initArea(world: Engine, mapName: String) {

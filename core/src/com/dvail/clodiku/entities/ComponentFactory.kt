@@ -59,44 +59,44 @@ object ComponentFactory {
     fun createToml(component: Component) : String {
         return when (component) {
             is Player -> {
-                "Player = { name = '${component.name}'}"
+                "Player = { name = '''${component.name}'''}"
             }
             is Renderable -> {
-                "Renderable = { textureSource = '${component.textureSource}'}"
+                "Renderable = { textureSource = '''${component.textureSource}'''}"
             }
             is AnimatedRenderable -> {
-                "AnimatedRenderable = { animDir = '${component.animDir}'}"
+                "AnimatedRenderable = { animDir = '''${component.animDir}'''}"
             }
             is Spatial -> {
                 if (component.pos.equals(Carried)) {
-                    "Spatial = { pos = 'Carried'}"
+                    "Spatial = { pos = '''Carried'''}"
                 } else {
                     "Spatial = { x = ${component.pos.x}, y = ${component.pos.y}, " +
-                            "radius = ${component.pos.radius}, direction ='${component.direction.name}'}"
+                            "radius = ${component.pos.radius}, direction = '''${component.direction.name}'''}"
                 }
             }
             is State -> {
-                "State = { current = '${component.current.name}' }"
+                "State = { current = '''${component.current.name}''' }"
             }
             is MobAI -> {
-                "MobAI = { state = '${component.state}', thinkSpeed = ${component.thinkSpeed} }"
+                "MobAI = { state = '''${component.state}''', thinkSpeed = ${component.thinkSpeed} }"
             }
             is Inventory -> {
                 "Inventory = {}"
             }
             is Item -> {
-                "Item = {name = '${component.name}', description = '${component.description}'}"
+                "Item = {name = '''${component.name}''', description = '''${component.description}'''}"
             }
             is Equipment -> {
                 "Equipment = {}"
             }
             is EqItem -> {
-                "EqItem = { slot = '${component.slot.name}', hr = ${component.hr}, dr = ${component.dr}, " +
+                "EqItem = { slot = '''${component.slot.name}''', hr = ${component.hr}, dr = ${component.dr}, " +
                         "ed = ${component.ed}, ms = ${component.ms}, pd = ${component.pd}, " +
                         "saves = ${component.saves} }"
             }
             is EqWeapon -> {
-                "EqWeapon = { weaponClass = '${component.weaponClass.name}', damType = '${component.damType.name}', " +
+                "EqWeapon = { weaponClass = '''${component.weaponClass.name}''', damType = '''${component.damType.name}''', " +
                         "baseDamage = ${component.baseDamage}, size = ${component.size} }"
             }
             is EqArmor -> {

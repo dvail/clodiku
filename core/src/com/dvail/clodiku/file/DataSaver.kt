@@ -6,6 +6,7 @@ import com.dvail.clodiku.entities.CompMapper
 import com.dvail.clodiku.entities.ComponentFactory
 import com.dvail.clodiku.entities.Comps
 import com.dvail.clodiku.entities.EqSlot
+import com.dvail.clodiku.util.entitiesWithComps
 import com.dvail.clodiku.util.firstEntityWithComp
 import java.io.File
 import java.util.*
@@ -13,46 +14,52 @@ import java.util.*
 class DataSaver {
 
     fun saveGame(world: Engine, saveLocation: String) {
-        saveArea(world, saveLocation)
-        savePlayer(world, saveLocation)
-    }
-
-    fun saveArea(world: Engine, saveLocation: String) {
-
-    }
-
-    private fun savePlayer(world: Engine, saveLocation: String) {
-        val player = firstEntityWithComp(world, Comps.Player)
         val worldMap = firstEntityWithComp(world, Comps.WorldMap)
+        val currentArea = CompMapper.WorldMap.get(worldMap).mapName
 
-        val areaName = CompMapper.WorldMap.get(worldMap).mapName
-        val inventoryItems = CompMapper.Inventory.get(player).items
-        val equipmentItems = CompMapper.Equipment.get(player).items
+        saveArea(world, saveLocation, currentArea)
+        savePlayer(world, saveLocation, currentArea)
+    }
 
-        val playerCompToml = getEntityToml(player)
-        val itemCompToml = getInventoryToml(inventoryItems)
-        val eqCompToml = getEquipmentToml(equipmentItems)
+    fun saveArea(world: Engine, saveLocation: String, currentArea: String) {
+        val mobs = entitiesWithComps(world, Comps.MobAI)
+        val mobTomls = mobs.map { getCharacterToml(it) }
 
-        val playerToml = """
-            area = '$areaName'
-            components = {
-               $playerCompToml
-            }
-            inventory = [
-                $itemCompToml
-            ]
-            equipment = {
-              $eqCompToml
-            }
-            """.trimIndent()
+        val areaFileTmp = File("$saveLocation/$currentArea.toml.tmp")
 
-        val playerFileTmp = File(saveLocation + "/PLAYER.toml.tmp")
+        if (areaFileTmp.exists()) areaFileTmp.delete()
+
+        areaFileTmp.createNewFile()
+        mobTomls.forEach { areaFileTmp.appendText("[[mob]] \n$it") }
+        areaFileTmp.renameTo(File("$saveLocation/$currentArea.toml"))
+    }
+
+    private fun savePlayer(world: Engine, saveLocation: String, currentArea: String) {
+        val player = firstEntityWithComp(world, Comps.Player)
+        val playerToml = getCharacterToml(player)
+
+        val playerFileTmp = File("$saveLocation/PLAYER.toml.tmp")
 
         if (playerFileTmp.exists()) playerFileTmp.delete()
 
         playerFileTmp.createNewFile()
+        playerFileTmp.appendText("area = '''$currentArea'''")
         playerFileTmp.appendText(playerToml)
-        playerFileTmp.renameTo(File(saveLocation + "/PLAYER.toml"))
+        playerFileTmp.renameTo(File("$saveLocation/PLAYER.toml"))
+    }
+
+    // This writes data for an entity assuming that entity have Inventory and Equipment
+    // components.
+    // TODO Abstract this out to handle arbitrary nested component interfaces if possible
+    private fun getCharacterToml(entity: Entity) : String {
+        val inventoryItems = CompMapper.Inventory.get(entity).items
+        val equipmentItems = CompMapper.Equipment.get(entity).items
+
+        val playerCompToml = getEntityToml(entity)
+        val itemCompToml = getInventoryToml(inventoryItems)
+        val eqCompToml = getEquipmentToml(equipmentItems)
+
+        return "components = {\n$playerCompToml\n}\n inventory = [\n$itemCompToml\n]\n equipment = {\n$eqCompToml \n}\n"
     }
 
     private fun getEntityToml(entity: Entity): String {
@@ -69,7 +76,7 @@ class DataSaver {
         }
 
         return if (itemCompText.size > 0) {
-            "{ \n ${itemCompText.joinToString("\n}, \n { \n")} }"
+            "{ \n ${itemCompText.joinToString("\n}, \n { \n")} \n}"
         } else {
             ""
         }
@@ -79,7 +86,7 @@ class DataSaver {
         return eq.map { entry ->
             entry.key.name + " = {\n" + entry.value.components.map { comp ->
                 ComponentFactory.createToml(comp)
-            }.joinToString(", \n") + " } \n"
+            }.joinToString(", \n") + " \n} \n"
         }.joinToString(", \n")
     }
 
