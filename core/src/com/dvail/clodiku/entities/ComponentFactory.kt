@@ -9,6 +9,9 @@ object ComponentFactory {
 
     fun createComponent(clazz: Class<out Component>?, toml: Toml): Component {
         return when (clazz) {
+            Comps.Player -> {
+                Player(name = toml.getString("name"))
+            }
             Comps.Renderable -> {
                 Renderable(toml.getString("textureSource"))
             }

@@ -43,7 +43,7 @@ class DataSaver {
         if (playerFileTmp.exists()) playerFileTmp.delete()
 
         playerFileTmp.createNewFile()
-        playerFileTmp.appendText("area = '''$currentArea'''")
+        playerFileTmp.appendText("area = '''$currentArea'''\n")
         playerFileTmp.appendText(playerToml)
         playerFileTmp.renameTo(File("$saveLocation/PLAYER.toml"))
     }

@@ -3,7 +3,10 @@ package com.dvail.clodiku.file
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
-import com.dvail.clodiku.entities.*
+import com.dvail.clodiku.entities.CompMapper
+import com.dvail.clodiku.entities.ComponentFactory
+import com.dvail.clodiku.entities.Comps
+import com.dvail.clodiku.entities.EqSlot
 import com.moandjiezana.toml.Toml
 import java.io.File
 import java.util.*
@@ -14,6 +17,7 @@ class DataLoader() {
     val compStringMap = HashMap<String, Class<out Component>>()
 
     init {
+        compStringMap.put("Player", Comps.Player)
         compStringMap.put("State", Comps.State)
         compStringMap.put("MobAI", Comps.MobAI)
         compStringMap.put("Spatial", Comps.Spatial)
@@ -33,7 +37,15 @@ class DataLoader() {
         val areaToml = Toml().read(areaData)
 
         loadFreeItems(world, areaToml.getTables("free-item"))
-        loadMobs(world, areaToml.getTables("mob"))
+
+        val mobTomls = areaToml.getTables("mob")
+        mobTomls.forEach { loadCharacter(world, it) }
+    }
+
+    fun loadPlayer(world: Engine, saveLocation: String) {
+        val playerToml = Toml().read(File("$saveLocation/PLAYER.toml"))
+
+        loadCharacter(world, playerToml)
     }
 
     private fun loadFreeItems(world: Engine, items: List<Toml>?) {
@@ -43,31 +55,32 @@ class DataLoader() {
         }
     }
 
-    private fun loadMobs(world: Engine, mobs: List<Toml>) {
-        mobs.forEach { mob ->
-            val mobComps = buildComponentList(mob.getTable("components"))
-            val mobInventory = mob.getList<Toml>("inventory").map { buildComponentList(it) }
-            val mobEquipment = buildMobEq(mob.getTable("equipment"))
+    private fun loadCharacter(world: Engine, entityToml: Toml) {
+        val components = buildComponentList(entityToml.getTable("components"))
 
-            val mobEntity = Entity()
-            mobComps.forEach { mobEntity.add(it) }
-
-            val items = mobInventory.map { comps ->
-                val item = Entity()
-                comps.forEach { comp -> item.add(comp) }
-                item
-            }
-
-            items.forEach { item ->
-                world.addEntity(item)
-                CompMapper.Inventory.get(mobEntity).items.add(item)
-            }
-
-            mobEquipment.values.forEach { world.addEntity(it) }
-            CompMapper.Equipment.get(mobEntity).items = mobEquipment
-
-            world.addEntity(mobEntity)
+        val inventory = entityToml.getTables("inventory").map {
+            buildComponentList(it as Toml)
         }
+        val equipment = buildEntityEq(entityToml.getTable("equipment"))
+
+        val entity = Entity()
+        components.forEach { entity.add(it) }
+
+        val items = inventory.map { comps ->
+            val item = Entity()
+            comps.forEach { comp -> item.add(comp) }
+            item
+        }
+
+        items.forEach { item ->
+            world.addEntity(item)
+            CompMapper.Inventory.get(entity).items.add(item)
+        }
+
+        equipment.values.forEach { world.addEntity(it) }
+        CompMapper.Equipment.get(entity).items = equipment
+
+        world.addEntity(entity)
     }
 
     private fun buildEntities(items: List<Toml>): List<Entity> {
@@ -80,20 +93,24 @@ class DataLoader() {
         }
     }
 
+    private fun buildComponentList(table: HashMap<String, Toml>) : List<Component> {
+        return table.entries.map { ComponentFactory.createComponent(compStringMap[it.key], it.value) }
+    }
+
     private fun buildComponentList(table: Toml) : List<Component> {
         return table.entrySet().map { ComponentFactory.createComponent(compStringMap[it.key], it.value as Toml) }
     }
 
-    private fun buildMobEq(toml: Toml) : HashMap<EqSlot, Entity> {
-        val mobEq = HashMap<EqSlot, Entity>()
+    private fun buildEntityEq(toml: Toml) : HashMap<EqSlot, Entity> {
+        val entityEq = HashMap<EqSlot, Entity>()
 
         toml.entrySet().forEach { entry ->
             val entity = Entity()
             buildComponentList(entry.value as Toml).forEach { entity.add(it) }
-            mobEq.put(EqSlot.valueOf(entry.key), entity)
+            entityEq.put(EqSlot.valueOf(entry.key), entity)
         }
 
-        return mobEq
+        return entityEq
     }
 
 }

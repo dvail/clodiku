@@ -16,10 +16,11 @@ class MainScreen(mainGame: Game, savedGame: String? = null) : Screen {
     lateinit var world: GameEngine
 
     init {
+        val newGame = savedGame == null
         val saveLocation = savedGame ?: FileUtils.newSaveDirectory()
         world = GameEngine(saveLocation)
 
-        initMain(world)
+        initMain(world, newGame)
 
         gameUI = GameUICore(game, world, eventQ)
 

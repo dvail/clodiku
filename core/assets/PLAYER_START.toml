@@ -1,0 +1,28 @@
+area = '''sample'''
+components = {
+    Player = { name = '''Inefray'''}, 
+    Spatial = { x = 60.0, y = 848.0, radius = 14.0, direction = '''East'''}, 
+    Attribute = { hp = 50, mp = 20, mv = 50, str = 10, dex = 10, vit = 10, psy = 10}, 
+    State = { current = '''Walking''' }, 
+    Equipment = {}, 
+    Inventory = {}, 
+    AnimatedRenderable = { animDir = '''./player/'''}
+}
+inventory = [
+{ 
+    Item = {name = '''silver armor''', description = '''This armor is made of silver'''}, 
+    Spatial = { pos = '''Carried'''}, 
+    Renderable = { textureSource = '''./items/silver-scale-mail.png'''}, 
+    EqItem = { slot = '''Body''', hr = 0, dr = 0, ed = 3, ms = 0, pd = 0, saves = 0 }, 
+    EqArmor = { bulk = 2 } 
+}
+]
+equipment = {
+    Held = {
+        Item = {name = '''An emerald spear''', description = '''This spear doesn't look very sharp'''}, 
+        Spatial = { pos = '''Carried'''}, 
+        Renderable = { textureSource = '''./items/emerald-spear.png'''}, 
+        EqItem = { slot = '''Held''', hr = 1, dr = 0, ed = 0, ms = 0, pd = 0, saves = 0 }, 
+        EqWeapon = { weaponClass = '''Spear''', damType = '''Pierce''', baseDamage = 5, size = 4.0 } 
+    } 
+}
