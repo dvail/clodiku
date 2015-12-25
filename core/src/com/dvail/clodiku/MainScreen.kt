@@ -35,9 +35,8 @@ class MainScreen(mainGame: Game, savedGame: String? = null) : Screen {
         val currentArea = dataLoader.savedPlayerArea(saveLocation)
 
         world.loadPlayer(saveLocation)
-
-        world.initMap(currentArea)
-        world.initArea(currentArea)
+        world.loadMap(currentArea)
+        world.loadArea(currentArea)
 
         gameUI = GameUICore(game, world, eventQ)
 

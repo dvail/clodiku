@@ -29,8 +29,8 @@ data class SwapAreaEvent(val transportZone: MapObject): Event {
             if (world is GameEngine) {
                 world.saveGame()
                 destroyNonPlayerEntities(world)
-                world.initMap(newArea)
-                world.initArea(newArea)
+                world.loadMap(newArea)
+                world.loadArea(newArea)
             }
 
             worldUpdated = true

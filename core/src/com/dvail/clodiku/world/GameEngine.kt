@@ -17,11 +17,11 @@ class GameEngine(gameSaveLoc: String, loader: DataLoader, saver: DataSaver) : En
         dataSaver.saveGame(this, saveLocation)
     }
 
-    fun initArea(mapName: String) {
-        dataLoader.loadArea(this, mapName)
+    fun loadArea(mapName: String) {
+        dataLoader.loadArea(this, saveLocation, mapName)
     }
 
-    fun initMap(mapName: String) {
+    fun loadMap(mapName: String) {
         val map = Maps.loadMap(mapName)
         val grid = Maps.loadMapGrid(map)
 

@@ -38,8 +38,16 @@ class DataLoader() {
         return playerToml.getString("area")
     }
 
-    fun loadArea(world: Engine, areaName: String) {
-        val areaData = File("./maps/$areaName/data.toml")
+    // TODO Make this decide whether or not to repop an area if there is a save already in place
+    fun loadArea(world: Engine, saveLocation: String, areaName: String) {
+        val savedAreaFile = File("$saveLocation/$areaName.toml")
+
+        val areaData = if (savedAreaFile.exists()) {
+            savedAreaFile
+        } else {
+            File("./maps/$areaName/data.toml")
+        }
+
         val areaToml = Toml().read(areaData)
 
         loadFreeItems(world, areaToml.getTables("free-item"))
