@@ -18,6 +18,7 @@ class MainScreen(mainGame: Game, savedGame: String? = null) : Screen {
     init {
         val newGame = savedGame == null
         val saveLocation = savedGame ?: FileUtils.newSaveDirectory()
+        
         world = GameEngine(saveLocation)
 
         initMain(world, newGame)

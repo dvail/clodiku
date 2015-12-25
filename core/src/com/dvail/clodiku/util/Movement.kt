@@ -74,14 +74,14 @@ object Movement {
         val entityPos = CompMapper.Spatial.get(entity).pos
 
         val targetItem = entitiesWithComps(world, Comps.Spatial, Comps.Item).filter {
-            !CompMapper.Spatial.get(it).pos.equals(Carried)
+            CompMapper.Spatial.get(it).pos != Carried
         }.filter {
             Intersector.overlaps(CompMapper.Spatial.get(it).pos, entityPos)
         }.firstOrNull()
 
         if (targetItem != null) {
             CompMapper.Inventory.get(entity).items.add(targetItem)
-            CompMapper.Spatial.get(targetItem).pos = Carried
+            CompMapper.Spatial.get(targetItem).pos = Carried.copy()
         }
     }
 

@@ -20,7 +20,7 @@ object ComponentFactory {
             }
             Comps.Spatial -> {
                 if (toml.containsPrimitive("pos") && toml.getString("pos").equals("Carried")) {
-                     Spatial(Carried)
+                    Spatial(Carried.copy())
                 } else {
                      Spatial(toml.getDouble("x").toFloat(), toml.getDouble("y").toFloat(), toml.getDouble("radius").toFloat())
                 }
@@ -71,7 +71,7 @@ object ComponentFactory {
                 "AnimatedRenderable = { animDir = '''${component.animDir}'''}"
             }
             is Spatial -> {
-                if (component.pos.equals(Carried)) {
+                if (component.pos == Carried) {
                     "Spatial = { pos = '''Carried'''}"
                 } else {
                     "Spatial = { x = ${component.pos.x}, y = ${component.pos.y}, " +

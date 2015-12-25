@@ -21,6 +21,10 @@ enum class DamageType { Slash, Pierce, Bash, Null }
 
 val Carried = Circle(-999f, -999f, 16f)
 
+fun Circle.copy(x: Float = this.x, y: Float = this.y, radius: Float = this.radius) : Circle {
+    return Circle(x, y, radius)
+}
+
 object Comps {
     val Player = Player::class.java
     val WorldMap = WorldMap::class.java
