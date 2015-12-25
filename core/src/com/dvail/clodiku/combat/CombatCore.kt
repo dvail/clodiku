@@ -31,7 +31,13 @@ fun advanceAttackState(delta: Float, entity: Entity) {
     val stateComp = CompMapper.State.get(entity)
     val animation = currentAnimation(entity)
 
-    if (animation != null && stateComp.time > (animation.keyFrames.size * animation.frameDuration)) {
+    val attackDuration = if (animation != null) {
+        animation.keyFrames.size * animation.frameDuration
+    } else {
+        4/12f
+    }
+
+    if (stateComp.time > attackDuration) {
         stateComp.time = 0f
         stateComp.current = BaseState.Standing
     } else {
