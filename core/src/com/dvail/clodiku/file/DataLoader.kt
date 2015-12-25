@@ -32,6 +32,12 @@ class DataLoader() {
         compStringMap.put("Inventory", Comps.Inventory)
     }
 
+    fun savedPlayerArea(saveLocation: String) : String {
+        val playerToml = Toml().read(File("$saveLocation/PLAYER.toml"))
+
+        return playerToml.getString("area")
+    }
+
     fun loadArea(world: Engine, areaName: String) {
         val areaData = File("./maps/$areaName/data.toml")
         val areaToml = Toml().read(areaData)

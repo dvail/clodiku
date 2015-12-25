@@ -4,11 +4,9 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.gdx.maps.MapObject
 import com.dvail.clodiku.entities.CompMapper
 import com.dvail.clodiku.entities.Comps
-import com.dvail.clodiku.initArea
-import com.dvail.clodiku.initMap
-import com.dvail.clodiku.saveGame
 import com.dvail.clodiku.util.destroyNonPlayerEntities
 import com.dvail.clodiku.util.firstEntityWithComp
+import com.dvail.clodiku.world.GameEngine
 import com.dvail.clodiku.world.Maps
 
 data class SwapAreaEvent(val transportZone: MapObject): Event {
@@ -28,10 +26,12 @@ data class SwapAreaEvent(val transportZone: MapObject): Event {
             playerPos.x = newVector.x
             playerPos.y = newVector.y
 
-            saveGame(world)
-            destroyNonPlayerEntities(world)
-            initMap(world, newArea)
-            initArea(world, newArea)
+            if (world is GameEngine) {
+                world.saveGame()
+                destroyNonPlayerEntities(world)
+                world.initMap(newArea)
+                world.initArea(newArea)
+            }
 
             worldUpdated = true
         }

@@ -3,12 +3,17 @@ package com.dvail.clodiku
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.Screen
 import com.dvail.clodiku.events.EventQueue
+import com.dvail.clodiku.file.DataLoader
+import com.dvail.clodiku.file.DataSaver
 import com.dvail.clodiku.file.FileUtils
 import com.dvail.clodiku.systems.*
 import com.dvail.clodiku.ui.GameUICore
 import com.dvail.clodiku.world.GameEngine
+import java.io.File
 
 class MainScreen(mainGame: Game, savedGame: String? = null) : Screen {
+
+    val playerStartFile = File("./PLAYER_START.toml")
 
     val game = mainGame
     val eventQ = EventQueue()
@@ -18,10 +23,21 @@ class MainScreen(mainGame: Game, savedGame: String? = null) : Screen {
     init {
         val newGame = savedGame == null
         val saveLocation = savedGame ?: FileUtils.newSaveDirectory()
+        val dataLoader = DataLoader()
+        val dataSaver = DataSaver()
 
-        world = GameEngine(saveLocation)
+        world = GameEngine(saveLocation, dataLoader, dataSaver)
 
-        initMain(world, newGame)
+        if (newGame) {
+            playerStartFile.copyTo(File("$saveLocation/PLAYER.toml"))
+        }
+
+        val currentArea = dataLoader.savedPlayerArea(saveLocation)
+
+        world.loadPlayer(saveLocation)
+
+        world.initMap(currentArea)
+        world.initArea(currentArea)
 
         gameUI = GameUICore(game, world, eventQ)
 
