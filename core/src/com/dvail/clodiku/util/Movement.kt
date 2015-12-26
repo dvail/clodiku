@@ -73,9 +73,7 @@ object Movement {
     fun grabItem(world: Engine, entity: Entity) {
         val entityPos = CompMapper.Spatial.get(entity).pos
 
-        val targetItem = entitiesWithComps(world, Comps.Spatial, Comps.Item).filter {
-            CompMapper.Spatial.get(it).pos != Carried
-        }.filter {
+        val targetItem = Entities.getFreeItems(world).filter {
             Intersector.overlaps(CompMapper.Spatial.get(it).pos, entityPos)
         }.firstOrNull()
 

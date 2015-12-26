@@ -9,12 +9,17 @@ import com.dvail.clodiku.util.firstEntityWithComp
 import com.dvail.clodiku.world.GameEngine
 import com.dvail.clodiku.world.Maps
 
-data class SwapAreaEvent(val transportZone: MapObject): Event {
+data class SwapAreaEvent(val transportZone: MapObject) : Event {
     var worldUpdated = false
     var rendererUpdated = false
 
     override fun processEvent(world: Engine, delta: Float): Boolean {
+        world as GameEngine
+
         if (!worldUpdated) {
+
+            world.saveGame()
+
             val newArea = transportZone.properties.get("area-name") as String
             val tileX = transportZone.properties.get("tile-x").toString().toInt()
             val tileY = transportZone.properties.get("tile-y").toString().toInt()
@@ -26,12 +31,9 @@ data class SwapAreaEvent(val transportZone: MapObject): Event {
             playerPos.x = newVector.x
             playerPos.y = newVector.y
 
-            if (world is GameEngine) {
-                world.saveGame()
-                destroyNonPlayerEntities(world)
-                world.loadMap(newArea)
-                world.loadArea(newArea)
-            }
+            destroyNonPlayerEntities(world)
+            world.loadMap(newArea)
+            world.loadArea(newArea)
 
             worldUpdated = true
         }

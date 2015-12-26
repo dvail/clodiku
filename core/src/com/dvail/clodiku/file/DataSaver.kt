@@ -6,6 +6,7 @@ import com.dvail.clodiku.entities.CompMapper
 import com.dvail.clodiku.entities.ComponentFactory
 import com.dvail.clodiku.entities.Comps
 import com.dvail.clodiku.entities.EqSlot
+import com.dvail.clodiku.util.Entities
 import com.dvail.clodiku.util.entitiesWithComps
 import com.dvail.clodiku.util.firstEntityWithComp
 import java.io.File
@@ -22,16 +23,27 @@ class DataSaver {
     }
 
     fun saveArea(world: Engine, saveLocation: String, currentArea: String) {
-        val mobs = entitiesWithComps(world, Comps.MobAI)
-        val mobTomls = mobs.map { getCharacterToml(it) }
-
         val areaFileTmp = File("$saveLocation/$currentArea.toml.tmp")
 
         if (areaFileTmp.exists()) areaFileTmp.delete()
-
         areaFileTmp.createNewFile()
-        mobTomls.forEach { areaFileTmp.appendText("[[mob]] \n$it") }
+
+        saveMobs(world, areaFileTmp)
+        saveFreeItems(world, areaFileTmp)
+
         areaFileTmp.renameTo(File("$saveLocation/$currentArea.toml"))
+    }
+
+    private fun saveMobs(world: Engine, saveFile: File) {
+        val mobs = entitiesWithComps(world, Comps.MobAI)
+        val mobTomls = mobs.map { getCharacterToml(it) }
+        mobTomls.forEach { saveFile.appendText("[[mob]] \n$it") }
+    }
+
+    private fun saveFreeItems(world: Engine, saveFile: File) {
+        val items = Entities.getFreeItems(world)
+        val itemTomls = items.map { getEntityToml(it) }
+        itemTomls.forEach { saveFile.appendText("[[free-item]]\ncomponents = {\n$it\n}\n") }
     }
 
     private fun savePlayer(world: Engine, saveLocation: String, currentArea: String) {

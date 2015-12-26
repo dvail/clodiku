@@ -5,12 +5,21 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.utils.ImmutableArray
+import com.dvail.clodiku.entities.Carried
 import com.dvail.clodiku.entities.CompMapper
 import com.dvail.clodiku.entities.Comps
 import com.dvail.clodiku.entities.DisposableComponent
 import java.util.*
 
 class NoValidEntityException : Exception()
+
+object Entities {
+    fun getFreeItems(world: Engine): List<Entity> {
+        return entitiesWithComps(world, Comps.Spatial, Comps.Item).filter {
+            CompMapper.Spatial.get(it).pos != Carried
+        }
+    }
+}
 
 fun entitiesWithComps(world: Engine, vararg compTypes: Class<out Component>): ImmutableArray<Entity> {
     val worldFamily = Family.all(*compTypes).get()
