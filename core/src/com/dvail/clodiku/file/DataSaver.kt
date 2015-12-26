@@ -7,15 +7,13 @@ import com.dvail.clodiku.entities.ComponentFactory
 import com.dvail.clodiku.entities.Comps
 import com.dvail.clodiku.entities.EqSlot
 import com.dvail.clodiku.util.Entities
-import com.dvail.clodiku.util.entitiesWithComps
-import com.dvail.clodiku.util.firstEntityWithComp
 import java.io.File
 import java.util.*
 
 class DataSaver {
 
     fun saveGame(world: Engine, saveLocation: String) {
-        val worldMap = firstEntityWithComp(world, Comps.WorldMap)
+        val worldMap = Entities.firstWithComp(world, Comps.WorldMap)
         val currentArea = CompMapper.WorldMap.get(worldMap).mapName
 
         saveArea(world, saveLocation, currentArea)
@@ -35,7 +33,7 @@ class DataSaver {
     }
 
     private fun saveMobs(world: Engine, saveFile: File) {
-        val mobs = entitiesWithComps(world, Comps.MobAI)
+        val mobs = Entities.withComps(world, Comps.MobAI)
         val mobTomls = mobs.map { getCharacterToml(it) }
         mobTomls.forEach { saveFile.appendText("[[mob]] \n$it") }
     }
@@ -47,7 +45,7 @@ class DataSaver {
     }
 
     private fun savePlayer(world: Engine, saveLocation: String, currentArea: String) {
-        val player = firstEntityWithComp(world, Comps.Player)
+        val player = Entities.firstWithComp(world, Comps.Player)
         val playerToml = getCharacterToml(player)
 
         val playerFileTmp = File("$saveLocation/PLAYER.toml.tmp")

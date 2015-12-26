@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.dvail.clodiku.entities.CompMapper
 import com.dvail.clodiku.entities.Comps
-import com.dvail.clodiku.util.firstEntityWithComp
+import com.dvail.clodiku.util.Entities
 
 object Maps {
 
@@ -39,14 +39,14 @@ object Maps {
     }
 
     fun currentMap(world: Engine): TiledMap {
-        val entity = firstEntityWithComp(world, Comps.WorldMap)
+        val entity = Entities.firstWithComp(world, Comps.WorldMap)
         val worldMap = CompMapper.WorldMap.get(entity)
 
         return worldMap.tileMap
     }
 
     fun getMapBounds(world: Engine, camera: OrthographicCamera): Vector3 {
-        val player = firstEntityWithComp(world, Comps.Player)
+        val player = Entities.firstWithComp(world, Comps.Player)
         val playerSpatial = CompMapper.Spatial.get(player)
         val playerPos = playerSpatial.pos
         val camWidth = camera.viewportWidth / 2

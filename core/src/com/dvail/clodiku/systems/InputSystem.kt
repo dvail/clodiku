@@ -22,7 +22,7 @@ class InputSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
 
     override fun addedToEngine(engine: Engine) {
         world = engine as GameEngine
-        player = firstEntityWithComp(world, Comps.Player)
+        player = Entities.firstWithComp(world, Comps.Player)
         playerState = CompMapper.State.get(player)
     }
 

@@ -11,9 +11,8 @@ import com.dvail.clodiku.entities.*
 import com.dvail.clodiku.events.EventQueue
 import com.dvail.clodiku.events.EventType
 import com.dvail.clodiku.events.MeleeHitEvent
+import com.dvail.clodiku.util.Entities
 import com.dvail.clodiku.util.Movement
-import com.dvail.clodiku.util.entitiesWithComps
-import com.dvail.clodiku.util.firstEntityWithComp
 import com.dvail.clodiku.util.hasComp
 import com.dvail.clodiku.world.GameEngine
 
@@ -25,7 +24,7 @@ class CombatSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
 
     override fun addedToEngine(engine: Engine) {
         world = engine as GameEngine
-        player = firstEntityWithComp(world, Comps.Player)
+        player = Entities.firstWithComp(world, Comps.Player)
     }
 
     override fun update(sysDelta: Float) {
@@ -53,14 +52,14 @@ class CombatSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
 
         processAttack(attacker, weaponComp, newHit)
 
-        if (hasComp(attacker, Comps.Player)) {
+        if (attacker.hasComp(Comps.Player)) {
             aggravate(newHit)
         }
     }
 
     private fun getDefenders(attacker: Entity): List<Entity> {
-        val defenderType = if (hasComp(attacker, Comps.MobAI)) Comps.Player else Comps.MobAI
-        return entitiesWithComps(engine, defenderType).filter { CompMapper.State.get(it).current != BaseState.Dead }
+        val defenderType = if (attacker.hasComp(Comps.MobAI)) Comps.Player else Comps.MobAI
+        return Entities.withComps(engine, defenderType).filter { CompMapper.State.get(it).current != BaseState.Dead }
     }
 
     private fun processAttack(attacker: Entity, weaponComp: EqWeapon, hitSet: Set<Entity>) {

@@ -12,9 +12,8 @@ import com.dvail.clodiku.entities.Comps
 import com.dvail.clodiku.entities.MobState
 import com.dvail.clodiku.events.EventQueue
 import com.dvail.clodiku.pathfinding.AStar
+import com.dvail.clodiku.util.Entities
 import com.dvail.clodiku.util.Movement
-import com.dvail.clodiku.util.entitiesWithComps
-import com.dvail.clodiku.util.firstEntityWithComp
 import com.dvail.clodiku.world.GameEngine
 import com.dvail.clodiku.world.Maps
 import java.util.*
@@ -32,7 +31,7 @@ class MobAISystem(eventQ: EventQueue) : CoreSystem(eventQ) {
 
     override fun addedToEngine(engine: Engine) {
         world = engine as GameEngine
-        player = firstEntityWithComp(world, Comps.Player)
+        player = Entities.firstWithComp(world, Comps.Player)
     }
 
     override fun update(sysDelta: Float) {
@@ -40,7 +39,7 @@ class MobAISystem(eventQ: EventQueue) : CoreSystem(eventQ) {
 
         delta = sysDelta
 
-        val mobs = entitiesWithComps(world, Comps.MobAI)
+        val mobs = Entities.withComps(world, Comps.MobAI)
 
         mobs.forEach { mob ->
             val baseState = CompMapper.State.get(mob).current
@@ -115,7 +114,7 @@ class MobAISystem(eventQ: EventQueue) : CoreSystem(eventQ) {
     }
 
     private fun setPathTo(fromEntity: Entity, targetPos: Circle) {
-        val worldMap = firstEntityWithComp(world, Comps.WorldMap)
+        val worldMap = Entities.firstWithComp(world, Comps.WorldMap)
         val currPos = CompMapper.Spatial.get(fromEntity).pos
         val currLocation = AStar.Node((currPos.x / Maps.MAP_TILE_SIZE).toInt(), (currPos.y / Maps.MAP_TILE_SIZE).toInt())
         val targetLocation = AStar.Node((targetPos.x / Maps.MAP_TILE_SIZE).toInt(), (targetPos.y / Maps.MAP_TILE_SIZE).toInt())

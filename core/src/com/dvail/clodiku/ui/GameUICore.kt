@@ -15,7 +15,7 @@ import com.dvail.clodiku.entities.CompMapper
 import com.dvail.clodiku.entities.Comps
 import com.dvail.clodiku.events.*
 import com.dvail.clodiku.util.BoundKeys
-import com.dvail.clodiku.util.firstEntityWithComp
+import com.dvail.clodiku.util.Entities
 import com.dvail.clodiku.util.keyJustPressed
 import com.dvail.clodiku.world.GameEngine
 
@@ -32,7 +32,7 @@ class GameUICore(mainGame: Game, world: GameEngine, eventQ: EventQueue) {
     val game = mainGame
     val world = world
     val eventQ = eventQ
-    val player = firstEntityWithComp(world, Comps.Player)
+    val player = Entities.firstWithComp(world, Comps.Player)
 
     val subMenus = arrayOf("Equipment", "Inventory", "Skills", "Stats")
 

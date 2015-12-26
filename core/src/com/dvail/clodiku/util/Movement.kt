@@ -108,7 +108,7 @@ object Movement {
     private fun updateSpatial(world: Engine, entity: Entity, movX: Float, movY: Float) {
         val entitySpatial = CompMapper.Spatial.get(entity)
         val mapObstacles = Maps.mapObstacles(world)
-        val collisionEntities = entitiesWithCompsExcluding(world, Array(1, { Comps.Spatial }), Array(1, { Comps.Item }))
+        val collisionEntities = Entities.withCompsExcluding(world, Array(1, { Comps.Spatial }), Array(1, { Comps.Item }))
         val livingEntities = collisionEntities.filter { CompMapper.State.get(it)?.current != BaseState.Dead }
         val otherEntities = livingEntities.filter { it -> it != entity }
 

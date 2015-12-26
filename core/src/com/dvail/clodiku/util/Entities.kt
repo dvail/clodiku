@@ -15,56 +15,54 @@ class NoValidEntityException : Exception()
 
 object Entities {
     fun getFreeItems(world: Engine): List<Entity> {
-        return entitiesWithComps(world, Comps.Spatial, Comps.Item).filter {
+        return withComps(world, Comps.Spatial, Comps.Item).filter {
             CompMapper.Spatial.get(it).pos != Carried
         }
     }
-}
 
-fun entitiesWithComps(world: Engine, vararg compTypes: Class<out Component>): ImmutableArray<Entity> {
-    val worldFamily = Family.all(*compTypes).get()
-    return world.getEntitiesFor(worldFamily)
-}
+    fun withComps(world: Engine, vararg compTypes: Class<out Component>): ImmutableArray<Entity> {
+        val worldFamily = Family.all(*compTypes).get()
+        return world.getEntitiesFor(worldFamily)
+    }
 
-fun entitiesWithCompsExcluding(world: Engine, compsAll: Array<Class<out Component>>,
-                               compsNot: Array<Class<out Component>>) : ImmutableArray<Entity> {
-    val family = Family.all(*compsAll).exclude(*compsNot).get()
-    return world.getEntitiesFor(family)
-}
+    fun withCompsExcluding(world: Engine, compsAll: Array<Class<out Component>>,
+                           compsNot: Array<Class<out Component>>) : ImmutableArray<Entity> {
+        val family = Family.all(*compsAll).exclude(*compsNot).get()
+        return world.getEntitiesFor(family)
+    }
 
-fun firstEntityWithComp(world: Engine, compType: Class<out Component>): Entity {
-    val entities = entitiesWithComps(world, compType)
+    fun firstWithComp(world: Engine, compType: Class<out Component>): Entity {
+        val entities = withComps(world, compType)
 
-    if (entities.size() <= 0) throw NoValidEntityException()
+        if (entities.size() <= 0) throw NoValidEntityException()
 
-    return entities.first()
+        return entities.first()
+    }
+
+    fun destroyNonPlayer(world: Engine) {
+        val safeEntities = ArrayList<Entity>()
+        val player = firstWithComp(world, Comps.Player)
+
+        safeEntities.add(player)
+        safeEntities.addAll(CompMapper.Inventory.get(player).items)
+        safeEntities.addAll(CompMapper.Equipment.get(player).items.values)
+
+        world.entities.forEach {
+            if (!safeEntities.contains(it)) {
+                disposeComponents(it.components)
+                world.removeEntity(it)
+            }
+        }
+    }
+
+    private fun disposeComponents(comps: ImmutableArray<Component>) {
+        comps.forEach {
+            if (it is DisposableComponent) {
+                it.dispose()
+            }
+        }
+    }
 }
 
 @Suppress("SENSELESS_COMPARISON")
-fun hasComp(entity: Entity, compType: Class<out Component>): Boolean {
-    return entity.getComponent(compType) != null
-}
-
-fun destroyNonPlayerEntities(world: Engine) {
-    val safeEntities = ArrayList<Entity>()
-    val player = firstEntityWithComp(world, Comps.Player)
-
-    safeEntities.add(player)
-    safeEntities.addAll(CompMapper.Inventory.get(player).items)
-    safeEntities.addAll(CompMapper.Equipment.get(player).items.values)
-
-    world.entities.forEach {
-        if (!safeEntities.contains(it)) {
-            disposeComponents(it.components)
-            world.removeEntity(it)
-        }
-    }
-}
-
-private fun disposeComponents(comps: ImmutableArray<Component>) {
-    comps.forEach {
-        if (it is DisposableComponent) {
-            it.dispose()
-        }
-    }
-}
+fun Entity.hasComp(compType: Class<out Component>): Boolean = this.getComponent(compType) != null

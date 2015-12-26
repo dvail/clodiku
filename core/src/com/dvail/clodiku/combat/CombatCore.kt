@@ -3,13 +3,13 @@ package com.dvail.clodiku.combat
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.dvail.clodiku.entities.*
+import com.dvail.clodiku.util.Entities
 import com.dvail.clodiku.util.currentAnimation
-import com.dvail.clodiku.util.entitiesWithComps
 
 val attackingStates = arrayOf(BaseState.Melee_Bash, BaseState.Melee_Pierce, BaseState.Melee_Slash)
 
 fun getAttackers(world: Engine): Iterable<Entity> {
-    return entitiesWithComps(world, Comps.State).filter { it ->
+    return Entities.withComps(world, Comps.State).filter { it ->
         attackingStates.contains(CompMapper.State.get(it).current)
     }
 }

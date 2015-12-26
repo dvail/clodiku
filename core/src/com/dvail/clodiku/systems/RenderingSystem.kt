@@ -7,7 +7,6 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.utils.Array as GdxArray
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
@@ -15,12 +14,14 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.math.Circle
 import com.dvail.clodiku.combat.getAttackers
 import com.dvail.clodiku.entities.*
-import com.dvail.clodiku.events.MeleeHitEvent
 import com.dvail.clodiku.events.EventQueue
 import com.dvail.clodiku.events.EventType
+import com.dvail.clodiku.events.MeleeHitEvent
 import com.dvail.clodiku.events.SwapAreaEvent
-import com.dvail.clodiku.util.*
+import com.dvail.clodiku.util.Entities
+import com.dvail.clodiku.util.currentAnimation
 import com.dvail.clodiku.world.Maps
+import com.badlogic.gdx.utils.Array as GdxArray
 
 class RenderingSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
     val mapBackgroundLayers = intArrayOf(0, 1)
@@ -90,15 +91,15 @@ class RenderingSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
     }
 
     private fun updateRenderableEntityList() {
-        renderableEntities = entitiesWithComps(world, Comps.Renderable, Comps.Spatial)
+        renderableEntities = Entities.withComps(world, Comps.Renderable, Comps.Spatial)
     }
 
     private fun updateAnimatedEntityList() {
-        animatedEntities = entitiesWithComps(world, Comps.AnimatedRenderable, Comps.Spatial)
+        animatedEntities = Entities.withComps(world, Comps.AnimatedRenderable, Comps.Spatial)
     }
 
     private fun updateSpatialEntityList() {
-        spatialEntities = entitiesWithComps(world, Comps.Spatial)
+        spatialEntities = Entities.withComps(world, Comps.Spatial)
     }
 
     private fun renderEntities() {
