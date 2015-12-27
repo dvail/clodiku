@@ -48,13 +48,13 @@ fun advanceAttackState(delta: Float, entity: Entity) {
 fun aggravate(entities: Set<Entity>) = entities.forEach { CompMapper.MobAI.get(it).state = MobState.Aggro }
 
 private fun setEntityAttackState(entity: Entity, compEqWeapon: EqWeapon) {
-    val damType = compEqWeapon.damType
+    val weaponClass = compEqWeapon.weaponClass
     val stateComp = CompMapper.State.get(entity)
 
-    stateComp.current = when (damType) {
-        DamageType.Pierce -> BaseState.Melee_Pierce
-        DamageType.Slash -> BaseState.Melee_Slash
-        DamageType.Bash -> BaseState.Melee_Bash
+    stateComp.current = when (weaponClass) {
+        WeaponClass.Spear -> BaseState.Melee_Pierce
+        WeaponClass.Sword -> BaseState.Melee_Slash
+        WeaponClass.Mace -> BaseState.Melee_Bash
         else -> throw Exception()
     }
 

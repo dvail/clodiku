@@ -11,7 +11,7 @@ object WeaponRange {
 }
 
 enum class WeaponClass {
-    Sword, Spear, Mace
+    H2H, Sword, Spear, Mace
 }
 
 fun getDefaultWeaponDamType(weaponClass: WeaponClass) : DamageType {
@@ -26,8 +26,8 @@ fun getDefaultWeaponDamType(weaponClass: WeaponClass) : DamageType {
 fun setAttackStartPos(attackingEntity: Entity, compEqWeapon: EqWeapon) {
     val attackerSpatial = CompMapper.Spatial.get(attackingEntity)
 
-    when (compEqWeapon.damType) {
-        DamageType.Pierce -> {
+    when (compEqWeapon.weaponClass) {
+        WeaponClass.Spear -> {
             val startRange = attackerSpatial.pos.radius / 2
             val offset = (startRange + compEqWeapon.hitBox.radius)
 
@@ -42,7 +42,7 @@ fun setAttackStartPos(attackingEntity: Entity, compEqWeapon: EqWeapon) {
                 else -> {}
             }
         }
-        DamageType.Slash -> {
+        WeaponClass.Sword -> {
             val startRange = (attackerSpatial.pos.radius / 2) + WeaponRange.Sword
             val offset = (startRange + compEqWeapon.hitBox.radius)
 
@@ -57,20 +57,19 @@ fun setAttackStartPos(attackingEntity: Entity, compEqWeapon: EqWeapon) {
                 else -> {}
             }
         }
-        DamageType.Bash -> {
+        WeaponClass.Mace -> {
 
         }
-        DamageType.Null -> {}
+        WeaponClass.H2H -> {}
     }
 }
 
 fun updateHitBox(attacker: Entity, weaponComponent: EqWeapon) {
-    val weaponType = weaponComponent.damType
     val spatial = CompMapper.Spatial.get(attacker)
     val direction = spatial.direction
 
-    when (weaponType) {
-        DamageType.Pierce -> {
+    when (weaponComponent.weaponClass) {
+        WeaponClass.Spear -> {
             val moveRate = 2
 
             when (direction) {
@@ -81,7 +80,7 @@ fun updateHitBox(attacker: Entity, weaponComponent: EqWeapon) {
                 else -> {}
             }
         }
-        DamageType.Slash -> {
+        WeaponClass.Sword -> {
             val moveRate = 8f
             val angle = Math.atan2((spatial.pos.x - weaponComponent.hitBox.x).toDouble(),
                     (spatial.pos.y - weaponComponent.hitBox.y).toDouble())
@@ -89,9 +88,9 @@ fun updateHitBox(attacker: Entity, weaponComponent: EqWeapon) {
             weaponComponent.hitBox.x += (moveRate * Math.cos(angle).toFloat())
             weaponComponent.hitBox.y -= (moveRate * Math.sin(angle).toFloat())
         }
-        DamageType.Bash -> {
+        WeaponClass.Mace -> {
 
         }
-        DamageType.Null -> {}
+        WeaponClass.H2H -> {}
     }
 }

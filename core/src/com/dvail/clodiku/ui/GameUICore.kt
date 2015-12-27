@@ -98,6 +98,7 @@ class GameUICore(mainGame: Game, world: GameEngine, eventQ: EventQueue) {
         menus.add(subMenuContainer)
         menus.add(subMenuActions)
         menus.pack()
+        menus.isVisible = false
         stage.addActor(menus)
     }
 

@@ -49,6 +49,8 @@ class DataSaver {
     }
 
     private fun savePlayer(world: Engine, saveLocation: String, currentArea: String) {
+        world as GameEngine
+
         val player = Entities.firstWithComp(world, Comps.Player)
         val playerToml = getCharacterToml(player)
 
@@ -57,6 +59,7 @@ class DataSaver {
         if (playerFileTmp.exists()) playerFileTmp.delete()
 
         playerFileTmp.createNewFile()
+        playerFileTmp.appendText("gameTime = ${world.gameTime}\n")
         playerFileTmp.appendText("area = '''$currentArea'''\n")
         playerFileTmp.appendText(playerToml)
         playerFileTmp.renameTo(File("$saveLocation/PLAYER.toml"))
