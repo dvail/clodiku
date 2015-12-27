@@ -2,7 +2,6 @@ package com.dvail.clodiku.systems
 
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.utils.ImmutableArray
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
@@ -19,8 +18,10 @@ import com.dvail.clodiku.events.EventType
 import com.dvail.clodiku.events.MeleeHitEvent
 import com.dvail.clodiku.events.SwapAreaEvent
 import com.dvail.clodiku.util.Entities
+import com.dvail.clodiku.util.asArray
 import com.dvail.clodiku.util.currentAnimation
 import com.dvail.clodiku.world.Maps
+import java.util.*
 import com.badlogic.gdx.utils.Array as GdxArray
 
 class RenderingSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
@@ -32,9 +33,15 @@ class RenderingSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
     val shapeRenderer = ShapeRenderer()
     val combatFont = BitmapFont()
 
-    var renderableEntities = ImmutableArray<Entity>(GdxArray(0))
-    var animatedEntities = ImmutableArray<Entity>(GdxArray(0))
-    var spatialEntities = ImmutableArray<Entity>(GdxArray(0))
+    lateinit var renderableEntities : Array<Entity>
+    lateinit var animatedEntities : Array<Entity>
+    lateinit var spatialEntities : Array<Entity>
+
+    val yIndexComparator = Comparator<Entity> { a, b ->
+        val posA = CompMapper.Spatial.get(a).pos
+        val posB = CompMapper.Spatial.get(b).pos
+        (posB.y - posA.y).toInt()
+    }
 
     lateinit var world: Engine
     lateinit var mapRenderer: OrthogonalTiledMapRenderer
@@ -88,21 +95,26 @@ class RenderingSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
 
     fun updateMap() {
         mapRenderer.map = Maps.currentMap(world)
+        updateRenderableEntityList()
+        updateAnimatedEntityList()
+        updateSpatialEntityList()
     }
 
     private fun updateRenderableEntityList() {
-        renderableEntities = Entities.withComps(world, Comps.Renderable, Comps.Spatial)
+        renderableEntities = Entities.withComps(world, Comps.Renderable, Comps.Spatial).asArray()
     }
 
     private fun updateAnimatedEntityList() {
-        animatedEntities = Entities.withComps(world, Comps.AnimatedRenderable, Comps.Spatial)
+        animatedEntities = Entities.withComps(world, Comps.AnimatedRenderable, Comps.Spatial).asArray()
     }
 
     private fun updateSpatialEntityList() {
-        spatialEntities = Entities.withComps(world, Comps.Spatial)
+        spatialEntities = Entities.withComps(world, Comps.Spatial).asArray()
     }
 
     private fun renderEntities() {
+        renderableEntities.sortWith(yIndexComparator)
+
         for (ent in renderableEntities) {
             var currPos = CompMapper.Spatial.get(ent).pos
 
@@ -114,6 +126,8 @@ class RenderingSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
     }
 
     private fun renderAnimations() {
+        animatedEntities.sortWith(yIndexComparator)
+
         for (ent in animatedEntities) {
             var spatial = CompMapper.Spatial.get(ent)
             var state = CompMapper.State.get(ent)

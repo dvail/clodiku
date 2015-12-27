@@ -66,3 +66,6 @@ object Entities {
 
 @Suppress("SENSELESS_COMPARISON")
 fun Entity.hasComp(compType: Class<out Component>): Boolean = this.getComponent(compType) != null
+
+fun ImmutableArray<Entity>.asArray() = Array<Entity>(this.size(), { i -> this.get(i)})
+
