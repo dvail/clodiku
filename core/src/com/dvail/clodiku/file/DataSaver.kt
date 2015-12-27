@@ -7,6 +7,7 @@ import com.dvail.clodiku.entities.ComponentFactory
 import com.dvail.clodiku.entities.Comps
 import com.dvail.clodiku.entities.EqSlot
 import com.dvail.clodiku.util.Entities
+import com.dvail.clodiku.world.GameEngine
 import java.io.File
 import java.util.*
 
@@ -21,11 +22,14 @@ class DataSaver {
     }
 
     fun saveArea(world: Engine, saveLocation: String, currentArea: String) {
+        world as GameEngine
+
         val areaFileTmp = File("$saveLocation/$currentArea.toml.tmp")
 
         if (areaFileTmp.exists()) areaFileTmp.delete()
         areaFileTmp.createNewFile()
 
+        areaFileTmp.appendText("lastSave = ${world.gameTime}\n\n")
         saveMobs(world, areaFileTmp)
         saveFreeItems(world, areaFileTmp)
 

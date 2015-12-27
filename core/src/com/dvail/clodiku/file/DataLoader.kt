@@ -7,11 +7,14 @@ import com.dvail.clodiku.entities.CompMapper
 import com.dvail.clodiku.entities.ComponentFactory
 import com.dvail.clodiku.entities.Comps
 import com.dvail.clodiku.entities.EqSlot
+import com.dvail.clodiku.world.GameEngine
 import com.moandjiezana.toml.Toml
 import java.io.File
 import java.util.*
 
 //TODO Define a "conventions" file for how TOML file files should look
+private const val REPOP_LIMIT = 300.0 // Five minutes
+
 class DataLoader() {
 
     val compStringMap = HashMap<String, Class<out Component>>()
@@ -38,17 +41,26 @@ class DataLoader() {
         return playerToml.getString("area")
     }
 
-    // TODO Make this decide whether or not to repop an area if there is a save already in place
+    // If enough time has passed since the area was saved, load the original file as a repop
+    // TODO Need to find a more robust way to handle partial repops.
     fun loadArea(world: Engine, saveLocation: String, areaName: String) {
+        world as GameEngine
         val savedAreaFile = File("$saveLocation/$areaName.toml")
+        val defaultAreaFile = File("./maps/$areaName/data.toml")
 
-        val areaData = if (savedAreaFile.exists()) {
-            savedAreaFile
+        val areaToml = if (savedAreaFile.exists()) {
+            val toml = Toml().read(savedAreaFile)
+            val lastSave = toml.getDouble("lastSave") ?: 0.0
+
+            if (Math.abs(lastSave - world.gameTime) > REPOP_LIMIT) {
+                println("Repop area")
+                Toml().read(defaultAreaFile)
+            } else {
+                toml
+            }
         } else {
-            File("./maps/$areaName/data.toml")
+            Toml().read(defaultAreaFile)
         }
-
-        val areaToml = Toml().read(areaData)
 
         loadFreeItems(world, areaToml.getTables("free-item"))
 
@@ -59,6 +71,7 @@ class DataLoader() {
     fun loadPlayer(world: Engine, saveLocation: String) {
         val playerToml = Toml().read(File("$saveLocation/PLAYER.toml"))
 
+        (world as GameEngine).gameTime = playerToml.getDouble("gameTime") ?: 0.0
         loadCharacter(world, playerToml)
     }
 

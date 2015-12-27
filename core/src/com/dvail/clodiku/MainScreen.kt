@@ -48,6 +48,7 @@ class MainScreen(mainGame: Game, savedGame: String? = null) : Screen {
     }
 
     override fun render(delta: Float) {
+        world.gameTime += delta
         world.update(delta)
         gameUI.update(delta)
     }

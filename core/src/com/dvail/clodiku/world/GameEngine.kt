@@ -13,6 +13,8 @@ class GameEngine(gameSaveLoc: String, loader: DataLoader, saver: DataSaver) : En
     val dataLoader = loader
     val dataSaver = saver
 
+    var gameTime = 0.0
+
     fun saveGame() {
         dataSaver.saveGame(this, saveLocation)
     }
