@@ -39,9 +39,7 @@ class InputSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
             BaseState.Melee_Slash -> doCombatInput()
             BaseState.Melee_Bash -> doCombatInput()
             BaseState.Melee_H2H -> doCombatInput()
-            else -> {
-                println("UNHANDLED PLAYER STATE!!!")
-            }
+            else -> { println("UNHANDLED PLAYER STATE!!!") }
         }
     }
 

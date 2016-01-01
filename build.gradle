@@ -45,7 +45,6 @@ project(":core") {
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
-        compile 'com.eclipsesource.minimal-json:minimal-json:0.9.4'
         compile 'com.moandjiezana.toml:toml4j:0.5.0'
     }
 }

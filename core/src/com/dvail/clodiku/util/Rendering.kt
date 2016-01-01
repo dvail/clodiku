@@ -6,32 +6,34 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.dvail.clodiku.entities.*
-import com.badlogic.gdx.utils.Array as GdxArray
-import com.eclipsesource.json.Json
+import com.dvail.clodiku.entities.BaseState
+import com.dvail.clodiku.entities.CompMapper
+import com.dvail.clodiku.entities.Direction
+import com.moandjiezana.toml.Toml
+import java.io.File
 import java.util.*
+import com.badlogic.gdx.utils.Array as GdxArray
 
 fun makeTexture(src: String) : Texture = Texture(Gdx.files.internal(src))
 
 fun makeRegions(srcDir: String): Pair<HashMap<String, HashMap<String, Animation>>, TextureAtlas> {
     var animations = HashMap<String, HashMap<String, Animation>>()
-    var config = Gdx.files.internal("${srcDir}anim.json").readString()
-    var json = Json.parse(config).asObject()
-    val atlas = TextureAtlas("$srcDir${json.get("pack").asString()}")
+    val config = Toml().read(File("${srcDir}anim.toml"))
 
-    for (anim in json.get("animations").asArray()) {
+    val atlas = TextureAtlas("$srcDir${config.getString("pack")}")
 
-        val animObj = anim.asObject()
-        val name = animObj.get("name").asString()
-        val animationViews = animObj.get("directions").asArray().zip(animObj.get("frames").asArray())
+    for (anim in config.getTables("animations")) {
+
+        val name = anim.getString("name")
+        val animationViews = anim.getList<String>("directions").zip(anim.getList<Long>("frames"))
 
         animations.put(name, HashMap())
 
         for (view in animationViews) {
-            val direction = view.first.asString()
-            val frameCount = view.second.asInt()
+            val direction = view.first
+            val frameCount = view.second
             var speed = if (name.contains("melee", true)) 1/24f else 1/12f
-            val animation = Animation(speed, getRegions(atlas, name, direction, frameCount), Animation.PlayMode.LOOP)
+            val animation = Animation(speed, getRegions(atlas, name, direction, frameCount.toInt()), Animation.PlayMode.LOOP)
 
             animations[name]?.put(direction, animation)
         }
