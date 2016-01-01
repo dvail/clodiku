@@ -3,11 +3,11 @@ package com.dvail.clodiku.systems
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.Circle
-import com.dvail.clodiku.combat.aggravate
-import com.dvail.clodiku.combat.calcAttackDamage
-import com.dvail.clodiku.combat.getAttackers
-import com.dvail.clodiku.combat.updateHitBox
-import com.dvail.clodiku.entities.*
+import com.dvail.clodiku.combat.*
+import com.dvail.clodiku.entities.BaseState
+import com.dvail.clodiku.entities.CompMapper
+import com.dvail.clodiku.entities.Comps
+import com.dvail.clodiku.entities.EqWeapon
 import com.dvail.clodiku.events.EventQueue
 import com.dvail.clodiku.events.EventType
 import com.dvail.clodiku.events.MeleeHitEvent
@@ -35,7 +35,7 @@ class CombatSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
         val attackers = getAttackers(world)
 
         for (attacker in attackers) {
-            val weaponEnt = CompMapper.Equipment.get(attacker).items[EqSlot.Held]
+            val weaponEnt = Weaponry.getWeapon(attacker)
             val weaponComp = CompMapper.EqWeapon.get(weaponEnt)
 
             updateHitBox(attacker, weaponComp)

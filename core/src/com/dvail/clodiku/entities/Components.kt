@@ -12,7 +12,11 @@ import com.dvail.clodiku.util.makeTexture
 import java.util.*
 
 enum class Direction { North, West, South, East, None }
-enum class BaseState { Standing, Walking, Melee_Pierce, Melee_Slash, Melee_Bash, Dead }
+enum class BaseState {
+    Standing, Walking, Dead,
+    Melee_H2H, Melee_Pierce, Melee_Slash, Melee_Bash
+}
+
 enum class MobState { Wander, Aggro }
 enum class Stat { HP, MP, STR, DEX, VIT, PSY, HR, DR, MS, ED, PD, SAVES }
 
@@ -21,7 +25,7 @@ enum class DamageType { Slash, Pierce, Bash, Null }
 
 val Carried = Circle(-999f, -999f, 16f)
 
-fun Circle.copy(x: Float = this.x, y: Float = this.y, radius: Float = this.radius) : Circle {
+fun Circle.copy(x: Float = this.x, y: Float = this.y, radius: Float = this.radius): Circle {
     return Circle(x, y, radius)
 }
 
@@ -40,6 +44,7 @@ object Comps {
     val EqWeapon = EqWeapon::class.java
     val EqArmor = EqArmor::class.java
     val MobAI = MobAI::class.java
+    val Martial = Martial::class.java
 }
 
 object CompMapper {
@@ -57,6 +62,7 @@ object CompMapper {
     val EqWeapon = ComponentMapper.getFor(Comps.EqWeapon)
     val EqArmor = ComponentMapper.getFor(Comps.EqArmor)
     val MobAI = ComponentMapper.getFor(Comps.MobAI)
+    val Martial = ComponentMapper.getFor(Comps.Martial)
 }
 
 interface NestedComponent {
@@ -72,9 +78,14 @@ data class Player(var name: String) : Component
 data class WorldMap(var mapName: String, var tileMap: TiledMap, var grid: Array<IntArray>) : Component
 
 data class Spatial(var pos: Circle, var direction: Direction) : Component {
-    constructor(pos: Circle) : this(pos, Direction.None) {}
-    constructor(x: Float, y: Float, radius: Float) : this(Circle(x, y, radius), Direction.None) {}
-    constructor(x: Float, y: Float, radius: Float, direction: Direction) : this(Circle(x, y, radius), direction) {}
+    constructor(pos: Circle) : this(pos, Direction.None) {
+    }
+
+    constructor(x: Float, y: Float, radius: Float) : this(Circle(x, y, radius), Direction.None) {
+    }
+
+    constructor(x: Float, y: Float, radius: Float, direction: Direction) : this(Circle(x, y, radius), direction) {
+    }
 }
 
 data class Renderable(var textureSource: String) : Component, DisposableComponent {
@@ -97,6 +108,12 @@ data class State(var current: BaseState) : Component {
 
 data class Attribute(var hp: Int = 20, var mp: Int = 20, var mv: Int = 50, var str: Int = 10,
                      var dex: Int = 10, var vit: Int = 10, var psy: Int = 10) : Component
+
+// This component is for entities who can fight. Right now this is mostly a shim to handle h2h combat without
+// an ugly hack to the Equipment component
+class Martial() : Component {
+    var h2h: Entity? = null
+}
 
 // this component holds the total of all eq item stats for quick calculations
 class Equipment() : Component, NestedComponent {
@@ -131,5 +148,7 @@ data class EqArmor(var bulk: Int) : Component
 data class MobAI(var state: MobState, var thinkSpeed: Float) : Component {
     var lastUpdate = 0f
     var path = linkedListOf<AStar.Node>()
-    constructor(state: MobState) : this(state, 3f) {}
+
+    constructor(state: MobState) : this(state, 3f) {
+    }
 }

@@ -6,7 +6,7 @@ import com.dvail.clodiku.entities.*
 import com.dvail.clodiku.util.Entities
 import com.dvail.clodiku.util.currentAnimation
 
-val attackingStates = arrayOf(BaseState.Melee_Bash, BaseState.Melee_Pierce, BaseState.Melee_Slash)
+val attackingStates = arrayOf(BaseState.Melee_Bash, BaseState.Melee_Pierce, BaseState.Melee_Slash, BaseState.Melee_H2H)
 
 fun getAttackers(world: Engine): Iterable<Entity> {
     return Entities.withComps(world, Comps.State).filter { it ->
@@ -14,17 +14,29 @@ fun getAttackers(world: Engine): Iterable<Entity> {
     }
 }
 
-fun initAttack(entity: Entity) {
-    val weaponEntity = CompMapper.Equipment.get(entity).items[EqSlot.Held]
+// TODO Make this function do less
+fun initAttack(world: Engine, entity: Entity) {
+    var weaponEntity = CompMapper.Equipment.get(entity).items[EqSlot.Held]
 
-    if (weaponEntity != null) {
-        val compEqWeapon = CompMapper.EqWeapon.get(weaponEntity)
-        setEntityAttackState(entity, compEqWeapon)
-        setAttackStartPos(entity, compEqWeapon)
-        compEqWeapon.hitSet.clear()
-    } else {
-        println("Implement h2h combat")
+    if (weaponEntity == null) {
+        val h2hEntity = CompMapper.Martial.get(entity).h2h
+
+        if (h2hEntity == null) {
+            weaponEntity = Entity()
+            weaponEntity.add(EqWeapon(WeaponClass.H2H, DamageType.Bash, 1, 4f))
+            world.addEntity(weaponEntity)
+            Weaponry.updateEntityH2H(entity, weaponEntity)
+
+            CompMapper.Martial.get(entity).h2h = weaponEntity
+        } else {
+            weaponEntity = CompMapper.Martial.get(entity).h2h
+        }
     }
+
+    val compEqWeapon = CompMapper.EqWeapon.get(weaponEntity)
+    setEntityAttackState(entity, compEqWeapon)
+    setAttackStartPos(entity, compEqWeapon)
+    compEqWeapon.hitSet.clear()
 }
 
 fun advanceAttackState(delta: Float, entity: Entity) {
@@ -34,7 +46,7 @@ fun advanceAttackState(delta: Float, entity: Entity) {
     val attackDuration = if (animation != null) {
         animation.keyFrames.size * animation.frameDuration
     } else {
-        4/12f
+        4 / 12f
     }
 
     if (stateComp.time > attackDuration) {
@@ -55,7 +67,7 @@ private fun setEntityAttackState(entity: Entity, compEqWeapon: EqWeapon) {
         WeaponClass.Spear -> BaseState.Melee_Pierce
         WeaponClass.Sword -> BaseState.Melee_Slash
         WeaponClass.Mace -> BaseState.Melee_Bash
-        else -> throw Exception()
+        WeaponClass.H2H -> BaseState.Melee_H2H
     }
 
     stateComp.time = 0f;

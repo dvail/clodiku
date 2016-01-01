@@ -13,9 +13,9 @@ import java.io.File
 import java.util.*
 
 //TODO Define a "conventions" file for how TOML file files should look
-private const val REPOP_LIMIT = 300.0 // Five minutes
 
 class DataLoader() {
+    private val REPOP_LIMIT = 300.0 // Five minutes
 
     val compStringMap = HashMap<String, Class<out Component>>()
 
@@ -33,6 +33,7 @@ class DataLoader() {
         compStringMap.put("EqArmor", Comps.EqArmor)
         compStringMap.put("Equipment", Comps.Equipment)
         compStringMap.put("Inventory", Comps.Inventory)
+        compStringMap.put("Martial", Comps.Martial)
     }
 
     fun savedPlayerArea(saveLocation: String) : String {

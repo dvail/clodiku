@@ -110,7 +110,7 @@ class MobAISystem(eventQ: EventQueue) : CoreSystem(eventQ) {
     }
 
     private fun attackPlayer(entity: Entity) {
-        if (Movement.distanceBetween(entity, player) < ATTACK_RANGE) initAttack(entity)
+        if (Movement.distanceBetween(entity, player) < ATTACK_RANGE) initAttack(world, entity)
     }
 
     private fun setPathTo(fromEntity: Entity, targetPos: Circle) {

@@ -11,8 +11,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.math.Circle
+import com.dvail.clodiku.combat.Weaponry
 import com.dvail.clodiku.combat.getAttackers
-import com.dvail.clodiku.entities.*
+import com.dvail.clodiku.entities.Carried
+import com.dvail.clodiku.entities.CompMapper
+import com.dvail.clodiku.entities.Comps
+import com.dvail.clodiku.entities.Direction
 import com.dvail.clodiku.events.EventQueue
 import com.dvail.clodiku.events.EventType
 import com.dvail.clodiku.events.MeleeHitEvent
@@ -181,7 +185,7 @@ class RenderingSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
         val attackers = getAttackers(world)
 
         attackers.forEach { it ->
-            currWeapon = CompMapper.Equipment.get(it).items[EqSlot.Held]
+            currWeapon = Weaponry.getWeapon(it)
             currCircle = CompMapper.EqWeapon.get(currWeapon).hitBox
             shapeRenderer.circle(currCircle.x, currCircle.y, currCircle.radius)
         }

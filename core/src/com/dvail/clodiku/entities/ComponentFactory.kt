@@ -46,7 +46,7 @@ object ComponentFactory {
             Comps.EqWeapon -> {
                 val weaponClass = WeaponClass.valueOf(toml.getString("weaponClass"))
                 val damType = getDefaultWeaponDamType(weaponClass)
-                 EqWeapon(weaponClass = weaponClass, damType = damType,
+                EqWeapon(weaponClass = weaponClass, damType = damType,
                         baseDamage = toml.getLong("baseDamage").toInt(), size = toml.getDouble("size").toFloat())
             }
             Comps.EqArmor -> {
@@ -54,6 +54,9 @@ object ComponentFactory {
             }
             Comps.Attribute -> {
                  Attribute()
+            }
+            Comps.Martial -> {
+                Martial()
             }
             else -> throw Exception("Invalid component type read from TOML file.")
         }
@@ -108,6 +111,9 @@ object ComponentFactory {
             is Attribute -> {
                 "Attribute = { hp = ${component.hp}, mp = ${component.mp}, mv = ${component.mv}, " +
                         "str = ${component.str}, dex = ${component.dex}, vit = ${component.vit}, psy = ${component.psy}}"
+            }
+            is Martial -> {
+                "Martial = {}"
             }
             else -> ""
         }

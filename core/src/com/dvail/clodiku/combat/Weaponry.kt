@@ -1,10 +1,7 @@
 package com.dvail.clodiku.combat
 
 import com.badlogic.ashley.core.Entity
-import com.dvail.clodiku.entities.CompMapper
-import com.dvail.clodiku.entities.DamageType
-import com.dvail.clodiku.entities.Direction
-import com.dvail.clodiku.entities.EqWeapon
+import com.dvail.clodiku.entities.*
 
 object WeaponRange {
     val Sword = 28
@@ -14,11 +11,22 @@ enum class WeaponClass {
     H2H, Sword, Spear, Mace
 }
 
+object Weaponry {
+    fun updateEntityH2H(entity: Entity, weaponEntity: Entity) {
+
+    }
+
+    fun getWeapon(entity: Entity) : Entity? {
+        return CompMapper.Equipment.get(entity).items[EqSlot.Held] ?: CompMapper.Martial.get(entity).h2h
+    }
+}
+
 fun getDefaultWeaponDamType(weaponClass: WeaponClass) : DamageType {
     return when (weaponClass) {
         WeaponClass.Sword -> DamageType.Slash
         WeaponClass.Spear -> DamageType.Pierce
         WeaponClass.Mace -> DamageType.Bash
+        WeaponClass.H2H -> DamageType.Bash
         else -> DamageType.Null
     }
 }
@@ -60,7 +68,21 @@ fun setAttackStartPos(attackingEntity: Entity, compEqWeapon: EqWeapon) {
         WeaponClass.Mace -> {
 
         }
-        WeaponClass.H2H -> {}
+        WeaponClass.H2H -> {
+            val startRange = attackerSpatial.pos.radius / 2
+            val offset = (startRange + compEqWeapon.hitBox.radius)
+
+            compEqWeapon.hitBox.x = attackerSpatial.pos.x
+            compEqWeapon.hitBox.y = attackerSpatial.pos.y
+
+            when (attackerSpatial.direction) {
+                Direction.West -> { compEqWeapon.hitBox.x -= offset }
+                Direction.East -> { compEqWeapon.hitBox.x += offset }
+                Direction.North -> { compEqWeapon.hitBox.y += offset }
+                Direction.South -> { compEqWeapon.hitBox.y -= offset }
+                else -> {}
+            }
+        }
     }
 }
 
@@ -91,6 +113,16 @@ fun updateHitBox(attacker: Entity, weaponComponent: EqWeapon) {
         WeaponClass.Mace -> {
 
         }
-        WeaponClass.H2H -> {}
+        WeaponClass.H2H -> {
+            val moveRate = 0.5f
+
+            when (direction) {
+                Direction.West -> { weaponComponent.hitBox.x -= moveRate }
+                Direction.East -> { weaponComponent.hitBox.x += moveRate }
+                Direction.North -> { weaponComponent.hitBox.y += moveRate }
+                Direction.South -> { weaponComponent.hitBox.y -= moveRate }
+                else -> {}
+            }
+        }
     }
 }

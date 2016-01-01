@@ -37,13 +37,17 @@ class InputSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
             BaseState.Standing -> doFreeInput()
             BaseState.Melee_Pierce -> doCombatInput()
             BaseState.Melee_Slash -> doCombatInput()
-            else -> {}
+            BaseState.Melee_Bash -> doCombatInput()
+            BaseState.Melee_H2H -> doCombatInput()
+            else -> {
+                println("UNHANDLED PLAYER STATE!!!")
+            }
         }
     }
 
     private fun doFreeInput() {
         if (keyJustPressed(BoundKeys.MeleeAttack)) {
-            initAttack(player)
+            initAttack(world, player)
         } else if (keyJustPressed(BoundKeys.GetItem)) {
             Movement.grabItem(world, player)
         } else {
