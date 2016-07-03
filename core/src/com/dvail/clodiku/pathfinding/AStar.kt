@@ -39,7 +39,7 @@ object AStar {
         return neighbors
     }
 
-    fun findPath(grid: Array<IntArray>, start: Node, goal: Node): LinkedList<Node> {
+    fun findPath(grid: Array<IntArray>, start: Node, goal: Node): MutableList<Node> {
 
         val comparator = object : Comparator<Node> {
 
@@ -84,7 +84,7 @@ object AStar {
             }
 
             if (currentNode == goal) {
-                val path = linkedListOf<Node>()
+                val path = mutableListOf<Node>()
 
                 while (currentNode.parent != null) {
                     path.add(currentNode)
@@ -95,7 +95,7 @@ object AStar {
             }
         }
 
-        return linkedListOf(start) // No path, return the starting node
+        return mutableListOf(start) // No path, return the starting node
     }
 
     class Node(var x: Int, var y: Int) {

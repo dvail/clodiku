@@ -34,7 +34,7 @@ class GameUICore(mainGame: Game, world: GameEngine, eventQ: EventQueue) {
     val eventQ = eventQ
     val player = Entities.firstWithComp(world, Comps.Player)
 
-    val subMenus = arrayOf("Equipment", "Inventory", "Skills", "Stats")
+    val subMenus = listOf("Equipment", "Inventory", "Skills", "Stats")
 
     val skin = Skin(Gdx.files.internal("./ui/uiskin.json"))
     val overlay = Table()

@@ -79,7 +79,7 @@ class MobAISystem(eventQ: EventQueue) : CoreSystem(eventQ) {
                 setPathTo(entity, randomWanderLocation(entity))
             }
             MobState.Aggro -> {
-                mobAI.path = linkedListOf()
+                mobAI.path = mutableListOf()
             }
             else -> {}
         }

@@ -13,14 +13,14 @@ import java.util.*
 
 enum class Direction { North, West, South, East, None }
 enum class BaseState {
-    Standing, Walking, Dead,
+    Standing, Walking, Dead, Jumping, Casting,
     Melee_H2H, Melee_Pierce, Melee_Slash, Melee_Bash
 }
 
 enum class MobState { Wander, Aggro }
 enum class Stat { HP, MP, STR, DEX, VIT, PSY, HR, DR, MS, ED, PD, SAVES }
 
-enum class EqSlot { Held, Head, Body, Arms, Legs, Feet, Hands }
+enum class EqSlot { Held, Head, Body, Legs, Feet, Hands, Accessory }
 enum class DamageType { Slash, Pierce, Bash, Null }
 
 val Carried = Circle(-999f, -999f, 16f)
@@ -147,7 +147,7 @@ data class EqArmor(var bulk: Int) : Component
 
 data class MobAI(var state: MobState, var thinkSpeed: Float) : Component {
     var lastUpdate = 0f
-    var path = linkedListOf<AStar.Node>()
+    var path = mutableListOf<AStar.Node>()
 
     constructor(state: MobState) : this(state, 3f) {
     }

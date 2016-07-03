@@ -54,7 +54,7 @@ object Movement {
         val (targetPosX, targetPosY) = nodeToPixel(path.last())
 
         if (Math.abs(currPos.x - targetPosX) < 2 && Math.abs(currPos.y - targetPosY) < 2) {
-            path.removeLast()
+            path.removeAt(path.size - 1)
         } else {
             moveMob(world, delta, entity, targetPosX, targetPosY)
         }

@@ -54,6 +54,7 @@ class RenderingSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
     override fun addedToEngine(engine: Engine) {
         world = engine;
         mapRenderer = OrthogonalTiledMapRenderer(Maps.currentMap(world), batch)
+
         updateRenderableEntityList()
         updateAnimatedEntityList()
         updateSpatialEntityList()
@@ -61,6 +62,7 @@ class RenderingSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
 
     override fun update(sysDelta: Float) {
         delta = sysDelta
+
         Gdx.gl.glClearColor(0f, 0f, 0.2f, 0.3f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
@@ -89,8 +91,10 @@ class RenderingSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
         shapeRenderer.begin()
         shapeRenderer.color = Color(0.5f, 1f, 0.5f, 1f)
         renderEntityShapes()
+
         shapeRenderer.color = Color(1f, 0.5f, 0.5f, 1f)
         renderCombatShapes()
+
         shapeRenderer.end()
 
         mapRenderer.setView(camera)

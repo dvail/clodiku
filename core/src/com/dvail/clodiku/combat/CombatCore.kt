@@ -6,7 +6,7 @@ import com.dvail.clodiku.entities.*
 import com.dvail.clodiku.util.Entities
 import com.dvail.clodiku.util.currentAnimation
 
-val attackingStates = arrayOf(BaseState.Melee_Bash, BaseState.Melee_Pierce, BaseState.Melee_Slash, BaseState.Melee_H2H)
+val attackingStates = listOf(BaseState.Melee_Bash, BaseState.Melee_Pierce, BaseState.Melee_Slash, BaseState.Melee_H2H)
 
 fun getAttackers(world: Engine): Iterable<Entity> {
     return Entities.withComps(world, Comps.State).filter { it ->
