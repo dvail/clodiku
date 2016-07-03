@@ -9,6 +9,7 @@ pom.xml.asc
 /.nrepl-port
 gradle/*
 .gradle/*
+core/build
 
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
 *.iml

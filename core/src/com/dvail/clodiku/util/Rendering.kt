@@ -2,15 +2,15 @@ package com.dvail.clodiku.util
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.utils.XmlReader
 import com.dvail.clodiku.entities.BaseState
 import com.dvail.clodiku.entities.CompMapper
 import com.dvail.clodiku.entities.Direction
-import com.moandjiezana.toml.Toml
-import java.io.File
 import java.util.*
 import com.badlogic.gdx.utils.Array as GdxArray
 
@@ -18,20 +18,20 @@ fun makeTexture(src: String) : Texture = Texture(Gdx.files.internal(src))
 
 fun makeRegions(srcDir: String): Pair<HashMap<String, HashMap<String, Animation>>, TextureAtlas> {
     var animations = HashMap<String, HashMap<String, Animation>>()
-    val config = Toml().read(File("${srcDir}anim.toml"))
 
-    val atlas = TextureAtlas("$srcDir${config.getString("pack")}")
+    val config = XmlReader().parse(FileHandle("${srcDir}anim.xml"))
+    val atlas = TextureAtlas("$srcDir${config.get("pack")}")
 
-    for (anim in config.getTables("animations")) {
-
-        val name = anim.getString("name")
-        val animationViews = anim.getList<String>("directions").zip(anim.getList<Long>("frames"))
+    for (anim in config.getChildrenByName("sequence")) {
+        val name = anim.getAttribute("name")
+        val directions = anim.getChildrenByName("direction")
 
         animations.put(name, HashMap())
 
-        for (view in animationViews) {
-            val direction = view.first
-            val frameCount = view.second
+        for (view in directions) {
+            val direction = view.getAttribute("name")
+            val frameCount = view.getAttribute("frames")
+
             var speed = if (name.contains("melee", true)) 1/24f else 1/12f
             val animation = Animation(speed, getRegions(atlas, name, direction, frameCount.toInt()), Animation.PlayMode.LOOP)
 

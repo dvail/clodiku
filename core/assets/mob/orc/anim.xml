@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<animation>
+    <pack>orc.pack</pack>
+    <sequence name="standing">
+        <direction name="side" frames="1"/>
+        <direction name="front" frames="1"/>
+        <direction name="back" frames="1"/>
+    </sequence>
+    <sequence name="walking">
+        <direction name="side" frames="8"/>
+        <direction name="front" frames="8"/>
+        <direction name="back" frames="8"/>
+    </sequence>
+    <sequence name="melee_slash">
+        <direction name="side" frames="6"/>
+        <direction name="front" frames="6"/>
+        <direction name="back" frames="6"/>
+    </sequence>
+    <sequence name="dead">
+        <direction name="side" frames="1"/>
+        <direction name="front" frames="1"/>
+        <direction name="back" frames="1"/>
+    </sequence>
+</animation>
