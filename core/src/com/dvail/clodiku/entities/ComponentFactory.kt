@@ -1,56 +1,56 @@
 package com.dvail.clodiku.entities
 
 import com.badlogic.ashley.core.Component
+import com.badlogic.gdx.utils.XmlReader
 import com.dvail.clodiku.combat.WeaponClass
 import com.dvail.clodiku.combat.getDefaultWeaponDamType
-import com.moandjiezana.toml.Toml
 
 object ComponentFactory {
 
-    fun createComponent(clazz: Class<out Component>?, toml: Toml): Component {
+    fun createComponent(clazz: Class<out Component>?, element: XmlReader.Element): Component {
         return when (clazz) {
             Comps.Player -> {
-                Player(name = toml.getString("name"))
+                Player(name = element.getAttribute("name"))
             }
             Comps.Renderable -> {
-                Renderable(toml.getString("textureSource"))
+                Renderable(element.getAttribute("textureSource"))
             }
             Comps.AnimatedRenderable -> {
-                 AnimatedRenderable(toml.getString("animDir"))
+                 AnimatedRenderable(element.getAttribute("animDir"))
             }
             Comps.Spatial -> {
-                if (toml.containsPrimitive("pos") && toml.getString("pos").equals("Carried")) {
+                if (element.attributes.containsKey("pos") && element.getAttribute("pos") == "Carried") {
                     Spatial(Carried.copy())
                 } else {
-                     Spatial(toml.getDouble("x").toFloat(), toml.getDouble("y").toFloat(), toml.getDouble("radius").toFloat())
+                    Spatial(element.getFloat("x"), element.getFloat("y"), element.getFloat("radius"))
                 }
             }
             Comps.State -> {
-                 State(BaseState.valueOf(toml.getString("current")))
+                 State(BaseState.valueOf(element.getAttribute("current")))
             }
             Comps.MobAI -> {
-                 MobAI(MobState.valueOf(toml.getString("state")))
+                 MobAI(MobState.valueOf(element.getAttribute("state")))
             }
             Comps.Inventory -> {
                  Inventory()
             }
             Comps.Item -> {
-                 Item(toml.getString("name"), toml.getString("description"))
+                 Item(element.getAttribute("name"), element.getAttribute("description"))
             }
             Comps.Equipment -> {
                  Equipment()
             }
             Comps.EqItem -> {
-                 EqItem(EqSlot.valueOf(toml.getString("slot")))
+                 EqItem(EqSlot.valueOf(element.getAttribute("slot")))
             }
             Comps.EqWeapon -> {
-                val weaponClass = WeaponClass.valueOf(toml.getString("weaponClass"))
+                val weaponClass = WeaponClass.valueOf(element.getAttribute("weaponClass"))
                 val damType = getDefaultWeaponDamType(weaponClass)
                 EqWeapon(weaponClass = weaponClass, damType = damType,
-                        baseDamage = toml.getLong("baseDamage").toInt(), size = toml.getDouble("size").toFloat())
+                        baseDamage = element.getInt("baseDamage"), size = element.getFloat("size"))
             }
             Comps.EqArmor -> {
-                 EqArmor(toml.getLong("bulk").toInt())
+                 EqArmor(element.getInt("bulk"))
             }
             Comps.Attribute -> {
                  Attribute()
@@ -58,7 +58,7 @@ object ComponentFactory {
             Comps.Martial -> {
                 Martial()
             }
-            else -> throw Exception("Invalid component type read from TOML file.")
+            else -> throw Exception("Invalid component type read from XML file.")
         }
     }
 

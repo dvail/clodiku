@@ -3,14 +3,16 @@ package com.dvail.clodiku.file
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.files.FileHandle
+import com.badlogic.gdx.utils.XmlReader
 import com.dvail.clodiku.entities.CompMapper
 import com.dvail.clodiku.entities.ComponentFactory
 import com.dvail.clodiku.entities.Comps
 import com.dvail.clodiku.entities.EqSlot
 import com.dvail.clodiku.world.GameEngine
-import com.moandjiezana.toml.Toml
 import java.io.File
 import java.util.*
+import com.badlogic.gdx.utils.Array as GdxArray
 
 //TODO Define a "conventions" file for how TOML file files should look
 class DataLoader() {
@@ -36,59 +38,59 @@ class DataLoader() {
     }
 
     fun savedPlayerArea(saveLocation: String) : String {
-        val playerToml = Toml().read(File("$saveLocation/PLAYER.toml"))
+        val config = XmlReader().parse(FileHandle("$saveLocation/PLAYER.xml"))
 
-        return playerToml.getString("area")
+        return config.getChildByName("area").getAttribute("name")
     }
 
     // If enough time has passed since the area was saved, load the original file as a repop
     // TODO Need to find a more robust way to handle partial repops.
     fun loadArea(world: Engine, saveLocation: String, areaName: String) {
         world as GameEngine
-        val savedAreaFile = File("$saveLocation/$areaName.toml")
-        val defaultAreaFile = File("./maps/$areaName/data.toml")
+        val savedAreaConfig = File("$saveLocation/$areaName.xml")
+        val defaultAreaConfig = File("./maps/$areaName/data.xml")
 
-        val areaToml = if (savedAreaFile.exists()) {
-            val toml = Toml().read(savedAreaFile)
-            val lastSave = toml.getDouble("lastSave") ?: 0.0
+        val areaConfig = if (savedAreaConfig.exists()) {
+            val config = XmlReader().parse(FileHandle(savedAreaConfig))
+            val lastSave = config.getChildByName("last-save")?.getFloatAttribute("value")?.toDouble() ?: 0.0
 
             if (Math.abs(lastSave - world.gameTime) > REPOP_LIMIT) {
                 println("Repop area")
-                Toml().read(defaultAreaFile)
+                XmlReader().parse(FileHandle(defaultAreaConfig))
             } else {
-                toml
+                config
             }
         } else {
-            Toml().read(defaultAreaFile)
+            XmlReader().parse(FileHandle(defaultAreaConfig))
         }
 
-        loadFreeItems(world, areaToml.getTables("free-item"))
+        loadFreeItems(world, areaConfig.getChildrenByName("free-item"))
 
-        val mobTomls = areaToml.getTables("mob")
+        val mobTomls = areaConfig.getChildrenByName("mob")
         mobTomls.forEach { loadCharacter(world, it) }
     }
 
     fun loadPlayer(world: Engine, saveLocation: String) {
-        val playerToml = Toml().read(File("$saveLocation/PLAYER.toml"))
+        val playerConfig = XmlReader().parse(FileHandle("$saveLocation/PLAYER.xml"))
 
-        (world as GameEngine).gameTime = playerToml.getDouble("gameTime") ?: 0.0
-        loadCharacter(world, playerToml)
+        (world as GameEngine).gameTime = playerConfig.getChildByName("game-time").getFloatAttribute("value").toDouble()
+        loadCharacter(world, playerConfig)
     }
 
-    private fun loadFreeItems(world: Engine, items: List<Toml>?) {
+    private fun loadFreeItems(world: Engine, items: GdxArray<XmlReader.Element>?) {
         if (items != null) {
             val freeItemEntities = buildEntities(items)
             freeItemEntities.forEach { world.addEntity(it) }
         }
     }
 
-    private fun loadCharacter(world: Engine, entityToml: Toml) {
-        val components = buildComponentList(entityToml.getTable("components"))
+    private fun loadCharacter(world: Engine, entityConfig: XmlReader.Element) {
+        val components = buildComponentList(entityConfig.getChildByName("components"))
 
-        val inventory = entityToml.getTables("inventory").map {
-            buildComponentList(it as Toml)
+        val inventory = entityConfig.getChildByName("inventory").getChildrenByName("item").map {
+            buildComponentList(it)
         }
-        val equipment = buildEntityEq(entityToml.getTable("equipment"))
+        val equipment = buildEntityEq(entityConfig.getChildByName("equipment"))
 
         val entity = Entity()
         components.forEach { entity.add(it) }
@@ -110,8 +112,8 @@ class DataLoader() {
         world.addEntity(entity)
     }
 
-    private fun buildEntities(items: List<Toml>): List<Entity> {
-        val itemComponentLists = items.map { buildComponentList(it.getTable("components")) }
+    private fun buildEntities(items: GdxArray<XmlReader.Element>): List<Entity> {
+        val itemComponentLists = items.map { buildComponentList(it.getChildByName("components")) }
 
         return itemComponentLists.map { it ->
             val item = Entity()
@@ -120,21 +122,32 @@ class DataLoader() {
         }
     }
 
-    private fun buildComponentList(table: HashMap<String, Toml>) : List<Component> {
-        return table.entries.map { ComponentFactory.createComponent(compStringMap[it.key], it.value) }
+    private fun buildComponentList(element: XmlReader.Element?) : List<Component> {
+        val components = ArrayList<Component>()
+
+        element?.let {
+            for (i in 0..it.childCount - 1) {
+                val entity = Entity()
+                val child = element.getChild(i)
+
+                buildComponentList(child).forEach { entity.add(it) }
+                components.add(ComponentFactory.createComponent(compStringMap[child.name], child))
+            }
+        }
+
+        return components
     }
 
-    private fun buildComponentList(table: Toml) : List<Component> {
-        return table.entrySet().map { ComponentFactory.createComponent(compStringMap[it.key], it.value as Toml) }
-    }
-
-    private fun buildEntityEq(toml: Toml) : HashMap<EqSlot, Entity> {
+    private fun buildEntityEq(element: XmlReader.Element?): HashMap<EqSlot, Entity> {
         val entityEq = HashMap<EqSlot, Entity>()
 
-        toml.entrySet().forEach { entry ->
-            val entity = Entity()
-            buildComponentList(entry.value as Toml).forEach { entity.add(it) }
-            entityEq.put(EqSlot.valueOf(entry.key), entity)
+        element?.let {
+            for (i in 0..it.childCount - 1) {
+                val entity = Entity()
+
+                buildComponentList(element.getChild(i)).forEach { entity.add(it) }
+                entityEq.put(EqSlot.valueOf(element.getChild(i).name), entity)
+            }
         }
 
         return entityEq

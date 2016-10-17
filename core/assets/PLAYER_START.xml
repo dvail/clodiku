@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <player>
     <area name="sample"/>
+    <game-time value="0.0"/>
     <components>
         <Player name="Inefray"/>
         <Spatial x="60.0" y="848.0" radius="14.0" direction="East"/>
@@ -21,12 +22,12 @@
         </item>
     </inventory>
     <equipment>
-        <held>
+        <Held>
             <Spatial pos="Carried"/>
             <Renderable textureSource="./items/emerald-spear.png"/>
             <Item name="An emerald spear" description="This spear doesn't look very sharp"/>
             <EqItem hr="1" slot="Held" dr="0" ed="0" ms="0" pd="0" saves="0"/>
             <EqWeapon weaponClass="Spear" damType="Pierce" baseDamage="5" size="4.0"/>
-        </held>
+        </Held>
     </equipment>
 </player>
