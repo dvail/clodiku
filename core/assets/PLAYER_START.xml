@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<player>
+    <area name="sample"/>
+    <components>
+        <Player name="Inefray"/>
+        <Spatial x="60.0" y="848.0" radius="14.0" direction="East"/>
+        <State current="Walking"/>
+        <AnimatedRenderable animDir="./player/"/>
+        <Attribute hp="50" mp="20" mv="50" str="10" dex="10" vit="10" psy="10"/>
+        <Martial/>
+        <Equipment/>
+        <Inventory/>
+    </components>
+    <inventory>
+        <item>
+            <Spatial pos="Carried"/>
+            <Renderable textureSource="./items/silver-scale-mail.png"/>
+            <Item name="silver armor" description="This armor is made of silver"/>
+            <EqItem hr="0" slot="Body" dr="0" ed="3" ms="0" pd="0" saves="0"/>
+            <EqArmor bulk="2"/>
+        </item>
+    </inventory>
+    <equipment>
+        <held>
+            <Spatial pos="Carried"/>
+            <Renderable textureSource="./items/emerald-spear.png"/>
+            <Item name="An emerald spear" description="This spear doesn't look very sharp"/>
+            <EqItem hr="1" slot="Held" dr="0" ed="0" ms="0" pd="0" saves="0"/>
+            <EqWeapon weaponClass="Spear" damType="Pierce" baseDamage="5" size="4.0"/>
+        </held>
+    </equipment>
+</player>

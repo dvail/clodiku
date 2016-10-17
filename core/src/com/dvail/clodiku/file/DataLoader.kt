@@ -13,7 +13,6 @@ import java.io.File
 import java.util.*
 
 //TODO Define a "conventions" file for how TOML file files should look
-
 class DataLoader() {
     private val REPOP_LIMIT = 300.0 // Five minutes
 

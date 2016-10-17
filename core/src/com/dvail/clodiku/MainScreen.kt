@@ -13,7 +13,7 @@ import java.io.File
 
 class MainScreen(mainGame: Game, savedGame: String? = null) : Screen {
 
-    val playerStartFile = File("./PLAYER_START.toml")
+    val playerStartFile = File("./PLAYER_START.xml")
 
     val game = mainGame
     val eventQ = EventQueue()
@@ -29,7 +29,7 @@ class MainScreen(mainGame: Game, savedGame: String? = null) : Screen {
         world = GameEngine(saveLocation, dataLoader, dataSaver)
 
         if (newGame) {
-            playerStartFile.copyTo(File("$saveLocation/PLAYER.toml"))
+            playerStartFile.copyTo(File("$saveLocation/PLAYER.xml"))
         }
 
         val currentArea = dataLoader.savedPlayerArea(saveLocation)

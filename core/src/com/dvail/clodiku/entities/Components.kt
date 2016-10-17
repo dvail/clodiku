@@ -66,11 +66,11 @@ object CompMapper {
 }
 
 interface NestedComponent {
-    fun getNestedEntities(): Collection<Entity>;
+    fun getNestedEntities(): Collection<Entity>
 }
 
 interface DisposableComponent {
-    fun dispose();
+    fun dispose()
 }
 
 data class Player(var name: String) : Component
@@ -78,14 +78,9 @@ data class Player(var name: String) : Component
 data class WorldMap(var mapName: String, var tileMap: TiledMap, var grid: Array<IntArray>) : Component
 
 data class Spatial(var pos: Circle, var direction: Direction) : Component {
-    constructor(pos: Circle) : this(pos, Direction.None) {
-    }
-
-    constructor(x: Float, y: Float, radius: Float) : this(Circle(x, y, radius), Direction.None) {
-    }
-
-    constructor(x: Float, y: Float, radius: Float, direction: Direction) : this(Circle(x, y, radius), direction) {
-    }
+    constructor(pos: Circle) : this(pos, Direction.None) {}
+    constructor(x: Float, y: Float, radius: Float) : this(Circle(x, y, radius), Direction.None) {}
+    constructor(x: Float, y: Float, radius: Float, direction: Direction) : this(Circle(x, y, radius), direction) {}
 }
 
 data class Renderable(var textureSource: String) : Component, DisposableComponent {
