@@ -15,9 +15,9 @@ import com.dvail.clodiku.world.Maps
 
 object Movement {
 
-    fun moveEntity(world: Engine, delta: Float, entity: Entity, movX: Float, movY: Float) {
+    fun moveEntity(world: Engine, delta: Float, entity: Entity, movX: Float, movY: Float, keepFacing: Boolean) {
         updateState(delta, entity, movX, movY)
-        updateSpatial(world, entity, movX, movY)
+        updateSpatial(world, entity, movX, movY, keepFacing)
     }
 
     fun moveMob(world: Engine, delta: Float, entity: Entity, targetX: Float, targetY: Float) {
@@ -32,7 +32,7 @@ object Movement {
         if (targetX < currPos.x) movX *= -1
         if (targetY < currPos.y) movY *= -1
 
-        moveEntity(world, delta, entity, movX, movY)
+        moveEntity(world, delta, entity, movX, movY, false)
     }
 
     fun entityDirection(x: Float, y: Float): Direction {
@@ -105,7 +105,7 @@ object Movement {
         state.time = if (oldState == state.current.name) state.time + delta else 0f
     }
 
-    private fun updateSpatial(world: Engine, entity: Entity, movX: Float, movY: Float) {
+    private fun updateSpatial(world: Engine, entity: Entity, movX: Float, movY: Float, keepFacing: Boolean) {
         val entitySpatial = CompMapper.Spatial.get(entity)
         val mapObstacles = Maps.mapObstacles(world)
         val collisionEntities = Entities.withCompsExcluding(world, Array(1, { Comps.Spatial }), Array(1, { Comps.Item }))
@@ -120,7 +120,7 @@ object Movement {
             entitySpatial.pos.y += movY
         }
 
-        if (movX != 0f || movY != 0f) entitySpatial.direction = entityDirection(movX, movY)
+        if ((movX != 0f || movY != 0f) && !keepFacing) entitySpatial.direction = entityDirection(movX, movY)
     }
 
     private fun collision(spatial: Spatial, mapObjects: MapObjects,
