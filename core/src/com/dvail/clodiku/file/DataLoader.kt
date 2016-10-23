@@ -14,7 +14,8 @@ import java.io.File
 import java.util.*
 import com.badlogic.gdx.utils.Array as GdxArray
 
-//TODO Define a "conventions" file for how TOML file files should look
+//TODO Define a conventions/schmea file for how XML file files should look
+//TODO Handle null values in XML better (maybe with schema)
 class DataLoader() {
     private val REPOP_LIMIT = 300.0 // Five minutes
 
@@ -40,7 +41,7 @@ class DataLoader() {
     fun savedPlayerArea(saveLocation: String) : String {
         val config = XmlReader().parse(FileHandle("$saveLocation/PLAYER.xml"))
 
-        return config.getChildByName("area").getAttribute("name")
+        return config.getChildByName("last-area").text
     }
 
     // If enough time has passed since the area was saved, load the original file as a repop
@@ -52,7 +53,7 @@ class DataLoader() {
 
         val areaConfig = if (savedAreaConfig.exists()) {
             val config = XmlReader().parse(FileHandle(savedAreaConfig))
-            val lastSave = config.getChildByName("last-save")?.getFloatAttribute("value")?.toDouble() ?: 0.0
+            val lastSave = config.getChildByName("last-save")?.text?.toDouble() ?: 0.0
 
             if (Math.abs(lastSave - world.gameTime) > REPOP_LIMIT) {
                 println("Repop area")
@@ -73,7 +74,7 @@ class DataLoader() {
     fun loadPlayer(world: Engine, saveLocation: String) {
         val playerConfig = XmlReader().parse(FileHandle("$saveLocation/PLAYER.xml"))
 
-        (world as GameEngine).gameTime = playerConfig.getChildByName("game-time").getFloatAttribute("value").toDouble()
+        (world as GameEngine).gameTime = playerConfig.getChildByName("last-save").text.toDouble()
         loadCharacter(world, playerConfig)
     }
 

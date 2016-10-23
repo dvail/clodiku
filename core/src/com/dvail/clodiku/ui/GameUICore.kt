@@ -131,6 +131,7 @@ class GameUICore(mainGame: Game, world: GameEngine, eventQ: EventQueue) {
             println("Implement saving")
             println("Clean up all game resources")
             println("This just leaked a bunch of memory")
+            world.saveGame()
             game.screen.dispose()
             stage.dispose()
             game.screen = StartScreen(game)

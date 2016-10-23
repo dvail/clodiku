@@ -12,13 +12,12 @@ import com.dvail.clodiku.world.GameEngine
 import java.io.File
 
 class MainScreen(mainGame: Game, savedGame: String? = null) : Screen {
-
     val playerStartFile = File("./PLAYER_START.xml")
 
     val game = mainGame
     val eventQ = EventQueue()
-    lateinit var gameUI: GameUICore
-    lateinit var world: GameEngine
+    var gameUI: GameUICore
+    var world: GameEngine
 
     init {
         val newGame = savedGame == null

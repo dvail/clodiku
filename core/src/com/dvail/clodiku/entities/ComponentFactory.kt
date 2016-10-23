@@ -1,7 +1,9 @@
 package com.dvail.clodiku.entities
 
 import com.badlogic.ashley.core.Component
+import com.badlogic.ashley.utils.ImmutableArray
 import com.badlogic.gdx.utils.XmlReader
+import com.badlogic.gdx.utils.XmlWriter
 import com.dvail.clodiku.combat.WeaponClass
 import com.dvail.clodiku.combat.getDefaultWeaponDamType
 
@@ -16,7 +18,7 @@ object ComponentFactory {
                 Renderable(element.getAttribute("textureSource"))
             }
             Comps.AnimatedRenderable -> {
-                 AnimatedRenderable(element.getAttribute("animDir"))
+                AnimatedRenderable(element.getAttribute("animDir"))
             }
             Comps.Spatial -> {
                 if (element.attributes.containsKey("pos") && element.getAttribute("pos") == "Carried") {
@@ -26,22 +28,22 @@ object ComponentFactory {
                 }
             }
             Comps.State -> {
-                 State(BaseState.valueOf(element.getAttribute("current")))
+                State(BaseState.valueOf(element.getAttribute("current")))
             }
             Comps.MobAI -> {
-                 MobAI(MobState.valueOf(element.getAttribute("state")))
+                MobAI(MobState.valueOf(element.getAttribute("state")))
             }
             Comps.Inventory -> {
-                 Inventory()
+                Inventory()
             }
             Comps.Item -> {
-                 Item(element.getAttribute("name"), element.getAttribute("description"))
+                Item(element.getAttribute("name"), element.getAttribute("description"))
             }
             Comps.Equipment -> {
-                 Equipment()
+                Equipment()
             }
             Comps.EqItem -> {
-                 EqItem(EqSlot.valueOf(element.getAttribute("slot")))
+                EqItem(EqSlot.valueOf(element.getAttribute("slot")))
             }
             Comps.EqWeapon -> {
                 val weaponClass = WeaponClass.valueOf(element.getAttribute("weaponClass"))
@@ -50,10 +52,10 @@ object ComponentFactory {
                         baseDamage = element.getInt("baseDamage"), size = element.getFloat("size"))
             }
             Comps.EqArmor -> {
-                 EqArmor(element.getInt("bulk"))
+                EqArmor(element.getInt("bulk"))
             }
             Comps.Attribute -> {
-                 Attribute()
+                Attribute()
             }
             Comps.Martial -> {
                 Martial()
@@ -62,62 +64,94 @@ object ComponentFactory {
         }
     }
 
-    fun createToml(component: Component) : String {
-        return when (component) {
+    fun createXML(xml: XmlWriter, components: ImmutableArray<Component>) {
+        components.forEach { createXML(xml, it) }
+    }
+
+    fun createXML(xml: XmlWriter, component: Component) {
+        when (component) {
             is Player -> {
-                "Player = { name = '''${component.name}'''}"
+                xml.element("Player").attribute("name", component.name).pop()
             }
             is Renderable -> {
-                "Renderable = { textureSource = '''${component.textureSource}'''}"
+                xml.element("Renderable").attribute("textureSource", component.textureSource).pop()
             }
             is AnimatedRenderable -> {
-                "AnimatedRenderable = { animDir = '''${component.animDir}'''}"
+                xml.element("AnimatedRenderable").attribute("animDir", component.animDir).pop()
             }
             is Spatial -> {
+                xml.element("Spatial")
+
                 if (component.pos == Carried) {
-                    "Spatial = { pos = '''Carried'''}"
+                    xml.attribute("pos", "Carried")
                 } else {
-                    "Spatial = { x = ${component.pos.x}, y = ${component.pos.y}, " +
-                            "radius = ${component.pos.radius}, direction = '''${component.direction.name}'''}"
+                    xml.attribute("x", component.pos.x)
+                            .attribute("y", component.pos.y)
+                            .attribute("radius", component.pos.radius)
+                            .attribute("direction", component.direction.name)
                 }
+
+                xml.pop()
             }
             is State -> {
-                "State = { current = '''${component.current.name}''' }"
+                xml.element("State").attribute("current", component.current.name).pop()
             }
             is MobAI -> {
-                "MobAI = { state = '''${component.state}''', thinkSpeed = ${component.thinkSpeed} }"
+                xml.element("MobAI")
+                        .attribute("state", component.state)
+                        .attribute("thinkSpeed", component.thinkSpeed)
+                        .pop()
             }
             is Inventory -> {
-                "Inventory = {}"
+                xml.element("Inventory").pop()
             }
             is Item -> {
-                "Item = {name = '''${component.name}''', description = '''${component.description}'''}"
+                xml.element("Item")
+                        .attribute("name", component.name)
+                        .attribute("description", component.description)
+                        .pop()
             }
             is Equipment -> {
-                "Equipment = {}"
+                xml.element("Equipment").pop()
             }
             is EqItem -> {
-                "EqItem = { slot = '''${component.slot.name}''', hr = ${component.hr}, dr = ${component.dr}, " +
-                        "ed = ${component.ed}, ms = ${component.ms}, pd = ${component.pd}, " +
-                        "saves = ${component.saves} }"
+                xml.element("EqItem")
+                        .attribute("slot", component.slot.name)
+                        .attribute("hr", component.hr)
+                        .attribute("dr", component.dr)
+                        .attribute("ed", component.ed)
+                        .attribute("ms", component.ms)
+                        .attribute("pd", component.pd)
+                        .attribute("saves", component.saves)
+                        .pop()
             }
             is EqWeapon -> {
-                "EqWeapon = { weaponClass = '''${component.weaponClass.name}''', damType = '''${component.damType.name}''', " +
-                        "baseDamage = ${component.baseDamage}, size = ${component.size} }"
+                xml.element("EqWeapon")
+                        .attribute("weaponClass", component.weaponClass.name)
+                        .attribute("damType", component.damType.name)
+                        .attribute("baseDamage", component.baseDamage)
+                        .attribute("size", component.size)
+                        .pop()
             }
             is EqArmor -> {
-                "EqArmor = { bulk = ${component.bulk} }"
+                xml.element("EqArmor").attribute("bulk", component.bulk).pop()
             }
             is Attribute -> {
-                "Attribute = { hp = ${component.hp}, mp = ${component.mp}, mv = ${component.mv}, " +
-                        "str = ${component.str}, dex = ${component.dex}, vit = ${component.vit}, psy = ${component.psy}}"
+                xml.element("Attribute")
+                        .attribute("hp", component.hp)
+                        .attribute("mp", component.mp)
+                        .attribute("mv", component.mv)
+                        .attribute("str", component.str)
+                        .attribute("dex", component.dex)
+                        .attribute("vit", component.vit)
+                        .attribute("psy", component.psy)
+                        .pop()
             }
             is Martial -> {
-                "Martial = {}"
+                xml.element("Martial").pop()
             }
-            else -> ""
+            else -> Unit
         }
-
     }
 
 }

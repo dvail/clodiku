@@ -6,7 +6,7 @@ import java.util.*
 object FileUtils {
     const val SAVE_DIR_BASE = "/.clodiku/game-saves"
     const val DEFAULT_SAVE_DIR_PREFIX = "/default-save"
-    val userHome = System.getProperty("user.home")
+    val userHome: String? = System.getProperty("user.home")
 
     fun newSaveDirectory(): String {
         val baseSaveDir = File(userHome + SAVE_DIR_BASE)

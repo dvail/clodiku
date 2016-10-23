@@ -2,6 +2,7 @@ package com.dvail.clodiku.file
 
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.utils.XmlWriter
 import com.dvail.clodiku.entities.CompMapper
 import com.dvail.clodiku.entities.ComponentFactory
 import com.dvail.clodiku.entities.Comps
@@ -9,102 +10,121 @@ import com.dvail.clodiku.entities.EqSlot
 import com.dvail.clodiku.util.Entities
 import com.dvail.clodiku.world.GameEngine
 import java.io.File
+import java.io.StringWriter
 import java.util.*
 
 class DataSaver {
 
     fun saveGame(world: Engine, saveLocation: String) {
+        world as GameEngine
+
         val worldMap = Entities.firstWithComp(world, Comps.WorldMap)
         val currentArea = CompMapper.WorldMap.get(worldMap).mapName
 
-        saveArea(world, saveLocation, currentArea)
-        savePlayer(world, saveLocation, currentArea)
-    }
+        val writer = StringWriter()
+        val xml = XmlWriter(writer)
 
-    fun saveArea(world: Engine, saveLocation: String, currentArea: String) {
-        world as GameEngine
+        xml.element("area")
 
-        val areaFileTmp = File("$saveLocation/$currentArea.toml.tmp")
+        // TODO Clean up this file handling code between saveArea and savePlayer functions
+        val areaFileTmp = File("$saveLocation/$currentArea.xml.tmp")
 
         if (areaFileTmp.exists()) areaFileTmp.delete()
         areaFileTmp.createNewFile()
 
-        areaFileTmp.appendText("lastSave = ${world.gameTime}\n\n")
-        saveMobs(world, areaFileTmp)
-        saveFreeItems(world, areaFileTmp)
+        saveArea(xml, world)
+        savePlayer(world, saveLocation, currentArea)
 
-        areaFileTmp.renameTo(File("$saveLocation/$currentArea.toml"))
+        xml.pop()
+        areaFileTmp.appendText(writer.toString())
+        areaFileTmp.renameTo(File("$saveLocation/$currentArea.xml"))
     }
 
-    private fun saveMobs(world: Engine, saveFile: File) {
+    fun saveGameTime(xml: XmlWriter, world: GameEngine) {
+        xml.element("last-save").text(world.gameTime).pop()
+    }
+
+    fun saveArea(xml: XmlWriter, world: GameEngine) {
+        saveGameTime(xml, world)
+        saveMobs(xml, world)
+        saveFreeItems(xml, world)
+    }
+
+    private fun saveMobs(xml: XmlWriter, world: Engine) {
         val mobs = Entities.withComps(world, Comps.MobAI)
-        val mobTomls = mobs.map { getCharacterToml(it) }
-        mobTomls.forEach { saveFile.appendText("[[mob]] \n$it") }
+        mobs.forEach {
+            xml.element("mob").buildCharacterXML(it).pop()
+        }
     }
 
-    private fun saveFreeItems(world: Engine, saveFile: File) {
+    private fun saveFreeItems(xml: XmlWriter, world: Engine) {
         val items = Entities.getFreeItems(world)
-        val itemTomls = items.map { getEntityToml(it) }
-        itemTomls.forEach { saveFile.appendText("[[free-item]]\ncomponents = {\n$it\n}\n") }
+        items.forEach {
+            xml.element("free-item").buildEntityXML(it).pop()
+        }
     }
 
-    private fun savePlayer(world: Engine, saveLocation: String, currentArea: String) {
-        world as GameEngine
+    private fun savePlayer(world: GameEngine, saveLocation: String, currentArea: String) {
+        val writer = StringWriter()
+        val xml = XmlWriter(writer)
+
+        xml.element("player")
 
         val player = Entities.firstWithComp(world, Comps.Player)
-        val playerToml = getCharacterToml(player)
+        xml.buildCharacterXML(player)
 
-        val playerFileTmp = File("$saveLocation/PLAYER.toml.tmp")
-
+        val playerFileTmp = File("$saveLocation/PLAYER.xml.tmp")
         if (playerFileTmp.exists()) playerFileTmp.delete()
-
         playerFileTmp.createNewFile()
-        playerFileTmp.appendText("gameTime = ${world.gameTime}\n")
-        playerFileTmp.appendText("area = '''$currentArea'''\n")
-        playerFileTmp.appendText(playerToml)
-        playerFileTmp.renameTo(File("$saveLocation/PLAYER.toml"))
+
+        xml.element("last-save").text(world.gameTime).pop()
+        xml.element("last-area").text(currentArea).pop()
+
+        xml.pop()
+        playerFileTmp.appendText(writer.toString())
+        playerFileTmp.renameTo(File("$saveLocation/PLAYER.xml"))
     }
 
     // This writes data for an entity assuming that entity have Inventory and Equipment
     // components.
     // TODO Abstract this out to handle arbitrary nested component interfaces if possible
-    private fun getCharacterToml(entity: Entity) : String {
+    private fun XmlWriter.buildCharacterXML(entity: Entity) : XmlWriter {
         val inventoryItems = CompMapper.Inventory.get(entity).items
         val equipmentItems = CompMapper.Equipment.get(entity).items
 
-        val playerCompToml = getEntityToml(entity)
-        val itemCompToml = getInventoryToml(inventoryItems)
-        val eqCompToml = getEquipmentToml(equipmentItems)
-
-        return "components = {\n$playerCompToml\n}\n inventory = [\n$itemCompToml\n]\n equipment = {\n$eqCompToml \n}\n"
+        return this.buildEntityXML(entity)
+                .buildInventoryXML(inventoryItems)
+                .buildEquipmentXML(equipmentItems)
     }
 
-    private fun getEntityToml(entity: Entity): String {
-        return entity.components.map { comp ->
-            ComponentFactory.createToml(comp)
-        }.joinToString(", \n")
+    private fun XmlWriter.buildEntityXML(entity: Entity) : XmlWriter {
+        this.element("components")
+        ComponentFactory.createXML(this, entity.components)
+        this.pop()
+
+        return this
     }
 
-    private fun getInventoryToml(items: List<Entity>): String {
-        val itemCompText = items.map { item ->
-            item.components.map { comp ->
-                ComponentFactory.createToml(comp)
-            }.joinToString(", \n")
+    private fun XmlWriter.buildInventoryXML(items: List<Entity>) : XmlWriter {
+        this.element("inventory")
+        items.forEach { ComponentFactory.createXML(this, it.components) }
+        this.pop()
+
+        return this
+    }
+
+    private fun XmlWriter.buildEquipmentXML(eq: HashMap<EqSlot, Entity>) : XmlWriter {
+        this.element("equipment")
+
+        eq.forEach { eqSlot, entity ->
+            this.element(eqSlot.name)
+            ComponentFactory.createXML(this, entity.components)
+            this.pop()
         }
 
-        return if (itemCompText.size > 0) {
-            "{ \n ${itemCompText.joinToString("\n}, \n { \n")} \n}"
-        } else {
-            ""
-        }
-    }
+        this.pop()
 
-    private fun getEquipmentToml(eq: HashMap<EqSlot, Entity>): String {
-        return eq.map { entry ->
-            entry.key.name + " = {\n" + entry.value.components.map { comp ->
-                ComponentFactory.createToml(comp)
-            }.joinToString(", \n") + " \n} \n"
-        }.joinToString(", \n")
+        return this
     }
 
 }
