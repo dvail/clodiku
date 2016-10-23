@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <player>
-    <last-area>sample</last-area>
+    <area>sample</area>
     <last-save>0.0</last-save>
     <components>
         <Player name="Inefray"/>

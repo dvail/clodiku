@@ -9,12 +9,8 @@ import com.dvail.clodiku.file.FileUtils
 import com.dvail.clodiku.systems.*
 import com.dvail.clodiku.ui.GameUICore
 import com.dvail.clodiku.world.GameEngine
-import java.io.File
 
-class MainScreen(mainGame: Game, savedGame: String? = null) : Screen {
-    val playerStartFile = File("./PLAYER_START.xml")
-
-    val game = mainGame
+class MainScreen(val game: Game, savedGame: String? = null) : Screen {
     val eventQ = EventQueue()
     var gameUI: GameUICore
     var world: GameEngine
@@ -28,7 +24,7 @@ class MainScreen(mainGame: Game, savedGame: String? = null) : Screen {
         world = GameEngine(saveLocation, dataLoader, dataSaver)
 
         if (newGame) {
-            playerStartFile.copyTo(File("$saveLocation/PLAYER.xml"))
+            dataSaver.initPlayerFile(saveLocation)
         }
 
         val currentArea = dataLoader.savedPlayerArea(saveLocation)
@@ -37,7 +33,7 @@ class MainScreen(mainGame: Game, savedGame: String? = null) : Screen {
         world.loadMap(currentArea)
         world.loadArea(currentArea)
 
-        gameUI = GameUICore(game, world, eventQ)
+        gameUI = GameUICore(this.game, world, eventQ)
 
         world.addSystem(EventSystem(eventQ))
         world.addSystem(InputSystem(eventQ))
@@ -47,7 +43,7 @@ class MainScreen(mainGame: Game, savedGame: String? = null) : Screen {
     }
 
     override fun render(delta: Float) {
-        world.gameTime += delta
+        world.gameTime = world.gameTime + delta
         world.update(delta)
         gameUI.update(delta)
     }

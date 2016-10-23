@@ -14,7 +14,7 @@ import java.io.File
 import java.util.*
 import com.badlogic.gdx.utils.Array as GdxArray
 
-//TODO Define a conventions/schmea file for how XML file files should look
+//TODO Define a conventions/schema file for how XML file files should look
 //TODO Handle null values in XML better (maybe with schema)
 class DataLoader() {
     private val REPOP_LIMIT = 300.0 // Five minutes
@@ -41,7 +41,7 @@ class DataLoader() {
     fun savedPlayerArea(saveLocation: String) : String {
         val config = XmlReader().parse(FileHandle("$saveLocation/PLAYER.xml"))
 
-        return config.getChildByName("last-area").text
+        return config.getChildByName("area").text
     }
 
     // If enough time has passed since the area was saved, load the original file as a repop

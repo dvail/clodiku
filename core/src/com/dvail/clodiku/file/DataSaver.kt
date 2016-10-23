@@ -14,30 +14,31 @@ import java.io.StringWriter
 import java.util.*
 
 class DataSaver {
+    private val pFileName = "PLAYER"
 
-    fun saveGame(world: Engine, saveLocation: String) {
-        world as GameEngine
+    fun initPlayerFile(saveLocation: String) {
+        val playerStartFile = File("./PLAYER_START.xml")
+        playerStartFile.copyTo(File("$saveLocation/$pFileName.xml"))
+    }
 
+    fun saveGame(world: GameEngine, saveLocation: String) {
         val worldMap = Entities.firstWithComp(world, Comps.WorldMap)
         val currentArea = CompMapper.WorldMap.get(worldMap).mapName
 
+        saveWorld(world, saveLocation, currentArea)
+        savePlayer(world, saveLocation, currentArea)
+    }
+
+    fun saveWorld(world: GameEngine, saveLocation: String, currentArea: String) {
         val writer = StringWriter()
         val xml = XmlWriter(writer)
+        val areaFile = SaveFile(saveLocation, currentArea)
 
         xml.element("area")
-
-        // TODO Clean up this file handling code between saveArea and savePlayer functions
-        val areaFileTmp = File("$saveLocation/$currentArea.xml.tmp")
-
-        if (areaFileTmp.exists()) areaFileTmp.delete()
-        areaFileTmp.createNewFile()
-
         saveArea(xml, world)
-        savePlayer(world, saveLocation, currentArea)
-
         xml.pop()
-        areaFileTmp.appendText(writer.toString())
-        areaFileTmp.renameTo(File("$saveLocation/$currentArea.xml"))
+
+        areaFile.saveWith(writer)
     }
 
     fun saveGameTime(xml: XmlWriter, world: GameEngine) {
@@ -73,16 +74,13 @@ class DataSaver {
         val player = Entities.firstWithComp(world, Comps.Player)
         xml.buildCharacterXML(player)
 
-        val playerFileTmp = File("$saveLocation/PLAYER.xml.tmp")
-        if (playerFileTmp.exists()) playerFileTmp.delete()
-        playerFileTmp.createNewFile()
+        val pFile = SaveFile(saveLocation, pFileName)
 
-        xml.element("last-save").text(world.gameTime).pop()
-        xml.element("last-area").text(currentArea).pop()
+        saveGameTime(xml, world)
+        xml.element("area").text(currentArea).pop()
 
         xml.pop()
-        playerFileTmp.appendText(writer.toString())
-        playerFileTmp.renameTo(File("$saveLocation/PLAYER.xml"))
+        pFile.saveWith(writer)
     }
 
     // This writes data for an entity assuming that entity have Inventory and Equipment
@@ -129,6 +127,22 @@ class DataSaver {
         this.pop()
 
         return this
+    }
+
+    private class SaveFile(val saveLocation: String, val fileName: String) {
+        val tmpFile: File
+
+        init {
+            tmpFile = File("$saveLocation/$fileName.xml.tmp")
+
+            if (tmpFile.exists()) tmpFile.delete()
+            tmpFile.createNewFile()
+        }
+
+        fun saveWith(writer: StringWriter) {
+            tmpFile.appendText(writer.toString())
+            tmpFile.renameTo(File("$saveLocation/$fileName.xml"))
+        }
     }
 
 }
