@@ -107,7 +107,11 @@ class DataSaver {
 
     private fun XmlWriter.buildInventoryXML(items: List<Entity>) : XmlWriter {
         this.element("inventory")
-        items.forEach { ComponentFactory.createXML(this, it.components) }
+        items.forEach {
+            this.element("item")
+            ComponentFactory.createXML(this, it.components)
+            this.pop()
+        }
         this.pop()
 
         return this

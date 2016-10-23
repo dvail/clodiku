@@ -28,10 +28,7 @@ object UI {
     }
 }
 
-class GameUICore(mainGame: Game, world: GameEngine, eventQ: EventQueue) {
-    val game = mainGame
-    val world = world
-    val eventQ = eventQ
+class GameUICore(val game: Game, val world: GameEngine, val eventQ: EventQueue) {
     val player = Entities.firstWithComp(world, Comps.Player)
 
     val subMenus = listOf("Equipment", "Inventory", "Skills", "Stats")
