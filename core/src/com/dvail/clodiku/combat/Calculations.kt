@@ -13,4 +13,6 @@ fun calcAttackDamage(world: Engine, attacker: Entity, defender: Entity): Int {
 
 fun regenEntity(entity: Entity) {
     val attrComp = entity.getComponent(Comps.Attribute)
+
+    attrComp.hp = Math.min(attrComp.maxHp, attrComp.hp + (attrComp.vit / 10))
 }

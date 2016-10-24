@@ -13,7 +13,7 @@ import com.dvail.clodiku.world.GameEngine
  */
 class TickSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
 
-    val tickAvgLengthSec = 2
+    val tickAvgLengthSec = 20
 
     lateinit var world: GameEngine
     lateinit var player: Entity
@@ -34,6 +34,7 @@ class TickSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
     }
 
     private fun doTick() {
+        println("Tock")
         nextTick = delta + (tickAvgLengthSec * (1.5 - Math.random()).toFloat())
         doRegen()
     }
