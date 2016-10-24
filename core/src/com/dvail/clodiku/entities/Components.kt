@@ -101,8 +101,8 @@ data class State(var current: BaseState) : Component {
     var time = 0f
 }
 
-data class Attribute(var hp: Int = 20, var mp: Int = 20, var mv: Int = 50, var str: Int = 10,
-                     var dex: Int = 10, var vit: Int = 10, var psy: Int = 10) : Component
+data class Attribute(var hp: Int, var maxHp: Int, var mp: Int, var maxMp: Int, var mv: Int, var maxMv: Int,
+                     var str: Int, var dex: Int, var vit: Int, var psy: Int) : Component
 
 // This component is for entities who can fight. Right now this is mostly a shim to handle h2h combat without
 // an ugly hack to the Equipment component

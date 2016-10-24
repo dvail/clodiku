@@ -52,7 +52,7 @@ class RenderingSystem(eventQ: EventQueue) : CoreSystem(eventQ) {
     var delta = 0f
 
     override fun addedToEngine(engine: Engine) {
-        world = engine;
+        world = engine
         mapRenderer = OrthogonalTiledMapRenderer(Maps.currentMap(world), batch)
 
         updateRenderableEntityList()

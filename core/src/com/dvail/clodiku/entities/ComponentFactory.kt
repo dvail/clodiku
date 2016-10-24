@@ -55,7 +55,17 @@ object ComponentFactory {
                 EqArmor(element.getInt("bulk"))
             }
             Comps.Attribute -> {
-                Attribute()
+                Attribute(element.getIntAttribute("hp"),
+                        element.getIntAttribute("maxHp"),
+                        element.getIntAttribute("mp"),
+                        element.getIntAttribute("maxMp"),
+                        element.getIntAttribute("mv"),
+                        element.getIntAttribute("maxMv"),
+                        element.getIntAttribute("str"),
+                        element.getIntAttribute("dex"),
+                        element.getIntAttribute("vit"),
+                        element.getIntAttribute("psy")
+                )
             }
             Comps.Martial -> {
                 Martial()
@@ -139,8 +149,11 @@ object ComponentFactory {
             is Attribute -> {
                 xml.element("Attribute")
                         .attribute("hp", component.hp)
+                        .attribute("maxHp", component.maxHp)
                         .attribute("mp", component.mp)
+                        .attribute("maxMp", component.maxMp)
                         .attribute("mv", component.mv)
+                        .attribute("maxMv", component.maxMv)
                         .attribute("str", component.str)
                         .attribute("dex", component.dex)
                         .attribute("vit", component.vit)

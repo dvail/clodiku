@@ -39,6 +39,7 @@ class MainScreen(val game: Game, savedGame: String? = null) : Screen {
         world.addSystem(InputSystem(eventQ))
         world.addSystem(MobAISystem(eventQ))
         world.addSystem(CombatSystem(eventQ))
+        world.addSystem(TickSystem(eventQ))
         world.addSystem(RenderingSystem(eventQ))
     }
 
